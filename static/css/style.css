@@ -1,0 +1,32 @@
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Inter', Arial, sans-serif;
+    background-color: #0a0a0a;
+}
+
+.container {
+    text-align: center;
+    padding: 2rem;
+}
+
+h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    margin: 0 0 0.75rem 0;
+    color: #ffffff;
+    letter-spacing: -0.02em;
+}
+
+.title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    color: #a1a1aa;
+    margin: 0;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
