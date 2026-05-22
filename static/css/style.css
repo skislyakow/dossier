@@ -1,10 +1,9 @@
 body {
     margin: 0;
     padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     font-family: 'Inter', Arial, sans-serif;
     background-color: #0a0a0a;
 }
@@ -12,6 +11,11 @@ body {
 .container {
     text-align: center;
     padding: 2rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 
 h1 {
@@ -47,6 +51,7 @@ h1 {
     gap: 0;
     justify-content: center;
     align-items: center;
+    margin-bottom: 2.5rem;
 }
 
 .social-link {
@@ -260,4 +265,62 @@ h1 {
 .error {
     color: #ef4444;
     font-size: 0.875rem;
+}
+
+.skills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 1.5rem 1rem;
+    gap: 0.25rem 0;
+    max-width: 500px;
+    margin: 0 auto;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    color: #52525b;
+    line-height: 1.8;
+}
+
+.skills span {
+    opacity: 0;
+    animation: fadeIn 0.5s ease forwards;
+}
+
+.skills span:nth-child(1) { animation-delay: 0.1s; }
+.skills span:nth-child(2) { animation-delay: 0.1s; }
+.skills span:nth-child(3) { animation-delay: 0.25s; }
+.skills span:nth-child(4) { animation-delay: 0.25s; }
+.skills span:nth-child(5) { animation-delay: 0.4s; }
+.skills span:nth-child(6) { animation-delay: 0.4s; }
+.skills span:nth-child(7) { animation-delay: 0.55s; }
+.skills span:nth-child(8) { animation-delay: 0.55s; }
+.skills span:nth-child(9) { animation-delay: 0.7s; }
+.skills span:nth-child(10) { animation-delay: 0.7s; }
+.skills span:nth-child(11) { animation-delay: 0.85s; }
+.skills span:nth-child(12) { animation-delay: 0.85s; }
+.skills span:nth-child(13) { animation-delay: 1s; }
+.skills span:nth-child(14) { animation-delay: 1s; }
+.skills span:nth-child(15) { animation-delay: 1.15s; }
+.skills span:nth-child(16) { animation-delay: 1.15s; }
+.skills span:nth-child(17) { animation-delay: 1.3s; }
+
+.skills span:not(.dot) {
+    color: #52525b;
+    transition: color 0.3s ease;
+}
+
+.skills span:not(.dot):hover {
+    color: #00ff41;
+    text-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
+}
+
+.dot {
+    color: #3f3f46;
+    margin: 0 0.35rem;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
 }
