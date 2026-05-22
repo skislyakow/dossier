@@ -29,6 +29,17 @@ h1 {
     margin: 0 0 2rem 0;
     letter-spacing: 0.1em;
     text-transform: uppercase;
+    min-height: 1.5rem;
+}
+
+.cursor {
+    animation: blink 0.7s steps(1) infinite;
+    color: #a1a1aa;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
 }
 
 .social-links {

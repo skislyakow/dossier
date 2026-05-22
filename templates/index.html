@@ -13,7 +13,7 @@
 <body>
     <div class="container">
         <h1>Sergey Kislyakov</h1>
-        <p class="title">Python Django Developer</p>
+        <p class="title"><span id="typing-text"></span><span class="cursor">|</span></p>
         <div class="social-links">
             <a href="https://github.com/skislyakow" target="_blank" rel="noopener noreferrer" class="social-link github-link">
                 <svg height="24" width="24" viewBox="0 0 24 24" fill="currentColor">
@@ -28,6 +28,7 @@
         </div>
         <div id="stats" class="stats hidden"></div>
     </div>
+    <script src="{% static 'js/typing.js' %}"></script>
     <script src="{% static 'js/github.js' %}"></script>
 </body>
 </html>
