@@ -23,15 +23,6 @@ link.addEventListener('click', async (e) => {
         const userData = await userRes.json();
         const repos = await reposRes.json();
 
-        let html = `
-            <div class="stats-grid">
-                <div class="stat-item">
-                    <span class="stat-value">${userData.public_repos}</span>
-                    <span class="stat-label">Repos</span>
-                </div>
-            </div>
-        `;
-
         const reposRes2 = await Promise.all(repos.map(r => 
             fetch(`https://api.github.com/repos/skislyakow/${r.name}/languages`).then(res => res.json())
         ));
@@ -46,6 +37,19 @@ link.addEventListener('click', async (e) => {
 
         const total = Object.values(langCount).reduce((a, b) => a + b, 0);
         const sorted = Object.entries(langCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+        let html = `
+            <a href="${userData.html_url}" target="_blank" rel="noopener noreferrer" class="gh-card">
+                <div class="gh-card-avatar">
+                    <img src="${userData.avatar_url}" alt="${userData.login}" />
+                </div>
+                <div class="gh-card-info">
+                    <span class="gh-card-name">${userData.name || userData.login}</span>
+                    <span class="gh-card-login">@${userData.login}</span>
+                    ${userData.bio ? `<span class="gh-card-bio">${userData.bio}</span>` : ''}
+                </div>
+            </a>
+        `;
 
         html += `<div class="langs-container">`;
         sorted.forEach(([lang, bytes]) => {
@@ -63,7 +67,7 @@ link.addEventListener('click', async (e) => {
         statsContainer.innerHTML = html;
 
         setTimeout(() => {
-            statsContainer.querySelector('.stats-grid')?.classList.add('visible');
+            statsContainer.querySelector('.gh-card')?.classList.add('visible');
             statsContainer.querySelector('.langs-container')?.classList.add('visible');
             document.querySelectorAll('.lang-fill').forEach(bar => {
                 bar.style.width = bar.parentElement.nextElementSibling.textContent;
