@@ -5,7 +5,7 @@ body {
     display: flex;
     flex-direction: column;
     font-family: 'Inter', Arial, sans-serif;
-    background-color: #0a0a0a;
+    background-color: #f4f4f5;
 }
 
 .container {
@@ -19,17 +19,17 @@ body {
 }
 
 h1 {
-    font-size: 3.5rem;
+    font-size: 4rem;
     font-weight: 700;
     margin: 0 0 0.75rem 0;
-    color: #ffffff;
-    letter-spacing: -0.02em;
+    color: #18181b;
+    letter-spacing: -0.03em;
 }
 
 .title {
     font-size: 1.25rem;
     font-weight: 500;
-    color: #a1a1aa;
+    color: #71717a;
     margin: 0 0 2rem 0;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -38,7 +38,7 @@ h1 {
 
 .cursor {
     animation: blink 0.7s steps(1) infinite;
-    color: #a1a1aa;
+    color: #71717a;
 }
 
 @keyframes blink {
@@ -68,7 +68,7 @@ h1 {
 }
 
 .social-link:hover {
-    background: #18181b;
+    background: #e4e4e7;
 }
 
 .social-link svg {
@@ -77,7 +77,7 @@ h1 {
 }
 
 .github-link:hover {
-    color: #fff;
+    color: #18181b;
 }
 
 .telegram-link {
@@ -85,10 +85,9 @@ h1 {
 }
 
 .telegram-link:hover {
-    color: #f0f0f0;
-    background: #18181b;
-    box-shadow: 0 0 12px rgba(0, 136, 204, 0.4);
-    text-shadow: 0 0 8px rgba(0, 136, 204, 0.6);
+    color: #0088cc;
+    background: #e4e4e7;
+    box-shadow: 0 0 12px rgba(0, 136, 204, 0.15);
 }
 
 .telegram-link::after {
@@ -101,8 +100,7 @@ h1 {
 }
 
 .telegram-link:hover::after {
-    border-color: rgba(0, 136, 204, 0.5);
-    box-shadow: 0 0 16px rgba(0, 136, 204, 0.2);
+    border-color: rgba(0, 136, 204, 0.3);
 }
 
 .stats {
@@ -130,8 +128,8 @@ h1 {
 .loader {
     width: 24px;
     height: 24px;
-    border: 2px solid #27272a;
-    border-top-color: #fff;
+    border: 2px solid #e4e4e7;
+    border-top-color: #6366f1;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin: 0 auto;
@@ -146,20 +144,22 @@ h1 {
     align-items: center;
     gap: 1rem;
     padding: 1rem 1.5rem;
-    background: #18181b;
-    border: 1px solid #27272a;
+    background: #ffffff;
+    border: 1px solid #e4e4e7;
     border-radius: 12px;
     text-decoration: none;
     opacity: 0;
     transform: translateY(10px);
     transition: all 0.5s ease;
     cursor: pointer;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
 
 .gh-card:hover {
-    border-color: #3f3f46;
-    background: #1a1a1e;
+    border-color: #d4d4d8;
+    background: #fafafa;
     transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
 }
 
 .gh-card.visible {
@@ -184,23 +184,23 @@ h1 {
 .gh-card-name {
     font-size: 1rem;
     font-weight: 600;
-    color: #fff;
+    color: #18181b;
 }
 
 .gh-card-login {
     font-size: 0.875rem;
-    color: #71717a;
+    color: #a1a1aa;
 }
 
 .gh-card-bio {
     font-size: 0.8rem;
-    color: #a1a1aa;
+    color: #71717a;
     margin-top: 0.25rem;
 }
 
 .gh-card-stats {
     font-size: 0.75rem;
-    color: #52525b;
+    color: #a1a1aa;
     margin-top: 0.25rem;
     display: flex;
     gap: 0.75rem;
@@ -237,14 +237,14 @@ h1 {
 .lang-name {
     width: 70px;
     font-size: 0.875rem;
-    color: #a1a1aa;
+    color: #52525b;
     text-align: right;
 }
 
 .lang-bar {
     flex: 1;
     height: 6px;
-    background: #27272a;
+    background: #e4e4e7;
     border-radius: 3px;
     overflow: hidden;
 }
@@ -258,7 +258,7 @@ h1 {
 .lang-percent {
     width: 35px;
     font-size: 0.875rem;
-    color: #71717a;
+    color: #a1a1aa;
     text-align: right;
 }
 
@@ -277,7 +277,7 @@ h1 {
     margin: 0 auto;
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.85rem;
-    color: #52525b;
+    color: #a1a1aa;
     line-height: 1.8;
 }
 
@@ -305,17 +305,17 @@ h1 {
 .skills span:nth-child(17) { animation-delay: 1.3s; }
 
 .skills span:not(.dot) {
-    color: #52525b;
+    color: #a1a1aa;
     transition: color 0.3s ease;
 }
 
 .skills span:not(.dot):hover {
-    color: #00ff41;
-    text-shadow: 0 0 8px rgba(0, 255, 65, 0.4);
+    color: #6366f1;
+    text-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
 }
 
 .dot {
-    color: #3f3f46;
+    color: #d4d4d8;
     margin: 0 0.35rem;
 }
 
