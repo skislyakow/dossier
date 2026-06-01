@@ -1,4 +1,4 @@
-const text = "Python Django Developer";
+const text = "Python Fullstack Developer";
 const el = document.getElementById('typing-text');
 let i = 0;
 
