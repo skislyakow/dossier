@@ -398,10 +398,13 @@ h1 {
 
 .portfolio-stars {
     font-size: 0.8rem;
-    color: #a1a1aa;
+    color: #6366f1;
     white-space: nowrap;
     margin-left: 0.75rem;
     flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.15rem;
 }
 
 .portfolio-tagline {
@@ -452,20 +455,37 @@ h1 {
     top: 0.3rem;
 }
 
-.portfolio-links {
-    font-size: 0.8rem;
+.portfolio-badges {
     display: flex;
-    gap: 0.5rem;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+    align-items: center;
 }
 
-.portfolio-links a {
-    color: #6366f1;
+.portfolio-badge-img {
+    height: 20px;
+    display: block;
+}
+
+.portfolio-links {
+    display: flex;
+    gap: 0.25rem;
+}
+
+.portfolio-link-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    color: #a1a1aa;
+    border-radius: 50%;
+    transition: all 0.3s ease;
     text-decoration: none;
-    font-weight: 500;
-    transition: color 0.2s ease;
 }
 
-.portfolio-links a:hover {
-    color: #4f46e5;
-    text-decoration: underline;
+.portfolio-link-icon:hover {
+    color: #6366f1;
+    background: #f4f4f5;
 }
