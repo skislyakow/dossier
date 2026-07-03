@@ -48,9 +48,16 @@ const PORTFOLIO = [
     badges: [
       { label: "Python" },
       { label: "Django" },
+      { label: "HTML5" },
+      { label: "CSS3" },
       { label: "JavaScript" },
       { label: "Nginx" },
+      { label: "Gunicorn" },
+      { label: "Git" },
       { label: "GitHub Actions" },
+      { label: "Ubuntu" },
+      { label: "PostgreSQL" },
+      { label: "Docker" },
     ],
   },
 ];
