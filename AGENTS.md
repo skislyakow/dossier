@@ -49,7 +49,7 @@ Edit `static/js/portfolio.js` → append to `PORTFOLIO` array:
   title: "Project Title",
   tagline: "Short description",
   features: ["Feature 1", "Feature 2"],
-  links: { pypi: "https://..." },
+  links: { pypi: "https://...", www: "https://..." }, // www для сайта проекта
   badges: ["https://img.shields.io/..."],
 }
 ```
