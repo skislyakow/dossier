@@ -123,6 +123,10 @@ h1 {
     transform: translateY(-10px);
     pointer-events: none;
     transition: all 0.3s ease;
+    height: 0;
+    min-height: 0;
+    margin: 0;
+    overflow: hidden;
 }
 
 .loader {
@@ -333,7 +337,7 @@ h1 {
 .portfolio {
     width: 100%;
     max-width: 540px;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.75rem;
