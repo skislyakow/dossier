@@ -35,7 +35,7 @@ git pull → pip install → collectstatic → restart gunicorn
 Required GitHub secrets: `VPS_HOST`, `VPS_SSH_KEY`
 
 ## Project overview
-Personal portfolio / visiting card site for Sergey Kislyakov (Python Django Developer).
+Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack Developer).
 - Typing animation for job title
 - GitHub stats toggle (stars, repos, languages via GitHub API)
 - Portfolio section with project cards (GitHub data + badges)

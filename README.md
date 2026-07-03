@@ -1,6 +1,6 @@
 # Dossier
 
-Персональный сайт-визитка Сергея Кислякова — Python Django Developer.
+Персональный сайт-визитка Сергея Кислякова — Python Fullstack Developer.
 
 ## Технологии
 
@@ -19,10 +19,15 @@
 
 ## Возможности
 
-- Анимация печатной машинки для должности
-- GitHub-статистика (звёзды, репозитории, языки)
-- Секция портфолио с карточками проектов
-- Ссылка на Telegram
+- Typing-анимация должности на чистом JS (без библиотек)
+- Интеграция с GitHub API: статистика репозиториев, языки, звёзды
+- Секция портфолио с карточками проектов, бейджами и распределением языков
+- Production-stек: Django + Gunicorn + Nginx на Ubuntu VPS
+- CI/CD через GitHub Actions (автодеплой при пуше в main)
+
+## Сайт
+
+:earth_americas: [132.243.121.192](http://132.243.121.192/)
 
 ## Запуск
 
@@ -38,7 +43,15 @@ python manage.py runserver
 ## Деплой
 
 При пуше в ветку `main` GitHub Actions автоматически деплоит сайт на VPS:
-- `git pull` → `pip install` → `collectstatic` → `restart gunicorn`
+
+```
+git pull origin main
+.venv/bin/pip install -r requirements.txt
+.venv/bin/python manage.py collectstatic --noinput
+systemctl restart dossier
+```
+
+VPS: Ubuntu 24.04 | Nginx → Gunicorn (127.0.0.1:8000) | systemd
 
 ## Контакты
 
