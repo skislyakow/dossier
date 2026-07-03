@@ -58,7 +58,5 @@ Edit `static/js/portfolio.js` → append to `PORTFOLIO` array:
 ```
 Then push to `main` — site updates automatically.
 
-> ⚠️ Badges загружаются с `img.shields.io` как внешние картинки.
-> Некоторые AdBlock-расширения блокируют shields.io — в этом случае бейджи
-> не отобразятся у посетителя. На работу портфолио это не влияет.
-> Альтернатива — CSS-бейджи (рендерятся локально, не блокируются).
+> ⚠️ Badges должны соответствовать тем, что указаны в README проекта на GitHub.
+> Проверяй README каждого проекта и добавляй все бейджи оттуда в массив `badges`.

@@ -16,6 +16,9 @@ const PORTFOLIO = [
       { label: "python", value: "3.10 | 3.11 | 3.12 | 3.13" },
       { label: "license", value: "MIT" },
       { label: "downloads", value: "209/month" },
+      { label: "tests" },
+      { label: "build", value: "hatchling" },
+      { label: "http", value: "httpx" },
     ],
   },
   {
