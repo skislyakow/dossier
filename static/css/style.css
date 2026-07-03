@@ -451,9 +451,31 @@ h1 {
     align-items: center;
 }
 
-.portfolio-badge-img {
-    height: 20px;
-    display: block;
+.badge {
+    display: inline-flex;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    line-height: 1;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.badge-label {
+    padding: 0.25rem 0.45rem;
+    background: #e4e4e7;
+    color: #52525b;
+}
+
+.badge-value {
+    padding: 0.25rem 0.45rem;
+    background: #6366f1;
+    color: #fff;
+}
+
+.badge--single {
+    padding: 0.25rem 0.55rem;
+    background: #6366f1;
+    color: #fff;
 }
 
 .portfolio-divider {

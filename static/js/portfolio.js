@@ -12,10 +12,10 @@ const PORTFOLIO = [
       pypi: "https://pypi.org/project/opencode-py/",
     },
     badges: [
-      "https://img.shields.io/pypi/v/opencode-py.svg?style=flat-square&labelColor=e4e4e7&color=6366f1",
-      "https://img.shields.io/pypi/pyversions/opencode-py.svg?style=flat-square&labelColor=e4e4e7&color=6366f1",
-      "https://img.shields.io/pypi/l/opencode-py.svg?style=flat-square&labelColor=e4e4e7&color=6366f1",
-      "https://img.shields.io/pypi/dm/opencode-py.svg?style=flat-square&labelColor=e4e4e7&color=6366f1",
+      { label: "pypi", value: "v0.1.1" },
+      { label: "python", value: "3.10 | 3.11 | 3.12 | 3.13" },
+      { label: "license", value: "MIT" },
+      { label: "downloads", value: "209/month" },
     ],
   },
   {
@@ -46,11 +46,11 @@ const PORTFOLIO = [
       www: "http://132.243.121.192/",
     },
     badges: [
-      "https://img.shields.io/badge/Python-6366f1?style=flat-square&logo=python&logoColor=white&labelColor=e4e4e7",
-      "https://img.shields.io/badge/Django-6366f1?style=flat-square&logo=django&logoColor=white&labelColor=e4e4e7",
-      "https://img.shields.io/badge/JavaScript-6366f1?style=flat-square&logo=javascript&logoColor=black&labelColor=e4e4e7",
-      "https://img.shields.io/badge/Nginx-6366f1?style=flat-square&logo=nginx&logoColor=white&labelColor=e4e4e7",
-      "https://img.shields.io/badge/GitHub_Actions-6366f1?style=flat-square&logo=githubactions&logoColor=white&labelColor=e4e4e7",
+      { label: "Python" },
+      { label: "Django" },
+      { label: "JavaScript" },
+      { label: "Nginx" },
+      { label: "GitHub Actions" },
     ],
   },
 ];
@@ -60,16 +60,6 @@ const ICONS = {
   pypi: '<svg height="18" width="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7v10l10 5 10-5V7l-10-5zM4 9.24l6 3v6.47l-6-3V9.24zm14 0v6.47l-6 3V12.24l6-3zM12 5.06L17.66 8 12 10.94 6.34 8 12 5.06z"/></svg>',
   www: '<svg height="18" width="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>',
 };
-
-function styleBadgeUrl(url) {
-  const i = url.indexOf('?');
-  const base = i === -1 ? url : url.slice(0, i);
-  const params = new URLSearchParams(i === -1 ? '' : url.slice(i + 1));
-  params.set('style', 'flat-square');
-  params.set('labelColor', 'e4e4e7');
-  params.set('color', '6366f1');
-  return `${base}?${params.toString()}`;
-}
 
 const portfolioBtn = document.getElementById('portfolio-btn');
 const portfolioSection = document.getElementById('portfolio');
@@ -103,9 +93,12 @@ portfolioBtn.addEventListener('click', async (e) => {
       const langEntries = Object.entries(project.langs);
       const totalBytes = Object.values(project.langs).reduce((a, b) => a + b, 0);
 
-      const badgesHtml = (project.badges || []).map(url =>
-        `<img src="${styleBadgeUrl(url)}" alt="" class="portfolio-badge-img">`
-      ).join('');
+      const badgesHtml = (project.badges || []).map(b => {
+        if (b.value) {
+          return `<span class="badge"><span class="badge-label">${b.label}</span><span class="badge-value">${b.value}</span></span>`;
+        }
+        return `<span class="badge badge--single">${b.label}</span>`;
+      }).join('');
 
       let linksHtml = `<a href="${project.repo.html_url}" target="_blank" rel="noopener noreferrer" class="portfolio-link-icon" title="GitHub">${ICONS.github}</a>`;
       for (const [label, url] of Object.entries(project.links)) {

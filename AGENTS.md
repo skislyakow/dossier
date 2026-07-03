@@ -50,7 +50,10 @@ Edit `static/js/portfolio.js` → append to `PORTFOLIO` array:
   tagline: "Short description",
   features: ["Feature 1", "Feature 2"],
   links: { pypi: "https://...", www: "https://..." }, // www для сайта проекта
-  badges: ["https://img.shields.io/..."],
+  badges: [
+    { label: "Tech", value: "detail" },  // двухсекционный бейдж
+    { label: "Python" },                  // односекционный бейдж
+  ],
 }
 ```
 Then push to `main` — site updates automatically.
