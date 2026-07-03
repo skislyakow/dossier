@@ -23,9 +23,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=ugm50*d7y^wi1vbtb%2a4+3r$ee6-mjqd3g11pz7(#ymb4zon'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['132.243.121.192', 'localhost', '127.0.0.1']
+
+CSRF_TRUSTED_ORIGINS = ['http://132.243.121.192']
 
 
 # Application definition
@@ -117,4 +119,4 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
-STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATIC_ROOT = '/var/www/dossier/static'

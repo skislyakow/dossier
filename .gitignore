@@ -1,2 +1,7 @@
 .venv
 *pyc
+vps_*.py
+check_*.py
+fix_*.py
+staticfiles/
+db.sqlite3
