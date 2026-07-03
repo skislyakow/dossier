@@ -307,6 +307,14 @@ h1 {
 .skills span:nth-child(15) { animation-delay: 1.15s; }
 .skills span:nth-child(16) { animation-delay: 1.15s; }
 .skills span:nth-child(17) { animation-delay: 1.3s; }
+.skills span:nth-child(18) { animation-delay: 1.3s; }
+.skills span:nth-child(19) { animation-delay: 1.45s; }
+.skills span:nth-child(20) { animation-delay: 1.45s; }
+.skills span:nth-child(21) { animation-delay: 1.6s; }
+.skills span:nth-child(22) { animation-delay: 1.6s; }
+.skills span:nth-child(23) { animation-delay: 1.75s; }
+.skills span:nth-child(24) { animation-delay: 1.75s; }
+.skills span:nth-child(25) { animation-delay: 1.9s; }
 
 .skills span:not(.dot) {
     color: #a1a1aa;
