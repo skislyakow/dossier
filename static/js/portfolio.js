@@ -94,9 +94,11 @@ portfolioBtn.addEventListener('click', async (e) => {
             }).join('')}
           </div>
           ${badgesHtml ? `<div class="portfolio-badges">${badgesHtml}</div>` : ''}
+          <hr class="portfolio-divider">
           <ul class="portfolio-features">
             ${project.features.map(f => `<li>${f}</li>`).join('')}
           </ul>
+          <hr class="portfolio-divider">
           <div class="portfolio-links">${linksHtml}</div>
         </div>
       `;
