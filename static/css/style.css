@@ -324,3 +324,148 @@ h1 {
         opacity: 1;
     }
 }
+
+.portfolio-link:hover {
+    color: #8b5cf6;
+    background: #f4f4f5;
+}
+
+.portfolio {
+    width: 100%;
+    max-width: 500px;
+    margin-top: 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.4s ease;
+    pointer-events: none;
+}
+
+.portfolio.show {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.portfolio.hidden {
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.portfolio-card {
+    background: #ffffff;
+    border: 1px solid #e4e4e7;
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    text-align: left;
+    animation: cardFadeIn 0.5s ease forwards;
+    opacity: 0;
+    transform: translateY(10px);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: all 0.3s ease;
+}
+
+.portfolio-card:hover {
+    border-color: #d4d4d8;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+}
+
+@keyframes cardFadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.portfolio-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.portfolio-card-header h3 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #18181b;
+}
+
+.portfolio-stars {
+    font-size: 0.8rem;
+    color: #a1a1aa;
+    white-space: nowrap;
+    margin-left: 0.75rem;
+    flex-shrink: 0;
+}
+
+.portfolio-tagline {
+    margin: 0 0 0.75rem 0;
+    font-size: 0.85rem;
+    color: #71717a;
+    line-height: 1.4;
+}
+
+.portfolio-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    margin-bottom: 0.75rem;
+}
+
+.portfolio-tag {
+    font-size: 0.7rem;
+    font-family: 'Share Tech Mono', monospace;
+    padding: 0.15rem 0.5rem;
+    background: #f4f4f5;
+    color: #71717a;
+    border-radius: 4px;
+    border: 1px solid #e4e4e7;
+}
+
+.portfolio-features {
+    margin: 0 0 0.75rem 0;
+    padding: 0;
+    list-style: none;
+}
+
+.portfolio-features li {
+    font-size: 0.8rem;
+    color: #52525b;
+    padding: 0.2rem 0;
+    padding-left: 1.1rem;
+    position: relative;
+    line-height: 1.4;
+}
+
+.portfolio-features li::before {
+    content: '\25C6';
+    position: absolute;
+    left: 0;
+    color: #6366f1;
+    font-size: 0.65rem;
+    top: 0.3rem;
+}
+
+.portfolio-links {
+    font-size: 0.8rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.portfolio-links a {
+    color: #6366f1;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+.portfolio-links a:hover {
+    color: #4f46e5;
+    text-decoration: underline;
+}
