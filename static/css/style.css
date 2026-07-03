@@ -336,7 +336,7 @@ h1 {
 
 .portfolio {
     width: 100%;
-    max-width: 540px;
+    max-width: 860px;
     margin-top: 0.5rem;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -345,6 +345,12 @@ h1 {
     transform: translateY(10px);
     transition: all 0.4s ease;
     pointer-events: none;
+}
+
+@media (max-width: 640px) {
+    .portfolio {
+        grid-template-columns: 1fr;
+    }
 }
 
 .portfolio.show {
