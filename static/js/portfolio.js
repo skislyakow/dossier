@@ -18,6 +18,19 @@ const PORTFOLIO = [
       "https://img.shields.io/pypi/dm/opencode-py.svg?style=flat-square&labelColor=e4e4e7&color=6366f1",
     ],
   },
+  {
+    repo: "skislyakow/ferma",
+    title: "Ferma",
+    tagline: "Автоматизированная ферма Telegram-каналов",
+    features: [
+      "Парсинг постов с t.me/s/ доноров",
+      "Фильтрация рекламы, тизеров, дубликатов",
+      "Автоперевод через Yandex Translate",
+      "Публикация в каналы с CPA-ссылками",
+    ],
+    links: {},
+    badges: [],
+  },
 ];
 
 const ICONS = {
@@ -80,7 +93,7 @@ portfolioBtn.addEventListener('click', async (e) => {
               return `<span class="portfolio-tag">${lang} ${pct}%</span>`;
             }).join('')}
           </div>
-          <div class="portfolio-badges">${badgesHtml}</div>
+          ${badgesHtml ? `<div class="portfolio-badges">${badgesHtml}</div>` : ''}
           <ul class="portfolio-features">
             ${project.features.map(f => `<li>${f}</li>`).join('')}
           </ul>
