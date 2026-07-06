@@ -39,6 +39,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - Typing animation for job title
 - GitHub stats toggle (stars, repos, languages via GitHub API)
 - Portfolio section with project cards (GitHub data + badges)
+- Dynamic badges from GitHub API, PyPI, PyPistats
 - Telegram link
 
 ## Adding a project to portfolio
@@ -46,17 +47,33 @@ Edit `static/js/portfolio.js` → append to `PORTFOLIO` array:
 ```js
 {
   repo: "skislyakow/repo-name",
+  pypi: "package-name",  // optional: enables PyPI + PyPistats badges
   title: "Project Title",
   tagline: "Short description",
   features: ["Feature 1", "Feature 2"],
-  links: { pypi: "https://...", www: "https://..." }, // www для сайта проекта
+  links: { pypi: "https://...", www: "https://..." },
   badges: [
-    { label: "Tech", value: "detail" },  // двухсекционный бейдж
-    { label: "Python" },                  // односекционный бейдж
+    { label: "pypi", source: "pypi_version" },      // dynamic from PyPI
+    { label: "python", source: "pypi_python" },      // dynamic from PyPI
+    { label: "downloads/m", source: "pypistats_month" }, // dynamic from PyPistats
+    { label: "build", value: "hatchling" },           // static value
+    { label: "tests" },                               // static single-section
   ],
 }
 ```
-Then push to `main` — site updates automatically.
 
-> ⚠️ Badges должны соответствовать тем, что указаны в README проекта на GitHub.
-> Проверяй README каждого проекта и добавляй все бейджи оттуда в массив `badges`.
+### Dynamic badge sources
+| Source | Data | Requires |
+|---|---|---|
+| `github_stars` | stargazers_count | repo |
+| `github_forks` | forks_count | repo |
+| `github_license` | spdx_id | repo |
+| `github_lang` | primary language | repo |
+| `github_updated` | last push date | repo |
+| `pypi_version` | latest version | `pypi` field |
+| `pypi_python` | requires_python | `pypi` field |
+| `pypi_license` | license | `pypi` field |
+| `pypistats_month` | downloads/month | `pypi` field |
+| `pypistats_total` | total downloads | `pypi` field |
+
+Then push to `main` — site updates automatically.
