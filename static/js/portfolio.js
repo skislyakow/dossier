@@ -33,7 +33,11 @@ const PORTFOLIO = [
       "Публикация в каналы с CPA-ссылками",
     ],
     links: {},
-    badges: [],
+    badges: [
+      { label: "stars", source: "github_stars" },
+      { label: "license", source: "github_license" },
+      { label: "language", source: "github_lang" },
+    ],
   },
   {
     repo: "skislyakow/dossier",
@@ -50,6 +54,9 @@ const PORTFOLIO = [
       www: "http://132.243.121.192/",
     },
     badges: [
+      { label: "stars", source: "github_stars" },
+      { label: "license", source: "github_license" },
+      { label: "updated", source: "github_updated" },
       { label: "Python" },
       { label: "Django" },
       { label: "HTML5" },
