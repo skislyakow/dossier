@@ -45,9 +45,11 @@
 
     document.addEventListener('DOMContentLoaded', function () {
         var terminal = document.querySelector('.terminal');
+        var skillsCloud = document.querySelector('.skills-cloud');
 
         setTimeout(function () {
             terminal.classList.add('show');
+            skillsCloud.classList.add('show');
             setTimeout(typeTerminal, 400);
         }, 3500);
     });
