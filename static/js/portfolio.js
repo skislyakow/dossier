@@ -40,6 +40,26 @@ const PORTFOLIO = [
     ],
   },
   {
+    repo: "skislyakow/devman-bot",
+    title: "Devman Bot",
+    tagline: "Telegram-бот для уведомлений о проверке работ на Devman",
+    features: [
+      "Long Polling API для мгновенных уведомлений",
+      "Автоматическая отправка результатов в Telegram",
+      "Поддержка .env для токенов",
+    ],
+    links: {},
+    badges: [
+      { label: "stars", source: "github_stars" },
+      { label: "license", source: "github_license" },
+      { label: "updated", source: "github_updated" },
+      { label: "Python" },
+      { label: "python-telegram-bot" },
+      { label: "requests" },
+      { label: "Long Polling" },
+    ],
+  },
+  {
     repo: "skislyakow/dossier",
     title: "Dossier",
     tagline: "Персональный сайт-визитка с production-стеком и CI/CD",
