@@ -378,20 +378,30 @@ h1 {
 
 .tag {
     font-family: 'Share Tech Mono', monospace;
-    color: #52525b;
-    padding: 0.3rem 0.7rem;
-    background: #e4e4e7;
-    border-radius: 6px;
+    color: #18181b;
     transition: all 0.3s ease;
     display: inline-block;
     line-height: 1.3;
     cursor: default;
 }
 
+.tag::before {
+    content: "{ ";
+    color: #a1a1aa;
+}
+
+.tag::after {
+    content: " }";
+    color: #a1a1aa;
+}
+
 .tag:hover {
     color: #6366f1;
-    background: #e0e0ff;
-    transform: translateY(-1px);
+}
+
+.tag:hover::before,
+.tag:hover::after {
+    color: #6366f1;
 }
 
 .tag-xl {
