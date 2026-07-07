@@ -29,7 +29,7 @@ def _get_ai():
         if _ai is not None:
             return _ai
         from opencode import Opencode
-        _ai = Opencode(model='opencode/big-pickle', directory='/root/dossier/')
+        _ai = Opencode(model='opencode/big-pickle', directory='/root/dossier/', port=0)
         _ai.start()
         atexit.register(_shutdown_ai)
         return _ai
@@ -48,11 +48,13 @@ def _shutdown_ai():
 def _reset_ai():
     global _ai
     with _ai_lock:
+        old = _ai
+        _ai = None
+    if old is not None:
         try:
-            _ai.__exit__(None, None, None)
+            old.__exit__(None, None, None)
         except Exception:
             pass
-        _ai = None
 
 
 def home(request):
