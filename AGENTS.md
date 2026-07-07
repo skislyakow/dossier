@@ -37,6 +37,8 @@ Required GitHub secrets: `VPS_HOST`, `VPS_SSH_KEY`
 ## Project overview
 Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack Developer).
 - Typing animation for job title
+- Directions section: Telegram-боты, Django-сайты, API-интеграции, Python SDK, Парсинг данных, Автоматизация
+- Skills panel: Python, Django, DRF, PostgreSQL, SQLite, Docker, Nginx, Gunicorn, GitHub Actions, Ubuntu, Git, REST API, asyncio, requests, httpx, Pydantic, PyPI, HTML, CSS, JavaScript
 - GitHub stats toggle (stars, repos, languages via GitHub API)
 - Portfolio section with project cards (GitHub data + badges)
 - Dynamic badges from GitHub API, PyPI, PyPistats
