@@ -47,17 +47,9 @@ def ask_stream(request):
     def event_stream():
         try:
             from opencode import Opencode
-            with Opencode(
-                model='opencode/big-pickle',
-                config={
-                    'system-prompt': SYSTEM_PROMPT,
-                    'conversation-mode': 'plan',
-                    'allowed-read-paths': ['/root/dossier/'],
-                    'allowed-commands': [],
-                },
-            ) as ai:
+            with Opencode(model='opencode/big-pickle', directory='/root/dossier/') as ai:
                 first = True
-                for chunk in ai.ask_stream(question):
+                for chunk in ai.ask_stream(f"{SYSTEM_PROMPT}\n\n{question}"):
                     if first:
                         yield f"data: {json.dumps({'status': 'thinking'})}\n\n"
                         first = False
