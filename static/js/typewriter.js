@@ -14,7 +14,7 @@
 
     function buildLine(line) {
         if (line.prompt) {
-            return '<span class="prompt">$ </span><span class="terminal-cursor blink">█</span><span class="arg">' + line.text + '</span>';
+            return '<span class="prompt">$ </span><span class="arg">' + line.text + '</span>';
         }
         return '<span class="prompt">&gt; </span><span class="num">[' + line.item + ']</span> <span class="item">' + line.text + '</span>';
     }
@@ -145,11 +145,16 @@
                 contentEl.parentElement.scrollTop = contentEl.parentElement.scrollHeight;
             }
 
+            if (data.error) {
+                answerPrefix.style.display = '';
+                answerBlock.classList.add('terminal-error');
+                answerBlock.textContent = data.error;
+            }
+
             if (data.done || data.error) {
                 evtSource.close();
                 clearInterval(thinkingInterval);
                 thinkingLine.remove();
-                answerPrefix.style.display = '';
                 showPrompt(contentEl, false);
             }
         };

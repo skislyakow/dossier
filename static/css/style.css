@@ -387,6 +387,10 @@ h1 {
     word-wrap: break-word;
 }
 
+.terminal-answer.terminal-error {
+    color: #ef4444;
+}
+
 .terminal-answer-prefix {
     margin-top: 0.5rem;
 }

@@ -1,8 +1,5 @@
 import json
 import logging
-import time
-import threading
-import atexit
 from django.shortcuts import render
 from django.http import StreamingHttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -52,10 +49,12 @@ def ask_stream(request):
             from opencode import Opencode
             with Opencode(
                 model='opencode/big-pickle',
-                system_prompt=SYSTEM_PROMPT,
-                allowed_read_paths=['/root/dossier/'],
-                allowed_commands=[],
-                conversation_mode='plan',
+                config={
+                    'system_prompt': SYSTEM_PROMPT,
+                    'conversation_mode': 'plan',
+                    'allowed_read_paths': ['/root/dossier/'],
+                    'allowed_commands': [],
+                },
             ) as ai:
                 first = True
                 for chunk in ai.ask_stream(question):
