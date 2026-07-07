@@ -56,7 +56,7 @@
         if (showHint) {
             var hint = document.createElement('div');
             hint.className = 'terminal-hint';
-            hint.textContent = '# Ask me anything about my experience, projects, or skills';
+            hint.textContent = '# Спроси меня о моём опыте, проектах или навыках';
             contentEl.appendChild(hint);
         }
 

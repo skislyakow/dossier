@@ -50,10 +50,10 @@ def ask_stream(request):
             with Opencode(
                 model='opencode/big-pickle',
                 config={
-                    'system_prompt': SYSTEM_PROMPT,
-                    'conversation_mode': 'plan',
-                    'allowed_read_paths': ['/root/dossier/'],
-                    'allowed_commands': [],
+                    'system-prompt': SYSTEM_PROMPT,
+                    'conversation-mode': 'plan',
+                    'allowed-read-paths': ['/root/dossier/'],
+                    'allowed-commands': [],
                 },
             ) as ai:
                 first = True
