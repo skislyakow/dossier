@@ -271,70 +271,45 @@ h1 {
     font-size: 0.875rem;
 }
 
-.directions-track {
-    position: fixed;
-    left: 5px;
-    top: 0;
-    bottom: 0;
-    width: 36px;
-    overflow: hidden;
-    pointer-events: none;
-    z-index: 100;
-}
-
-.directions {
-    position: absolute;
-    top: 0;
-    left: 0;
+.terminal {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-width: 520px;
+    width: 100%;
+    margin: 0 auto 1.5rem;
     font-family: 'Share Tech Mono', monospace;
-    font-size: 1rem;
-    color: #a1a1aa;
-    line-height: 1;
-    writing-mode: vertical-lr;
-    text-orientation: sideways;
-}
-
-@keyframes marqueeUp {
-    0% {
-        transform: rotate(-90deg) translateX(0);
-    }
-    100% {
-        transform: rotate(-90deg) translateX(-50%);
-    }
-}
-
-.skills-track {
-    position: fixed;
-    right: 5px;
-    top: 0;
-    bottom: 0;
-    width: 36px;
+    font-size: 0.85rem;
+    text-align: left;
+    line-height: 1.7;
     overflow: hidden;
-    pointer-events: none;
-    z-index: 100;
 }
 
-.skills-marquee {
-    position: absolute;
-    left: 50%;
-    bottom: 0;
-    font-family: 'Share Tech Mono', monospace;
-    font-size: 1rem;
-    color: #a1a1aa;
-    line-height: 1;
-    writing-mode: vertical-rl;
-    direction: rtl;
-    text-orientation: sideways;
-    transform: translateX(-50%);
+.terminal-body {
+    color: #c9d1d9;
+    min-height: 1.7em;
 }
 
-@keyframes marqueeUpRight {
-    0% {
-        transform: translateX(-50%) translateY(0);
-    }
-    100% {
-        transform: translateX(-50%) translateY(-50%);
-    }
+.terminal-body .prompt {
+    color: #6366f1;
+}
+
+.terminal-body .arg {
+    color: #c9d1d9;
+}
+
+.terminal-body .item {
+    color: #c9d1d9;
+}
+
+.terminal-body .num {
+    color: #6366f1;
+}
+
+.terminal-cursor {
+    color: #6366f1;
+    animation: blink 0.7s steps(1) infinite;
 }
 
 .skills {
