@@ -45,6 +45,16 @@ def _shutdown_ai():
         _ai = None
 
 
+def _reset_ai():
+    global _ai
+    with _ai_lock:
+        try:
+            _ai.__exit__(None, None, None)
+        except Exception:
+            pass
+        _ai = None
+
+
 def home(request):
     return render(request, 'index.html')
 
@@ -59,6 +69,11 @@ def ask_stream(request):
     def event_stream():
         try:
             ai = _get_ai()
+            try:
+                ai.health()
+            except Exception:
+                _reset_ai()
+                ai = _get_ai()
             first = True
             for chunk in ai.ask_stream(f"{SYSTEM_PROMPT}\n\n{question}"):
                 if first:
@@ -67,6 +82,7 @@ def ask_stream(request):
                 yield f"data: {json.dumps({'chunk': chunk})}\n\n"
             yield f"data: {json.dumps({'done': True})}\n\n"
         except Exception as e:
+            _reset_ai()
             logger.exception('ask_stream error')
             yield f"data: {json.dumps({'error': str(e)})}\n\n"
 

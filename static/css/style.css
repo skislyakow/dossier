@@ -464,21 +464,23 @@ h1 {
 }
 
 .tag-xl {
-    font-size: 1.1rem;
-    padding: 0.4rem 0.9rem;
+    font-size: 1.3rem;
+    padding: 0.5rem 1rem;
 }
 
 .tag-lg {
-    font-size: 0.95rem;
-    padding: 0.35rem 0.8rem;
+    font-size: 1.15rem;
+    padding: 0.45rem 0.9rem;
 }
 
 .tag-md {
-    font-size: 0.85rem;
+    font-size: 1rem;
+    padding: 0.4rem 0.75rem;
 }
 
 .tag-sm {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
+    padding: 0.35rem 0.65rem;
 }
 
 @media (max-width: 640px) {
