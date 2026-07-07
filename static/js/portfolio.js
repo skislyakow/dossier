@@ -256,6 +256,7 @@ portfolioBtn.addEventListener('click', async (e) => {
     });
 
     portfolioSection.innerHTML = html;
+    setTimeout(() => portfolioSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
   } catch (err) {
     console.error('Portfolio error:', err);
     portfolioSection.innerHTML = '<p class="error">Failed to load portfolio</p>';
