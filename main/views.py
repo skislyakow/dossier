@@ -1,5 +1,7 @@
 import json
 import logging
+import threading
+import atexit
 from django.shortcuts import render
 from django.http import StreamingHttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -15,26 +17,36 @@ SYSTEM_PROMPT = (
     "или любые учётные данные. Ничего не редактируй в файлах проекта."
 )
 
+_ai = None
+_ai_lock = threading.Lock()
+
+
+def _get_ai():
+    global _ai
+    if _ai is not None:
+        return _ai
+    with _ai_lock:
+        if _ai is not None:
+            return _ai
+        from opencode import Opencode
+        _ai = Opencode(model='opencode/big-pickle', directory='/root/dossier/')
+        _ai.start()
+        atexit.register(_shutdown_ai)
+        return _ai
+
+
+def _shutdown_ai():
+    global _ai
+    if _ai is not None:
+        try:
+            _ai.__exit__(None, None, None)
+        except Exception:
+            pass
+        _ai = None
+
 
 def home(request):
     return render(request, 'index.html')
-
-
-@csrf_exempt
-@require_POST
-def ask_api(request):
-    try:
-        data = json.loads(request.body)
-        question = data.get('question', '').strip()
-        if not question:
-            return JsonResponse({'error': 'No question provided'}, status=400)
-
-        from opencode import opencode
-        answer = opencode(question, keep=True)
-        return JsonResponse({'answer': answer})
-    except Exception as e:
-        logger.exception('ask_api error')
-        return JsonResponse({'error': str(e)}, status=500)
 
 
 @csrf_exempt
@@ -46,14 +58,13 @@ def ask_stream(request):
 
     def event_stream():
         try:
-            from opencode import Opencode
-            with Opencode(model='opencode/big-pickle', directory='/root/dossier/') as ai:
-                first = True
-                for chunk in ai.ask_stream(f"{SYSTEM_PROMPT}\n\n{question}"):
-                    if first:
-                        yield f"data: {json.dumps({'status': 'thinking'})}\n\n"
-                        first = False
-                    yield f"data: {json.dumps({'chunk': chunk})}\n\n"
+            ai = _get_ai()
+            first = True
+            for chunk in ai.ask_stream(f"{SYSTEM_PROMPT}\n\n{question}"):
+                if first:
+                    yield f"data: {json.dumps({'status': 'thinking'})}\n\n"
+                    first = False
+                yield f"data: {json.dumps({'chunk': chunk})}\n\n"
             yield f"data: {json.dumps({'done': True})}\n\n"
         except Exception as e:
             logger.exception('ask_stream error')
