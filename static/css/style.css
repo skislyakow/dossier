@@ -284,24 +284,23 @@ h1 {
 
 .directions {
     position: absolute;
+    top: 0;
     left: 0;
-    bottom: 0;
     white-space: nowrap;
     font-family: 'Share Tech Mono', monospace;
     font-size: 0.85rem;
     color: #a1a1aa;
     line-height: 1;
+    transform-origin: 0 0;
     animation: marqueeUp 28s linear infinite;
-    transform-origin: left bottom;
-    transform: rotate(-90deg);
 }
 
 @keyframes marqueeUp {
     0% {
-        transform: rotate(-90deg) translateY(0);
+        transform: rotate(-90deg) translateX(0);
     }
     100% {
-        transform: rotate(-90deg) translateY(-100%);
+        transform: rotate(-90deg) translateX(-50%);
     }
 }
 
