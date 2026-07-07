@@ -286,13 +286,12 @@ h1 {
     position: absolute;
     top: 0;
     left: 0;
-    white-space: nowrap;
     font-family: 'Share Tech Mono', monospace;
     font-size: 1rem;
     color: #a1a1aa;
     line-height: 1;
-    transform-origin: 0 0;
-    animation: marqueeUp 28s linear infinite;
+    writing-mode: vertical-lr;
+    text-orientation: sideways;
 }
 
 @keyframes marqueeUp {
@@ -319,15 +318,14 @@ h1 {
     position: absolute;
     left: 50%;
     bottom: 0;
-    white-space: nowrap;
     font-family: 'Share Tech Mono', monospace;
     font-size: 1rem;
     color: #a1a1aa;
     line-height: 1;
-    writing-mode: vertical-lr;
+    writing-mode: vertical-rl;
+    direction: rtl;
     text-orientation: sideways;
     transform: translateX(-50%);
-    animation: marqueeUpRight 28s linear infinite;
 }
 
 @keyframes marqueeUpRight {
