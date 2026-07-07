@@ -1,7 +1,6 @@
 (function () {
     var TYPE_SPEED = 60;
     var LINE_PAUSE = 300;
-    var LOOP_PAUSE = 3000;
 
     var lines = [
         { prompt: true, text: './services.sh' },
@@ -21,38 +20,22 @@
         return '<span class="prompt">&gt; </span><span class="num">[' + line.item + ']</span> <span class="item">' + line.text + '</span>';
     }
 
-    function typeTerminal(el, onComplete) {
+    function typeTerminal() {
         var contentEl = document.getElementById('terminal-content');
         var lineIdx = 0;
-        var charIdx = 0;
-        var currentHTML = '';
 
         function typeLine() {
-            if (lineIdx >= lines.length) {
-                setTimeout(onComplete, LOOP_PAUSE);
-                return;
+            if (lineIdx >= lines.length) return;
+
+            var fullHTML = '';
+            for (var i = 0; i <= lineIdx; i++) {
+                if (i > 0) fullHTML += '<br>';
+                fullHTML += buildLine(lines[i]);
             }
+            contentEl.innerHTML = fullHTML;
+            lineIdx++;
 
-            var line = lines[lineIdx];
-            var fullHTML = buildLine(line);
-            var plainText = line.prompt ? '$ ' + line.text : '> [' + line.item + '] ' + line.text;
-
-            if (charIdx === 0) {
-                currentHTML += (lineIdx > 0 ? '<br>' : '') + fullHTML.substring(0, 0);
-            }
-
-            charIdx++;
-            if (charIdx <= plainText.length) {
-                currentHTML = '';
-                for (var i = 0; i <= lineIdx; i++) {
-                    if (i > 0) currentHTML += '<br>';
-                    currentHTML += buildLine(lines[i]);
-                }
-                contentEl.innerHTML = currentHTML;
-                setTimeout(typeLine, TYPE_SPEED);
-            } else {
-                lineIdx++;
-                charIdx = 0;
+            if (lineIdx < lines.length) {
                 setTimeout(typeLine, LINE_PAUSE);
             }
         }
@@ -60,15 +43,12 @@
         typeLine();
     }
 
-    function loop() {
-        var el = document.getElementById('terminal-content');
-        el.innerHTML = '';
-        typeTerminal(el, function () {
-            loop();
-        });
-    }
-
     document.addEventListener('DOMContentLoaded', function () {
-        setTimeout(loop, 800);
+        var terminal = document.querySelector('.terminal');
+
+        setTimeout(function () {
+            terminal.classList.add('show');
+            setTimeout(typeTerminal, 400);
+        }, 3500);
     });
 })();

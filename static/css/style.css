@@ -272,8 +272,8 @@ h1 {
 }
 
 .terminal {
-    background: #0d1117;
-    border: 1px solid #30363d;
+    background: #ffffff;
+    border: 1px solid #e4e4e7;
     border-radius: 12px;
     padding: 1.5rem;
     max-width: 520px;
@@ -284,10 +284,19 @@ h1 {
     text-align: left;
     line-height: 1.7;
     overflow: hidden;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.5s ease;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.terminal.show {
+    opacity: 1;
+    transform: translateY(0);
 }
 
 .terminal-body {
-    color: #c9d1d9;
+    color: #52525b;
     min-height: 1.7em;
 }
 
@@ -296,11 +305,11 @@ h1 {
 }
 
 .terminal-body .arg {
-    color: #c9d1d9;
+    color: #52525b;
 }
 
 .terminal-body .item {
-    color: #c9d1d9;
+    color: #52525b;
 }
 
 .terminal-body .num {
