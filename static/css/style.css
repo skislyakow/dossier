@@ -275,10 +275,14 @@ h1 {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    padding: 0.75rem 1rem;
-    gap: 0.35rem;
-    max-width: 560px;
-    margin: 0 auto 0.5rem;
+    padding: 0 1rem 0.5rem;
+    gap: 0.25rem 0;
+    max-width: 500px;
+    margin: 0 auto;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.85rem;
+    color: #a1a1aa;
+    line-height: 1.8;
 }
 
 .directions span {
@@ -287,27 +291,18 @@ h1 {
 }
 
 .directions span:not(.dot) {
-    font-family: 'Inter', Arial, sans-serif;
-    font-size: 0.8rem;
-    font-weight: 700;
-    padding: 0.35rem 0.75rem;
-    background: #e4e4e7;
-    color: #6366f1;
-    border-radius: 6px;
-    transition: all 0.3s ease;
+    color: #a1a1aa;
+    transition: color 0.3s ease;
 }
 
 .directions span:not(.dot):hover {
-    background: #6366f1;
-    color: #fff;
-    transform: translateY(-1px);
+    color: #6366f1;
+    text-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
 }
 
 .directions .dot {
     color: #d4d4d8;
-    font-size: 0.8rem;
-    display: flex;
-    align-items: center;
+    margin: 0 0.35rem;
 }
 
 .directions span:nth-child(1) { animation-delay: 0.1s; }
