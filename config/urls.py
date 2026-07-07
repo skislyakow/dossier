@@ -16,9 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from main.views import home
+from main.views import home, ask_stream
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/ask/', ask_stream, name='ask_stream'),
     path('', home, name='home'),
 ]

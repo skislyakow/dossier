@@ -344,6 +344,52 @@ h1 {
     animation: blink 0.7s steps(1) infinite;
 }
 
+.terminal-hint {
+    color: #a1a1aa;
+    font-style: italic;
+    margin-bottom: 0.3rem;
+}
+
+.terminal-input-line {
+    display: flex;
+    align-items: center;
+}
+
+.terminal-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    font-size: inherit;
+    color: #18181b;
+    caret-color: #6366f1;
+    padding: 0;
+}
+
+.terminal-input::placeholder {
+    color: #d4d4d8;
+}
+
+.terminal-input.done {
+    color: #52525b;
+}
+
+.terminal-thinking {
+    color: #a1a1aa;
+}
+
+.terminal-error {
+    color: #ef4444;
+    margin-top: 0.5rem;
+}
+
+.terminal-answer {
+    color: #52525b;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
 .content-row {
     display: flex;
     gap: 1.5rem;
