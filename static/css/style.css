@@ -339,10 +339,7 @@ h1 {
     color: #6366f1;
 }
 
-.terminal-cursor {
-    color: #6366f1;
-    animation: blink 0.7s steps(1) infinite;
-}
+/* cursor styles defined above */
 
 .terminal-hint {
     color: #a1a1aa;
@@ -385,9 +382,21 @@ h1 {
 }
 
 .terminal-answer {
-    color: #52525b;
+    color: #6366f1;
     white-space: pre-wrap;
     word-wrap: break-word;
+}
+
+.terminal-answer-prefix {
+    margin-top: 0.5rem;
+}
+
+.terminal-cursor {
+    color: #6366f1;
+}
+
+.terminal-cursor.blink {
+    animation: blink 0.7s steps(1) infinite;
 }
 
 .content-row {

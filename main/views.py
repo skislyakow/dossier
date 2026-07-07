@@ -10,32 +10,13 @@ from django.views.decorators.http import require_GET, require_POST
 
 logger = logging.getLogger(__name__)
 
-_server = None
-_server_lock = threading.Lock()
-
-
-def _get_server():
-    global _server
-    if _server is not None:
-        return _server
-    with _server_lock:
-        if _server is not None:
-            return _server
-        from opencode import Opendcode
-        _server = Opendcode.__new__(Opendcode)
-        _server._started = True
-        atexit.register(_shutdown_server)
-        return _server
-
-
-def _shutdown_server():
-    global _server
-    if _server is not None:
-        try:
-            _server.__exit__(None, None, None)
-        except Exception:
-            pass
-        _server = None
+SYSTEM_PROMPT = (
+    "Ты — AI-ассистент портфолио Сергея Кислякова (Python Fullstack Developer). "
+    "Твоя задача — помогать потенциальным работодателям и клиентам узнать "
+    "о навыках, опыте и проектах Сергея. Отвечай профессионально и информативно. "
+    "НИКОГДА не раскрывай SECRET_KEY, пароли, токены, переменные окружения "
+    "или любые учётные данные. Ничего не редактируй в файлах проекта."
+)
 
 
 def home(request):
@@ -69,7 +50,13 @@ def ask_stream(request):
     def event_stream():
         try:
             from opencode import Opencode
-            with Opencode(model='opencode/big-pickle') as ai:
+            with Opencode(
+                model='opencode/big-pickle',
+                system_prompt=SYSTEM_PROMPT,
+                allowed_read_paths=['/root/dossier/'],
+                allowed_commands=[],
+                conversation_mode='plan',
+            ) as ai:
                 first = True
                 for chunk in ai.ask_stream(question):
                     if first:

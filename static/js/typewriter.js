@@ -1,7 +1,6 @@
 (function () {
     var TYPE_SPEED = 60;
     var LINE_PAUSE = 300;
-    var CHAR_SPEED = 25;
 
     var introLines = [
         { prompt: true, text: './services.sh' },
@@ -11,22 +10,19 @@
         { item: 4, text: 'Python SDK' },
         { item: 5, text: 'Парсинг данных' },
         { item: 6, text: 'Автоматизация' },
-        { prompt: true, text: '' }
     ];
 
     function buildLine(line) {
         if (line.prompt) {
-            return '<span class="prompt">$ </span><span class="arg">' + line.text + '</span>';
+            return '<span class="prompt">$ </span><span class="terminal-cursor blink">█</span><span class="arg">' + line.text + '</span>';
         }
         return '<span class="prompt">&gt; </span><span class="num">[' + line.item + ']</span> <span class="item">' + line.text + '</span>';
     }
 
-    function appendHTML(el, html) {
-        var tmp = document.createElement('div');
-        tmp.innerHTML = html;
-        while (tmp.firstChild) {
-            el.appendChild(tmp.firstChild);
-        }
+    function escapeHTML(str) {
+        var div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
     }
 
     function typeIntro(contentEl, onComplete) {
@@ -56,11 +52,13 @@
         typeLine();
     }
 
-    function showPrompt(contentEl) {
-        var hint = document.createElement('div');
-        hint.className = 'terminal-hint';
-        hint.textContent = '# Ask me anything about my experience, projects, or skills';
-        contentEl.appendChild(hint);
+    function showPrompt(contentEl, showHint) {
+        if (showHint) {
+            var hint = document.createElement('div');
+            hint.className = 'terminal-hint';
+            hint.textContent = '# Ask me anything about my experience, projects, or skills';
+            contentEl.appendChild(hint);
+        }
 
         var promptLine = document.createElement('div');
         promptLine.className = 'terminal-input-line';
@@ -68,6 +66,10 @@
         var prompt = document.createElement('span');
         prompt.className = 'prompt';
         prompt.textContent = '$ ';
+
+        var cursor = document.createElement('span');
+        cursor.className = 'terminal-cursor blink';
+        cursor.textContent = '█';
 
         var input = document.createElement('input');
         input.className = 'terminal-input';
@@ -77,6 +79,7 @@
         input.autocomplete = 'off';
 
         promptLine.appendChild(prompt);
+        promptLine.appendChild(cursor);
         promptLine.appendChild(input);
         contentEl.appendChild(promptLine);
 
@@ -86,6 +89,7 @@
                 var question = input.value.trim();
                 input.disabled = true;
                 input.classList.add('done');
+                cursor.remove();
                 handleQuestion(contentEl, question);
             }
         });
@@ -96,12 +100,6 @@
     }
 
     function handleQuestion(contentEl, question) {
-        var hint = contentEl.querySelector('.terminal-hint');
-        if (hint) hint.remove();
-
-        var inputLine = contentEl.querySelector('.terminal-input-line');
-        if (inputLine) inputLine.remove();
-
         var qLine = document.createElement('div');
         qLine.innerHTML = '<span class="prompt">$ </span><span class="arg">' + escapeHTML(question) + '</span>';
         contentEl.appendChild(qLine);
@@ -110,6 +108,12 @@
         thinkingLine.className = 'terminal-thinking';
         thinkingLine.innerHTML = '<span class="prompt">... </span><span class="thinking-text">thinking</span>';
         contentEl.appendChild(thinkingLine);
+
+        var answerPrefix = document.createElement('div');
+        answerPrefix.className = 'terminal-answer-prefix';
+        answerPrefix.innerHTML = '<span class="prompt">&gt; </span>';
+        answerPrefix.style.display = 'none';
+        contentEl.appendChild(answerPrefix);
 
         var answerBlock = document.createElement('div');
         answerBlock.className = 'terminal-answer';
@@ -130,6 +134,7 @@
             if (data.status === 'thinking') {
                 clearInterval(thinkingInterval);
                 thinkingLine.remove();
+                answerPrefix.style.display = '';
                 return;
             }
 
@@ -144,7 +149,8 @@
                 evtSource.close();
                 clearInterval(thinkingInterval);
                 thinkingLine.remove();
-                showPrompt(contentEl);
+                answerPrefix.style.display = '';
+                showPrompt(contentEl, false);
             }
         };
 
@@ -152,18 +158,13 @@
             evtSource.close();
             clearInterval(thinkingInterval);
             thinkingLine.remove();
+            answerPrefix.style.display = '';
             var errDiv = document.createElement('div');
             errDiv.className = 'terminal-error';
             errDiv.textContent = 'Connection error. Try again.';
             contentEl.appendChild(errDiv);
-            showPrompt(contentEl);
+            showPrompt(contentEl, false);
         };
-    }
-
-    function escapeHTML(str) {
-        var div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
     }
 
     document.addEventListener('DOMContentLoaded', function () {
@@ -176,7 +177,7 @@
             skillsCloud.classList.add('show');
             setTimeout(function () {
                 typeIntro(contentEl, function () {
-                    showPrompt(contentEl);
+                    showPrompt(contentEl, true);
                 });
             }, 400);
         }, 3500);
