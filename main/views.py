@@ -67,24 +67,28 @@ def ask_stream(request):
         return JsonResponse({'error': 'No question'}, status=400)
 
     def event_stream():
-        try:
-            ai = _get_ai()
+        for attempt in range(2):
             try:
-                ai.health()
-            except Exception:
-                _reset_ai()
                 ai = _get_ai()
-            first = True
-            for chunk in ai.ask_stream(f"{SYSTEM_PROMPT}\n\n{question}"):
-                if first:
-                    yield f"data: {json.dumps({'status': 'thinking'})}\n\n"
-                    first = False
-                yield f"data: {json.dumps({'chunk': chunk})}\n\n"
-            yield f"data: {json.dumps({'done': True})}\n\n"
-        except Exception as e:
-            _reset_ai()
-            logger.exception('ask_stream error')
-            yield f"data: {json.dumps({'error': str(e)})}\n\n"
+                try:
+                    ai.health()
+                except Exception:
+                    _reset_ai()
+                    ai = _get_ai()
+                first = True
+                for chunk in ai.ask_stream(f"{SYSTEM_PROMPT}\n\n{question}"):
+                    if first:
+                        yield f"data: {json.dumps({'status': 'thinking'})}\n\n"
+                        first = False
+                    yield f"data: {json.dumps({'chunk': chunk})}\n\n"
+                yield f"data: {json.dumps({'done': True})}\n\n"
+                return
+            except Exception as e:
+                _reset_ai()
+                if attempt == 0:
+                    continue
+                logger.exception('ask_stream error')
+                yield f"data: {json.dumps({'error': str(e)})}\n\n"
 
     response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
     response['Cache-Control'] = 'no-cache'
