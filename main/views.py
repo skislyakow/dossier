@@ -1,11 +1,9 @@
 import json
 import logging
-import threading
-import atexit
 from django.shortcuts import render
 from django.http import StreamingHttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.http import require_GET
 
 logger = logging.getLogger(__name__)
 
@@ -16,45 +14,6 @@ SYSTEM_PROMPT = (
     "НИКОГДА не раскрывай SECRET_KEY, пароли, токены, переменные окружения "
     "или любые учётные данные. Ничего не редактируй в файлах проекта."
 )
-
-_ai = None
-_ai_lock = threading.Lock()
-
-
-def _get_ai():
-    global _ai
-    if _ai is not None:
-        return _ai
-    with _ai_lock:
-        if _ai is not None:
-            return _ai
-        from opencode import Opencode
-        _ai = Opencode(model='opencode/big-pickle', directory='/root/dossier/', port=0)
-        _ai.start()
-        atexit.register(_shutdown_ai)
-        return _ai
-
-
-def _shutdown_ai():
-    global _ai
-    if _ai is not None:
-        try:
-            _ai.__exit__(None, None, None)
-        except Exception:
-            pass
-        _ai = None
-
-
-def _reset_ai():
-    global _ai
-    with _ai_lock:
-        old = _ai
-        _ai = None
-    if old is not None:
-        try:
-            old.__exit__(None, None, None)
-        except Exception:
-            pass
 
 
 def home(request):
@@ -69,28 +28,19 @@ def ask_stream(request):
         return JsonResponse({'error': 'No question'}, status=400)
 
     def event_stream():
-        for attempt in range(2):
-            try:
-                ai = _get_ai()
-                try:
-                    ai.health()
-                except Exception:
-                    _reset_ai()
-                    ai = _get_ai()
+        try:
+            from opencode import Opencode
+            with Opencode(model='opencode/big-pickle', port=0, directory='/root/dossier/') as ai:
                 first = True
                 for chunk in ai.ask_stream(f"{SYSTEM_PROMPT}\n\n{question}"):
                     if first:
                         yield f"data: {json.dumps({'status': 'thinking'})}\n\n"
                         first = False
                     yield f"data: {json.dumps({'chunk': chunk})}\n\n"
-                yield f"data: {json.dumps({'done': True})}\n\n"
-                return
-            except Exception as e:
-                _reset_ai()
-                if attempt == 0:
-                    continue
-                logger.exception('ask_stream error')
-                yield f"data: {json.dumps({'error': str(e)})}\n\n"
+            yield f"data: {json.dumps({'done': True})}\n\n"
+        except Exception as e:
+            logger.exception('ask_stream error')
+            yield f"data: {json.dumps({'error': str(e)})}\n\n"
 
     response = StreamingHttpResponse(event_stream(), content_type='text/event-stream')
     response['Cache-Control'] = 'no-cache'
