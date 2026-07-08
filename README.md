@@ -14,12 +14,13 @@
 ![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white&labelColor=F05032)
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white&labelColor=2088FF)
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=flat-square&logo=ubuntu&logoColor=white&labelColor=E95420)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white&labelColor=4169E1)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat-square&logo=docker&logoColor=white&labelColor=2496ED)
+![opencode](https://img.shields.io/badge/opencode--py-0.5.1-6366f1?style=flat-square&labelColor=6366f1&color=6366f1)
 
 ## Возможности
 
+- **Интерактивный терминал** — macOS-style окно с AI-ассистентом через opencode-py (SSE-стриминг, посимвольный вывод)
 - Typing-анимация должности на чистом JS (без библиотек)
+- Skills cloud — облако тегов с технологиями
 - Интеграция с GitHub API: статистика репозиториев, языки, звёзды
 - Секция портфолио с карточками проектов, бейджами и распределением языков
 - Production-stек: Django + Gunicorn + Nginx на Ubuntu VPS
