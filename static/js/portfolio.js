@@ -64,9 +64,10 @@ const PORTFOLIO = [
     title: "Dossier",
     tagline: "Персональный сайт-визитка с production-стеком и CI/CD",
     features: [
-      "Typing-анимация на чистом JavaScript",
-      "Интеграция с GitHub API (статистика, языки, звёзды)",
-      "Секция портфолио с карточками проектов",
+      "Интерактивный терминал с AI-ассистентом (opencode-py, SSE-стриминг)",
+      "Typing-анимация должности на чистом JavaScript (без библиотек)",
+      "Skills cloud — облако тегов с технологиями",
+      "Секция портфолио с карточками проектов, бейджами и распределением языков",
       "Production: Django + Gunicorn + Nginx на Ubuntu VPS",
       "Автодеплой через GitHub Actions",
     ],
@@ -87,8 +88,7 @@ const PORTFOLIO = [
       { label: "Git" },
       { label: "GitHub Actions" },
       { label: "Ubuntu" },
-      { label: "PostgreSQL" },
-      { label: "Docker" },
+      { label: "opencode-py" },
     ],
   },
 ];
