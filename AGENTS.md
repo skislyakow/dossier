@@ -44,7 +44,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - GitHub stats toggle (stars, repos, languages via GitHub API)
 - Portfolio section with project cards (GitHub data + badges)
 - Dynamic badges from GitHub API, PyPI, PyPistats
-- Telegram link
+- Projects in portfolio: opencode-py, Ferma, Devman Bot, Dossier, Online Library
 
 ## Adding a project to portfolio
 Edit `static/js/portfolio.js` → append to `PORTFOLIO` array:
@@ -81,3 +81,27 @@ Edit `static/js/portfolio.js` → append to `PORTFOLIO` array:
 | `pypistats_total` | total downloads | `pypi` field |
 
 Then push to `main` — site updates automatically.
+
+## To-do
+
+### Critical
+- [ ] HTTPS — кастомный домен + TLS-сертификат (Let's Encrypt)
+- [ ] `SECRET_KEY` вынести в environment variable
+- [ ] Разделить `requirements.txt` и `requirements-prod.txt` — django-stubs/mypy не нужны в production
+
+### SEO / видимость
+- [ ] `<meta name="description">`, Open Graph, Twitter Card
+- [ ] `sitemap.xml`, `robots.txt`
+- [ ] `lang="ru"` вместо `lang="en"` (весь контент на русском)
+- [ ] Кастомный домен вместо裸 IP
+
+### UX / контент
+- [x] ~~Skills cloud: убрать PostgreSQL и Docker~~ → убраны PostgreSQL и DRF, добавлены Jinja2, Bootstrap, opencode-py
+- [ ] Контактная форма (или выделить Telegram-ссылку ярче)
+- [ ] Секция «Опыт работы» (timeline мест работы)
+- [ ] Оставить 2 шрифта вместо 3 (убрать Share Tech Mono)
+
+### Код / доступность
+- [ ] Тесты на основные view/home page
+- [ ] `aria-label` на иконках GitHub/Telegram/Portfolio
+- [ ] Начать использовать `requirements-dev.txt` в CI (mypy)
