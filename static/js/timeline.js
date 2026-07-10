@@ -56,14 +56,15 @@ function initTimeline() {
   }
 
   TIMELINE.forEach((item, i) => {
-    const pct = TIMELINE.length > 1 ? (i / (TIMELINE.length - 1)) * 80 : 0;
+    // projects from 20% to 100%, leaving 0% for job dot
+    var pct = TIMELINE.length > 1 ? ((i + 1) / TIMELINE.length) * 100 : 100;
 
-    const dot = document.createElement("div");
+    var dot = document.createElement("div");
     dot.className = "tl-dot";
     dot.style.left = pct + "%";
     dot.title = item.title;
 
-    const label = document.createElement("div");
+    var label = document.createElement("div");
     label.className = "tl-label";
     label.style.left = pct + "%";
     label.textContent = item.date;
@@ -76,14 +77,14 @@ function initTimeline() {
     dotsEl.appendChild(label);
   });
 
-  // job dot at 100% (current/ongoing)
+  // job start dot at 0% (logically before April)
   var jobDot = document.createElement("div");
   jobDot.className = "tl-dot tl-dot-job";
-  jobDot.style.left = "100%";
+  jobDot.style.left = "0%";
   jobDot.title = JOB.title;
   var jobLabel = document.createElement("div");
   jobLabel.className = "tl-label tl-label-job";
-  jobLabel.style.left = "100%";
+  jobLabel.style.left = "0%";
   jobLabel.textContent = JOB.dateRange.split(" — ")[0];
   jobDot.addEventListener("click", function () {
     select("job");
@@ -92,13 +93,23 @@ function initTimeline() {
   dotsEl.appendChild(jobDot);
   dotsEl.appendChild(jobLabel);
 
+  // SVG arrow from job dot up-right to job bar
+  var arrowSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  arrowSvg.setAttribute("class", "tl-job-arrow");
+  arrowSvg.setAttribute("viewBox", "0 0 100 60");
+  arrowSvg.setAttribute("preserveAspectRatio", "none");
+  arrowSvg.innerHTML =
+    '<defs><marker id="arrhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">' +
+    '<path d="M 0 1 L 9 5 L 0 9 z" fill="#e4b592"/></marker></defs>' +
+    '<path d="M 2 30 Q 5 20, 8 12" stroke="#e4b592" fill="none" stroke-width="1.5" marker-end="url(#arrhead)"/>';
+  trackEl.appendChild(arrowSvg);
+
   jobEl.addEventListener("click", function () {
     select("job");
     scrollToDetails();
   });
   jobEl.innerHTML = [
     '<span class="tl-job-title">' + JOB.title + '<span class="tl-job-role">' + JOB.role + "</span></span>",
-    '<span class="tl-job-dates">' + JOB.dateRange + "</span>",
   ].join("\n");
   select("project-" + (TIMELINE.length - 1));
 
@@ -131,10 +142,11 @@ function initTimeline() {
       ].join("\n");
     } else {
       const idx = parseInt(id.split("-")[1], 10);
-      dotsEl.querySelectorAll(".tl-dot").forEach((d, i) => {
+      dotsEl.querySelectorAll(".tl-dot:not(.tl-dot-job)").forEach((d, i) => {
         d.classList.toggle("active", i === idx);
       });
-      progressEl.style.width = ((idx / (TIMELINE.length - 1)) * 80) + "%";
+      if (jobDotEl) jobDotEl.classList.remove("active");
+      progressEl.style.width = ((idx + 1) / TIMELINE.length * 100) + "%";
 
       const item = TIMELINE[idx];
       detailsEl.innerHTML = [
