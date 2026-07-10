@@ -512,8 +512,8 @@ h1 {
     width: 32px;
     height: 32px;
     pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.4s cubic-bezier(0.61, 1, 0.88, 1);
+    opacity: 0.3;
+    transition: opacity 0.5s cubic-bezier(0.61, 1, 0.88, 1);
 }
 
 .fc-tl { top: -4px; left: -4px; }
@@ -528,15 +528,11 @@ h1 {
     stroke-linecap: round;
     stroke-dasharray: 56;
     stroke-dashoffset: 56;
-    transition: stroke-dashoffset 0.5s cubic-bezier(0.61, 1, 0.88, 1);
+    transition: stroke-dashoffset 0.1s linear;
 }
 
 .terminal:hover .fc {
     opacity: 1;
-}
-
-.terminal:hover .fc path {
-    stroke-dashoffset: 0;
 }
 
 .content-row {
@@ -898,6 +894,15 @@ h1 {
     padding: 0.25rem 0.55rem;
     background: #e4b592;
     color: #fff;
+}
+
+.badge-role {
+    padding: 0.25rem 0.55rem;
+    background: rgba(228, 181, 146, 0.12);
+    color: #e4b592;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
 }
 
 .portfolio-divider {

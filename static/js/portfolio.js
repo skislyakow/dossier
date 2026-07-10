@@ -3,6 +3,7 @@ const PORTFOLIO = [
     repo: "skislyakow/opencode-py",
     pypi: "opencode-py",
     title: "Opencode Python SDK",
+    role: "Python SDK Development",
     tagline: "Python SDK для open source AI coding агента",
     features: [
       "Published on PyPI — pip install opencode-py",
@@ -25,6 +26,7 @@ const PORTFOLIO = [
   {
     repo: "skislyakow/ferma",
     title: "Ferma",
+    role: "Fullstack Development",
     tagline: "Автоматизированная ферма Telegram-каналов",
     features: [
       "Парсинг постов с t.me/s/ доноров",
@@ -42,6 +44,7 @@ const PORTFOLIO = [
   {
     repo: "skislyakow/devman-bot",
     title: "Devman Bot",
+    role: "Bot Development",
     tagline: "Telegram-бот для уведомлений о проверке работ на Devman",
     features: [
       "Long Polling API для мгновенных уведомлений",
@@ -62,6 +65,7 @@ const PORTFOLIO = [
   {
     repo: "skislyakow/dossier",
     title: "Dossier",
+    role: "Fullstack Development",
     tagline: "Персональный сайт-визитка с production-стеком и CI/CD",
     features: [
       "Интерактивный терминал с AI-ассистентом (opencode-py, SSE-стриминг)",
@@ -94,6 +98,7 @@ const PORTFOLIO = [
   {
     repo: "skislyakow/online_library",
     title: "Онлайн библиотека",
+    role: "Web Development",
     tagline: "Статический сайт онлайн-библиотеки с пагинацией и чтением книг",
     features: [
       "92 книги с обложками, авторами и жанрами",
@@ -263,6 +268,7 @@ portfolioBtn.addEventListener('click', async (e) => {
             <span class="portfolio-stars"><svg height="14" width="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> ${project.repo.stargazers_count}</span>
           </div>
           <p class="portfolio-tagline">${project.tagline}</p>
+          ${project.role ? `<span class="badge badge-role">role: ${project.role}</span>` : ''}
           <div class="portfolio-tags">
             ${langEntries.map(([lang, bytes]) => {
               const pct = totalBytes ? Math.round((bytes / totalBytes) * 100) : 0;
