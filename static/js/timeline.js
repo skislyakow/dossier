@@ -120,6 +120,9 @@ function initTimeline() {
       ].join("\n");
     }
     detailsEl.classList.add("show");
+    setTimeout(function () {
+      detailsEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
   }
 }
 
