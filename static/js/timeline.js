@@ -74,7 +74,7 @@ function initTimeline() {
   ].join("\n");
   select("project-" + (TIMELINE.length - 1));
 
-  document.querySelector(".timeline").classList.add("show");
+  document.getElementById("hero-timeline").classList.add("show");
 
   function select(id) {
     if (id === active) return;
