@@ -45,8 +45,6 @@ const TIMELINE = [
 ];
 
 function initTimeline() {
-  const trackEl = document.querySelector(".timeline-track");
-  const jobEl = document.getElementById("timeline-job");
   const dotsEl = document.getElementById("timeline-dots");
   const detailsEl = document.getElementById("timeline-details");
   const progressEl = document.getElementById("timeline-progress");
@@ -114,25 +112,6 @@ function initTimeline() {
   dotsEl.appendChild(presentDot);
   dotsEl.appendChild(presentLabel);
 
-  // L-shaped arrow from job dot up-right to job bar
-  var arrowSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-  arrowSvg.setAttribute("class", "tl-job-arrow");
-  arrowSvg.setAttribute("viewBox", "0 0 100 60");
-  arrowSvg.setAttribute("preserveAspectRatio", "none");
-  arrowSvg.innerHTML =
-    '<defs><marker id="arrhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">' +
-    '<path d="M 0 1 L 9 5 L 0 9 z" fill="#e4b592"/></marker></defs>' +
-    '<path d="M 1 29 L 1 11 L 9 11" stroke="#e4b592" fill="none" stroke-width="1.5" stroke-linejoin="round" marker-end="url(#arrhead)"/>';
-  trackEl.appendChild(arrowSvg);
-
-  jobEl.addEventListener("click", function () {
-    select("job");
-    scrollToDetails();
-  });
-  jobEl.innerHTML = [
-    '<span class="tl-job-title">' + JOB.title + '<span class="tl-job-role">' + JOB.role + "</span></span>",
-    '<span class="tl-job-dates">' + JOB.dateRange + "</span>",
-  ].join("\n");
   select("present");
 
   document.getElementById("hero-timeline").classList.add("show");
@@ -150,7 +129,6 @@ function initTimeline() {
     if (jobDotEl) jobDotEl.classList.toggle("active", isJob);
     var presentDotEl = dotsEl.querySelector(".tl-dot-present");
     if (presentDotEl) presentDotEl.classList.toggle("active", isPresent);
-    jobEl.classList.toggle("active", isJob);
 
     if (isJob) {
       progressEl.style.width = "0%";
