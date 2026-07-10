@@ -101,6 +101,18 @@ Then push to `main` — site updates automatically.
 - [ ] Секция «Опыт работы» (timeline мест работы)
 - [ ] Оставить 2 шрифта вместо 3 (убрать Share Tech Mono)
 
+### Дизайн
+Идеи с [21hrs.space](https://www.21hrs.space/) — иммерсивный Apollo 11 сайт (SvelteKit, Three.js, GSAP).
+
+- [ ] **Тёплая цветовая палитра** — заменить чистый белый `#fff` на `#fff3ea` (тёплый офф-вайт), фон терминала на `#1a1a1a` или `#000`. Акцент `#e4b592` (gold) вместо `#6366f1` (indigo).
+- [ ] **Career timeline** — горизонтальный таймлайн опыта работы с прогресс-баром, адаптировать их концепцию 0→21hr под карьеру.
+- [ ] **Frame corners** — декоративные L-скобки по углам терминала/карточек портфолио. Анимация stroke на hover через SVG `stroke-dashoffset`.
+- [ ] **Film grain / blur** — `filter: blur(0.5px)` на текст терминала для мягкого киношного эффекта.
+- [ ] **`mix-blend-mode: screen`** — hover-подсветка кнопок и иконок через screen-blend вместо opacity.
+- [ ] **Easing** — заменить стандартные CSS transitions на `cubic-bezier(0.61, 1, 0.88, 1)` (ease-out-expo).
+
+**Рекомендация начать:** цветовая палитра → film grain → frame corners. Палитра — база, от неё пляшут все остальные визуальные решения. Timeline — отдельная фича, её можно делать параллельно.
+
 ### Код / доступность
 - [ ] Тесты на основные view/home page
 - [ ] `aria-label` на иконках GitHub/Telegram/Portfolio
