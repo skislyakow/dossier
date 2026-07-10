@@ -6,6 +6,11 @@ const JOB = {
   desc: "",
 };
 
+const PRESENT = {
+  title: "Настоящее время",
+  desc: "Продолжаю развиваться как Python-разработчик: pet-проекты, open-source, изучение новых технологий.",
+};
+
 const TIMELINE = [
   {
     date: "Апрель 2026",
@@ -45,7 +50,7 @@ function initTimeline() {
   const dotsEl = document.getElementById("timeline-dots");
   const detailsEl = document.getElementById("timeline-details");
   const progressEl = document.getElementById("timeline-progress");
-  let active = "project-4";
+  let active = "present";
 
   if (!dotsEl) return;
 
@@ -56,8 +61,8 @@ function initTimeline() {
   }
 
   TIMELINE.forEach((item, i) => {
-    // projects from 20% to 100%, leaving 0% for job dot
-    var pct = TIMELINE.length > 1 ? ((i + 1) / TIMELINE.length) * 100 : 100;
+    // projects distributed between job (0%) and present (100%)
+    var pct = TIMELINE.length > 1 ? ((i + 1) / (TIMELINE.length + 1)) * 100 : 50;
 
     var dot = document.createElement("div");
     dot.className = "tl-dot";
@@ -93,15 +98,31 @@ function initTimeline() {
   dotsEl.appendChild(jobDot);
   dotsEl.appendChild(jobLabel);
 
-  // SVG arrow from job dot up-right to job bar
+  // present dot at 100%
+  var presentDot = document.createElement("div");
+  presentDot.className = "tl-dot tl-dot-present";
+  presentDot.style.left = "100%";
+  presentDot.title = PRESENT.title;
+  var presentLabel = document.createElement("div");
+  presentLabel.className = "tl-label tl-label-present";
+  presentLabel.style.left = "100%";
+  presentLabel.textContent = "сейчас";
+  presentDot.addEventListener("click", function () {
+    select("present");
+    scrollToDetails();
+  });
+  dotsEl.appendChild(presentDot);
+  dotsEl.appendChild(presentLabel);
+
+  // L-shaped arrow from job dot up-right to job bar
   var arrowSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   arrowSvg.setAttribute("class", "tl-job-arrow");
   arrowSvg.setAttribute("viewBox", "0 0 100 60");
   arrowSvg.setAttribute("preserveAspectRatio", "none");
   arrowSvg.innerHTML =
-    '<defs><marker id="arrhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">' +
+    '<defs><marker id="arrhead" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">' +
     '<path d="M 0 1 L 9 5 L 0 9 z" fill="#e4b592"/></marker></defs>' +
-    '<path d="M 2 30 Q 5 20, 8 12" stroke="#e4b592" fill="none" stroke-width="1.5" marker-end="url(#arrhead)"/>';
+    '<path d="M 1 29 L 1 11 L 9 11" stroke="#e4b592" fill="none" stroke-width="1.5" stroke-linejoin="round" marker-end="url(#arrhead)"/>';
   trackEl.appendChild(arrowSvg);
 
   jobEl.addEventListener("click", function () {
@@ -110,8 +131,9 @@ function initTimeline() {
   });
   jobEl.innerHTML = [
     '<span class="tl-job-title">' + JOB.title + '<span class="tl-job-role">' + JOB.role + "</span></span>",
+    '<span class="tl-job-dates">' + JOB.dateRange + "</span>",
   ].join("\n");
-  select("project-" + (TIMELINE.length - 1));
+  select("present");
 
   document.getElementById("hero-timeline").classList.add("show");
 
@@ -119,16 +141,19 @@ function initTimeline() {
     if (id === active) return;
     active = id;
     const isJob = id === "job";
+    const isPresent = id === "present";
 
-    dotsEl.querySelectorAll(".tl-dot:not(.tl-dot-job)").forEach(function (d, i) {
-      d.classList.toggle("active", !isJob && i === TIMELINE.length - 1);
+    dotsEl.querySelectorAll(".tl-dot:not(.tl-dot-job):not(.tl-dot-present)").forEach(function (d, i) {
+      d.classList.toggle("active", !isJob && !isPresent && i === TIMELINE.length - 1);
     });
     var jobDotEl = dotsEl.querySelector(".tl-dot-job");
     if (jobDotEl) jobDotEl.classList.toggle("active", isJob);
+    var presentDotEl = dotsEl.querySelector(".tl-dot-present");
+    if (presentDotEl) presentDotEl.classList.toggle("active", isPresent);
     jobEl.classList.toggle("active", isJob);
 
     if (isJob) {
-      progressEl.style.width = "100%";
+      progressEl.style.width = "0%";
       detailsEl.innerHTML = [
         '<div class="tl-details-card tl-details-card--job">',
         '  <div class="tl-details-job-range">' + JOB.dateRange + "</div>",
@@ -140,13 +165,22 @@ function initTimeline() {
         "  </a>",
         "</div>",
       ].join("\n");
+    } else if (isPresent) {
+      progressEl.style.width = "100%";
+      detailsEl.innerHTML = [
+        '<div class="tl-details-card tl-details-card--present">',
+        '  <h4 class="tl-details-title">' + PRESENT.title + "</h4>",
+        '  <p class="tl-details-desc">' + PRESENT.desc + "</p>",
+        "</div>",
+      ].join("\n");
     } else {
       const idx = parseInt(id.split("-")[1], 10);
-      dotsEl.querySelectorAll(".tl-dot:not(.tl-dot-job)").forEach((d, i) => {
+      dotsEl.querySelectorAll(".tl-dot:not(.tl-dot-job):not(.tl-dot-present)").forEach((d, i) => {
         d.classList.toggle("active", i === idx);
       });
       if (jobDotEl) jobDotEl.classList.remove("active");
-      progressEl.style.width = ((idx + 1) / TIMELINE.length * 100) + "%";
+      if (presentDotEl) presentDotEl.classList.remove("active");
+      progressEl.style.width = ((idx + 1) / (TIMELINE.length + 1) * 100) + "%";
 
       const item = TIMELINE[idx];
       detailsEl.innerHTML = [
