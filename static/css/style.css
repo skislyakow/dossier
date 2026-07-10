@@ -5,7 +5,7 @@ body {
     display: flex;
     flex-direction: column;
     font-family: 'Inter', Arial, sans-serif;
-    background-color: #f4f4f5;
+    background-color: #f5f0eb;
 }
 
 .container {
@@ -22,7 +22,7 @@ h1 {
     font-size: 4rem;
     font-weight: 700;
     margin: 0 0 0.75rem 0;
-    color: #18181b;
+    color: #2a241f;
     letter-spacing: -0.03em;
 }
 
@@ -63,12 +63,13 @@ h1 {
     color: #a1a1aa;
     text-decoration: none;
     border-radius: 50%;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.61, 1, 0.88, 1);
     position: relative;
 }
 
 .social-link:hover {
     background: #e4e4e7;
+    mix-blend-mode: screen;
 }
 
 .social-link svg {
@@ -77,7 +78,7 @@ h1 {
 }
 
 .github-link:hover {
-    color: #18181b;
+    color: #2a241f;
 }
 
 .telegram-link {
@@ -96,7 +97,7 @@ h1 {
     inset: 0;
     border-radius: 50%;
     border: 1px solid transparent;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.61, 1, 0.88, 1);
 }
 
 .telegram-link:hover::after {
@@ -108,7 +109,7 @@ h1 {
     min-height: 120px;
     opacity: 0;
     transform: translateY(10px);
-    transition: all 0.4s ease;
+    transition: all 0.4s cubic-bezier(0.61, 1, 0.88, 1);
     pointer-events: none;
 }
 
@@ -122,7 +123,7 @@ h1 {
     opacity: 0;
     transform: translateY(-10px);
     pointer-events: none;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.61, 1, 0.88, 1);
     height: 0;
     min-height: 0;
     margin: 0;
@@ -133,7 +134,7 @@ h1 {
     width: 24px;
     height: 24px;
     border: 2px solid #e4e4e7;
-    border-top-color: #6366f1;
+    border-top-color: #e4b592;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     margin: 0 auto;
@@ -154,7 +155,7 @@ h1 {
     text-decoration: none;
     opacity: 0;
     transform: translateY(10px);
-    transition: all 0.5s ease;
+    transition: all 0.5s cubic-bezier(0.61, 1, 0.88, 1);
     cursor: pointer;
     box-shadow: 0 1px 3px rgba(0,0,0,0.04);
 }
@@ -188,7 +189,7 @@ h1 {
 .gh-card-name {
     font-size: 1rem;
     font-weight: 600;
-    color: #18181b;
+    color: #2a241f;
 }
 
 .gh-card-login {
@@ -215,7 +216,7 @@ h1 {
     margin-top: 1rem;
     opacity: 0;
     transform: translateY(10px);
-    transition: all 0.5s ease 0.2s;
+    transition: all 0.5s cubic-bezier(0.61, 1, 0.88, 1) 0.2s;
 }
 
 .langs-container.visible {
@@ -230,7 +231,7 @@ h1 {
     margin-bottom: 0.5rem;
     opacity: 0;
     transform: translateX(-10px);
-    transition: all 0.4s ease;
+    transition: all 0.4s cubic-bezier(0.61, 1, 0.88, 1);
 }
 
 .lang-row.visible {
@@ -255,7 +256,7 @@ h1 {
 
 .lang-fill {
     height: 100%;
-    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    background: linear-gradient(90deg, #e4b592, #d4a87a);
     border-radius: 3px;
 }
 
@@ -272,8 +273,8 @@ h1 {
 }
 
 .terminal {
-    background: #ffffff;
-    border: 1px solid #e4e4e7;
+    background: #1a1a1a;
+    border: 1px solid #333;
     border-radius: 12px;
     width: 100%;
     font-family: 'Fira Code', monospace;
@@ -283,8 +284,8 @@ h1 {
     overflow: hidden;
     opacity: 0;
     transform: translateY(10px);
-    transition: all 0.5s ease;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    transition: all 0.5s cubic-bezier(0.61, 1, 0.88, 1);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
 }
 
 .terminal.show {
@@ -296,7 +297,7 @@ h1 {
     display: flex;
     gap: 0.5rem;
     padding: 0.85rem 1rem;
-    border-bottom: 1px solid #e4e4e7;
+    border-bottom: 1px solid #333;
 }
 
 .mac-dot {
@@ -318,31 +319,33 @@ h1 {
 }
 
 .terminal-body {
-    color: #52525b;
+    color: #fff3ea;
     min-height: 1.7em;
     padding: 1rem 1.2rem;
+    -webkit-filter: blur(0.5px);
+    filter: blur(0.5px);
 }
 
 .terminal-body .prompt {
-    color: #6366f1;
+    color: #e4b592;
 }
 
 .terminal-body .arg {
-    color: #52525b;
+    color: #c0b0a0;
 }
 
 .terminal-body .item {
-    color: #52525b;
+    color: #c0b0a0;
 }
 
 .terminal-body .num {
-    color: #6366f1;
+    color: #e4b592;
 }
 
 /* cursor styles defined above */
 
 .terminal-hint {
-    color: #a1a1aa;
+    color: #888;
     font-style: italic;
     margin-bottom: 0.3rem;
 }
@@ -359,21 +362,21 @@ h1 {
     outline: none;
     font-family: inherit;
     font-size: inherit;
-    color: #18181b;
-    caret-color: #6366f1;
+    color: #fff3ea;
+    caret-color: #e4b592;
     padding: 0;
 }
 
 .terminal-input::placeholder {
-    color: #d4d4d8;
+    color: #555;
 }
 
 .terminal-input.done {
-    color: #52525b;
+    color: #c0b0a0;
 }
 
 .terminal-thinking {
-    color: #a1a1aa;
+    color: #888;
 }
 
 .terminal-error {
@@ -382,7 +385,7 @@ h1 {
 }
 
 .terminal-answer {
-    color: #6366f1;
+    color: #e4b592;
     white-space: pre-wrap;
     word-wrap: break-word;
 }
@@ -396,7 +399,7 @@ h1 {
 }
 
 .terminal-cursor {
-    color: #6366f1;
+    color: #e4b592;
 }
 
 .terminal-cursor.blink {
@@ -427,7 +430,7 @@ h1 {
     min-height: 100%;
     opacity: 0;
     transform: translateY(10px);
-    transition: all 0.5s ease;
+    transition: all 0.5s cubic-bezier(0.61, 1, 0.88, 1);
 }
 
 .skills-cloud.show {
@@ -437,8 +440,8 @@ h1 {
 
 .tag {
     font-family: 'Share Tech Mono', monospace;
-    color: #18181b;
-    transition: all 0.3s ease;
+    color: #2a241f;
+    transition: all 0.3s cubic-bezier(0.61, 1, 0.88, 1);
     display: inline-block;
     line-height: 1.3;
     cursor: default;
@@ -446,21 +449,21 @@ h1 {
 
 .tag::before {
     content: "{ ";
-    color: #6366f1;
+    color: #e4b592;
 }
 
 .tag::after {
     content: " }";
-    color: #6366f1;
+    color: #e4b592;
 }
 
 .tag:hover {
-    color: #6366f1;
+    color: #e4b592;
 }
 
 .tag:hover::before,
 .tag:hover::after {
-    color: #6366f1;
+    color: #e4b592;
 }
 
 .tag-xl {
@@ -490,7 +493,7 @@ h1 {
 }
 
 .skills {
-    text-shadow: 0 0 8px rgba(99, 102, 241, 0.3);
+    text-shadow: 0 0 8px rgba(228, 181, 146, 0.3);
 }
 
 .dot {
@@ -505,7 +508,7 @@ h1 {
 }
 
 .portfolio-link:hover {
-    color: #6366f1;
+    color: #e4b592;
     background: #e4e4e7;
 }
 
@@ -518,7 +521,7 @@ h1 {
     gap: 0.75rem;
     opacity: 0;
     transform: translateY(10px);
-    transition: all 0.4s ease;
+    transition: all 0.4s cubic-bezier(0.61, 1, 0.88, 1);
     pointer-events: none;
 }
 
@@ -538,21 +541,21 @@ h1 {
     opacity: 0;
     transform: translateY(-10px);
     pointer-events: none;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.61, 1, 0.88, 1);
 }
 
 .portfolio-card {
     background: #ffffff;
     border: 1px solid #e4e4e7;
-    border-left: 3px solid #6366f1;
+    border-left: 3px solid #e4b592;
     border-radius: 12px;
     padding: 1.5rem;
     text-align: left;
-    animation: cardFadeIn 0.5s ease forwards;
+    animation: cardFadeIn 0.5s cubic-bezier(0.61, 1, 0.88, 1) forwards;
     opacity: 0;
     transform: translateY(10px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.61, 1, 0.88, 1);
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -560,7 +563,7 @@ h1 {
 
 .portfolio-card:hover {
     border-color: #d4d4d8;
-    border-left-color: #4f46e5;
+    border-left-color: #d4a87a;
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(0,0,0,0.08);
 }
@@ -582,13 +585,13 @@ h1 {
     margin: 0;
     font-size: 1.1rem;
     font-weight: 700;
-    color: #18181b;
+    color: #2a241f;
     line-height: 1.3;
 }
 
 .portfolio-stars {
     font-size: 0.8rem;
-    color: #6366f1;
+    color: #e4b592;
     white-space: nowrap;
     margin-left: 0.75rem;
     flex-shrink: 0;
@@ -643,13 +646,13 @@ h1 {
 
 .badge-value {
     padding: 0.25rem 0.45rem;
-    background: #6366f1;
+    background: #e4b592;
     color: #fff;
 }
 
 .badge--single {
     padding: 0.25rem 0.55rem;
-    background: #6366f1;
+    background: #e4b592;
     color: #fff;
 }
 
@@ -679,7 +682,7 @@ h1 {
     content: '\25C6';
     position: absolute;
     left: 0;
-    color: #6366f1;
+    color: #e4b592;
     font-size: 0.7rem;
     top: 0.3rem;
 }
@@ -698,11 +701,11 @@ h1 {
     height: 32px;
     color: #a1a1aa;
     border-radius: 50%;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.61, 1, 0.88, 1);
     text-decoration: none;
 }
 
 .portfolio-link-icon:hover {
-    color: #6366f1;
-    background: #f4f4f5;
+    color: #e4b592;
+    background: #f5f0eb;
 }
