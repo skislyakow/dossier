@@ -759,13 +759,62 @@ h1 {
 
 .timeline-track {
     position: relative;
-    height: 50px;
+    height: 80px;
     margin: 0 1rem;
+}
+
+.tl-job {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.75rem;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    cursor: pointer;
+    z-index: 3;
+    font-size: 0.75rem;
+    color: #a1a1aa;
+    transition: all 0.3s cubic-bezier(0.61, 1, 0.88, 1);
+}
+
+.tl-job:hover {
+    background: rgba(228, 181, 146, 0.08);
+    border-color: rgba(228, 181, 146, 0.2);
+    color: #e4b592;
+}
+
+.tl-job.active {
+    background: rgba(228, 181, 146, 0.15);
+    border-color: rgba(228, 181, 146, 0.3);
+    color: #e4b592;
+}
+
+.tl-job-title {
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+.tl-job-role {
+    font-size: 0.65rem;
+    opacity: 0.7;
+    margin-left: 0.5rem;
+}
+
+.tl-job-dates {
+    font-size: 0.65rem;
+    font-family: 'Fira Code', monospace;
+    opacity: 0.6;
 }
 
 .tl-line {
     position: absolute;
-    top: 8px;
+    top: 38px;
     left: 0;
     right: 0;
     height: 2px;
@@ -774,7 +823,7 @@ h1 {
 
 .tl-progress {
     position: absolute;
-    top: 8px;
+    top: 38px;
     left: 0;
     height: 2px;
     background: #e4b592;
@@ -788,7 +837,7 @@ h1 {
 
 .tl-dot {
     position: absolute;
-    top: 1px;
+    top: 31px;
     width: 16px;
     height: 16px;
     border-radius: 50%;
@@ -798,7 +847,6 @@ h1 {
     z-index: 2;
     transform: translateX(-50%);
     transition: all 0.3s cubic-bezier(0.61, 1, 0.88, 1);
-    margin-left: 0;
 }
 
 .tl-dot:hover {
@@ -814,7 +862,7 @@ h1 {
 
 .tl-label {
     position: absolute;
-    top: 24px;
+    top: 54px;
     font-size: 0.65rem;
     color: #a1a1aa;
     transform: translateX(-50%);
@@ -842,6 +890,10 @@ h1 {
     text-align: left;
 }
 
+.tl-details-card--job {
+    border-left-color: #d4a87a;
+}
+
 .tl-details-date {
     font-size: 0.7rem;
     color: #a1a1aa;
@@ -854,6 +906,20 @@ h1 {
     font-size: 1rem;
     font-weight: 700;
     color: #2a241f;
+}
+
+.tl-details-job-range {
+    font-size: 0.7rem;
+    color: #a1a1aa;
+    font-family: 'Fira Code', monospace;
+    margin-bottom: 0.25rem;
+}
+
+.tl-details-job-role {
+    font-size: 0.85rem;
+    color: #e4b592;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
 }
 
 .tl-details-desc {
@@ -880,16 +946,32 @@ h1 {
 @media (max-width: 640px) {
     .timeline-track {
         margin: 0 0.5rem;
-        height: 44px;
+        height: 70px;
     }
     .tl-label {
         font-size: 0.55rem;
+        top: 48px;
     }
     .tl-dot {
         width: 14px;
         height: 14px;
+        top: 26px;
+    }
+    .tl-dot.active {
+        box-shadow: 0 0 0 2px rgba(228, 181, 146, 0.3);
+    }
+    .tl-job {
+        font-size: 0.65rem;
+        height: 22px;
+        padding: 0 0.5rem;
+    }
+    .tl-job-title {
+        font-size: 0.7rem;
     }
     .tl-details-card {
         padding: 0.75rem 1rem;
+    }
+    .tl-line, .tl-progress {
+        top: 32px;
     }
 }
