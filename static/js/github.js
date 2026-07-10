@@ -73,6 +73,7 @@ link.addEventListener('click', async (e) => {
                 bar.style.width = bar.parentElement.nextElementSibling.textContent;
             });
             document.querySelectorAll('.lang-row').forEach(row => row.classList.add('visible'));
+            statsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }, 100);
     } catch (error) {
         console.error('GitHub stats error:', error);

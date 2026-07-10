@@ -77,7 +77,12 @@ function initTimeline() {
   document.getElementById("hero-timeline").classList.add("show");
 
   function select(id) {
-    if (id === active) return;
+    if (id === active) {
+      setTimeout(function () {
+        detailsEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+      return;
+    }
     active = id;
     const isJob = id === "job";
 
