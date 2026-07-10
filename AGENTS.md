@@ -117,3 +117,55 @@ Then push to `main` — site updates automatically.
 - [ ] Тесты на основные view/home page
 - [ ] `aria-label` на иконках GitHub/Telegram/Portfolio
 - [ ] Начать использовать `requirements-dev.txt` в CI (mypy)
+
+---
+
+## Идеи с sui.io (анализ)
+
+### 1. Hero-заголовок с градиентом под мышкой
+Текст «Sergey Kislyakov» — `background-clip: text` + радиальный градиент, центр следует за курсором.
+
+**CSS:**
+```css
+.hero h1 {
+  background-image: radial-gradient(
+    circle at var(--mx) var(--my),
+    #fff3ea 0%, #fff3ea 40%,
+    #e4b592 75%, rgba(228,181,146,0.15) 95%
+  );
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+```
+
+**JS:** `mousemove` на `.hero` → обновляет `--mx` и `--my` в процентах. Без библиотек, ~10 строк.
+
+### 2. Gradient blur фон hero
+Один слой `backdrop-filter: blur()` с радиальной маской под курсором — тёмный фон «оживает» при движении мыши.
+
+**Реализация:**
+```html
+<div class="hero-blur"></div>
+```
+```css
+.hero-blur {
+  position: absolute; inset: 0;
+  backdrop-filter: blur(6px);
+  -webkit-mask: radial-gradient(
+    circle 200px at var(--mx) var(--my),
+    transparent 0%, black 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+```
+
+### 3. Arrow-swap на иконках (portfolio link-icon)
+При ховере одна стрелка уезжает (`→ 200%`), вторая приезжает из `-200% → 0%`.
+
+**Реализация:** два `path` в SVG, у каждого `transform: translateX()` с `transition`. На `:hover` у первого `→ 200%`, у второго `→ 0%`.
+
+### 4. Stagger reveal карточек портфолио
+Каждая карточка — не просто `fadeIn`, а заголовок с `overflow: hidden` + `translateY` + `transition-delay` по индексу.
+
+**Рекомендация:** 1 → 2 → 3 → 4 по приоритету. 1+2 дают максимум вау-эффекта за минимум кода.
