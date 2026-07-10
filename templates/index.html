@@ -96,11 +96,11 @@
         <div id="portfolio" class="portfolio hidden"></div>
         <div id="contact" class="contact hidden">
             <div class="contact-card">
-                <a href="mailto:skislyakow@gmail.com" class="contact-item">
+                <a href="mailto:s.kislyakov84@gmail.com" class="contact-item">
                     <svg height="20" width="20" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
                     </svg>
-                    <span>skislyakow@gmail.com</span>
+                    <span>s.kislyakov84@gmail.com</span>
                 </a>
                 <a href="https://t.me/kislyakow" target="_blank" rel="noopener noreferrer" class="contact-item">
                     <svg height="20" width="20" viewBox="0 0 24 24" fill="currentColor">
@@ -154,6 +154,23 @@
                         section.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }, 150);
                 }
+            });
+        })();
+    </script>
+    <button id="back-to-top" class="back-to-top" aria-label="Back to top">
+        <svg height="20" width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 15l-6-6-6 6"/>
+        </svg>
+    </button>
+    <script>
+        (function() {
+            var btn = document.getElementById('back-to-top');
+            if (!btn) return;
+            window.addEventListener('scroll', function() {
+                btn.classList.toggle('visible', window.scrollY > 300);
+            });
+            btn.addEventListener('click', function() {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             });
         })();
     </script>

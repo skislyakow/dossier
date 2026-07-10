@@ -203,14 +203,14 @@ setInterval(updateTime, 30000);
 ### 2. Contact секция (выделить Telegram)
 Заменить п. «Контактная форма» на минимальную контактную секцию в `content-body`:
 - Иконка/ссылка Telegram (уже есть)
-- Email: `skislyakow@gmail.com`
+- Email: `s.kislyakov84@gmail.com`
 - Без формы — только ссылки
 
 **HTML** — блок после `#portfolio`:
 ```html
 <div id="contact" class="contact hidden">
   <h2>Contact</h2>
-  <a href="mailto:skislyakow@gmail.com" class="contact-link">skislyakow@gmail.com</a>
+  <a href="mailto:s.kislyakov84@gmail.com" class="contact-link">s.kislyakov84@gmail.com</a>
   <a href="https://t.me/kislyakow" class="contact-link">@kislyakow</a>
 </div>
 ```
