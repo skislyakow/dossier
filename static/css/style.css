@@ -713,6 +713,20 @@ h1 {
     border-color: #e4b592;
 }
 
+.hero-timeline .tl-dot-job {
+    border-color: #e4b592;
+}
+
+.hero-timeline .tl-dot-job.active {
+    background: #e4b592;
+    border-color: #e4b592;
+    box-shadow: 0 0 0 3px rgba(228, 181, 146, 0.3), 0 0 12px rgba(228, 181, 146, 0.2);
+}
+
+.hero-timeline .tl-label-job {
+    color: #e4b592;
+}
+
 .hero-timeline .tl-label {
     color: #888;
 }

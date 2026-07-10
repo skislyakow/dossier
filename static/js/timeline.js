@@ -56,7 +56,7 @@ function initTimeline() {
   }
 
   TIMELINE.forEach((item, i) => {
-    const pct = (i / (TIMELINE.length - 1)) * 100;
+    const pct = TIMELINE.length > 1 ? (i / (TIMELINE.length - 1)) * 80 : 0;
 
     const dot = document.createElement("div");
     dot.className = "tl-dot";
@@ -76,6 +76,22 @@ function initTimeline() {
     dotsEl.appendChild(label);
   });
 
+  // job dot at 100% (current/ongoing)
+  var jobDot = document.createElement("div");
+  jobDot.className = "tl-dot tl-dot-job";
+  jobDot.style.left = "100%";
+  jobDot.title = JOB.title;
+  var jobLabel = document.createElement("div");
+  jobLabel.className = "tl-label tl-label-job";
+  jobLabel.style.left = "100%";
+  jobLabel.textContent = JOB.dateRange.split(" — ")[0];
+  jobDot.addEventListener("click", function () {
+    select("job");
+    scrollToDetails();
+  });
+  dotsEl.appendChild(jobDot);
+  dotsEl.appendChild(jobLabel);
+
   jobEl.addEventListener("click", function () {
     select("job");
     scrollToDetails();
@@ -93,9 +109,11 @@ function initTimeline() {
     active = id;
     const isJob = id === "job";
 
-    dotsEl.querySelectorAll(".tl-dot").forEach((d, i) => {
+    dotsEl.querySelectorAll(".tl-dot:not(.tl-dot-job)").forEach(function (d, i) {
       d.classList.toggle("active", !isJob && i === TIMELINE.length - 1);
     });
+    var jobDotEl = dotsEl.querySelector(".tl-dot-job");
+    if (jobDotEl) jobDotEl.classList.toggle("active", isJob);
     jobEl.classList.toggle("active", isJob);
 
     if (isJob) {
@@ -116,7 +134,7 @@ function initTimeline() {
       dotsEl.querySelectorAll(".tl-dot").forEach((d, i) => {
         d.classList.toggle("active", i === idx);
       });
-      progressEl.style.width = ((idx / (TIMELINE.length - 1)) * 100) + "%";
+      progressEl.style.width = ((idx / (TIMELINE.length - 1)) * 80) + "%";
 
       const item = TIMELINE[idx];
       detailsEl.innerHTML = [
