@@ -512,7 +512,7 @@ h1 {
     width: 32px;
     height: 32px;
     pointer-events: none;
-    opacity: 0.3;
+    opacity: 0.4;
     transition: opacity 0.5s cubic-bezier(0.61, 1, 0.88, 1);
 }
 
@@ -528,11 +528,15 @@ h1 {
     stroke-linecap: round;
     stroke-dasharray: 56;
     stroke-dashoffset: 56;
-    transition: stroke-dashoffset 0.1s linear;
+    transition: stroke-dashoffset 0.5s cubic-bezier(0.61, 1, 0.88, 1);
 }
 
 .terminal:hover .fc {
     opacity: 1;
+}
+
+.terminal:hover .fc path {
+    stroke-dashoffset: 0;
 }
 
 .content-row {
@@ -897,10 +901,11 @@ h1 {
 }
 
 .badge-role {
-    padding: 0.25rem 0.55rem;
+    padding: 0.35rem 0.75rem;
     background: rgba(228, 181, 146, 0.12);
     color: #e4b592;
-    font-size: 0.65rem;
+    font-size: 0.8rem;
+    font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }

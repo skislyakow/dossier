@@ -174,26 +174,5 @@
             });
         })();
     </script>
-    <script>
-        (function() {
-            var paths = document.querySelectorAll('.fc path');
-            if (!paths.length) return;
-            var totalLen = 56;
-            paths.forEach(function(p) { p.style.strokeDashoffset = totalLen; });
-            var ticking = false;
-            window.addEventListener('scroll', function() {
-                if (!ticking) {
-                    window.requestAnimationFrame(function() {
-                        var maxScroll = document.body.scrollHeight - window.innerHeight;
-                        var progress = maxScroll > 0 ? Math.min(window.scrollY / maxScroll, 1) : 0;
-                        var offset = totalLen * (1 - progress);
-                        paths.forEach(function(p) { p.style.strokeDashoffset = offset; });
-                        ticking = false;
-                    });
-                    ticking = true;
-                }
-            });
-        })();
-    </script>
 </body>
 </html>
