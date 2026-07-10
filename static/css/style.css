@@ -258,7 +258,9 @@ h1 {
     align-items: center;
     gap: 1rem;
     padding: 1rem 1.5rem;
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     border: 1px solid #e4e4e7;
     border-radius: 12px;
     text-decoration: none;
@@ -808,7 +810,9 @@ h1 {
 }
 
 .portfolio-card {
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     border: 1px solid #e4e4e7;
     border-left: 3px solid #e4b592;
     border-radius: 12px;
@@ -1111,7 +1115,9 @@ h1 {
 
 .tl-details-card {
     padding: 1rem 1.5rem;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     border: 1px solid #e4e4e7;
     border-left: 3px solid #e4b592;
     border-radius: 12px;
@@ -1124,7 +1130,9 @@ h1 {
 
 .tl-details-card--present {
     border-left-color: #e4b592;
-    background: linear-gradient(135deg, #fff 0%, #fff8f0 100%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 248, 240, 0.82) 100%);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
 .tl-details-date {
@@ -1204,7 +1212,9 @@ h1 {
 .contact-card {
     max-width: 400px;
     margin: 0 auto;
-    background: #ffffff;
+    background: rgba(255, 255, 255, 0.82);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     border: 1px solid #e4e4e7;
     border-radius: 10px;
     padding: 1.5rem;
@@ -1219,7 +1229,9 @@ h1 {
     gap: 0.75rem;
     padding: 0.75rem 1rem;
     border-radius: 8px;
-    background: #fafafa;
+    background: rgba(250, 250, 250, 0.82);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     text-decoration: none;
     color: #27272a;
     font-family: 'Fira Code', monospace;
