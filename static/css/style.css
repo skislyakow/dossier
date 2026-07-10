@@ -125,14 +125,12 @@ h1 {
     50% { opacity: 0; }
 }
 
-.current-time {
+.terminal-header .current-time {
+    margin-left: auto;
     font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
     color: #52525b;
-    font-size: 0.85rem;
-    display: block;
-    text-align: center;
-    margin-top: 0.75rem;
-    margin-bottom: 0.5rem;
+    padding-right: 4px;
 }
 
 .social-links {
