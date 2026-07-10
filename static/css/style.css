@@ -62,7 +62,10 @@ body {
 }
 
 .content-body {
-    background: #f5f0eb;
+    background:
+        radial-gradient(ellipse at 50% 0%, #faf5ef 0%, #f5f0eb 50%, #efe8e0 100%),
+        radial-gradient(circle, #d4c8b8 1px, transparent 1px);
+    background-size: 100% 100%, 24px 24px;
     padding: 2.5rem 2rem;
     display: flex;
     flex-direction: column;
