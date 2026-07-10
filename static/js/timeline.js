@@ -49,6 +49,12 @@ function initTimeline() {
 
   if (!dotsEl) return;
 
+  function scrollToDetails() {
+    setTimeout(function () {
+      detailsEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+  }
+
   TIMELINE.forEach((item, i) => {
     const pct = (i / (TIMELINE.length - 1)) * 100;
 
@@ -62,12 +68,18 @@ function initTimeline() {
     label.style.left = pct + "%";
     label.textContent = item.date;
 
-    dot.addEventListener("click", () => select("project-" + i));
+    dot.addEventListener("click", function () {
+      select("project-" + i);
+      scrollToDetails();
+    });
     dotsEl.appendChild(dot);
     dotsEl.appendChild(label);
   });
 
-  jobEl.addEventListener("click", () => select("job"));
+  jobEl.addEventListener("click", function () {
+    select("job");
+    scrollToDetails();
+  });
   jobEl.innerHTML = [
     '<span class="tl-job-title">' + JOB.title + '<span class="tl-job-role">' + JOB.role + "</span></span>",
     '<span class="tl-job-dates">' + JOB.dateRange + "</span>",
@@ -77,12 +89,7 @@ function initTimeline() {
   document.getElementById("hero-timeline").classList.add("show");
 
   function select(id) {
-    if (id === active) {
-      setTimeout(function () {
-        detailsEl.scrollIntoView({ behavior: "smooth", block: "start" });
-      }, 100);
-      return;
-    }
+    if (id === active) return;
     active = id;
     const isJob = id === "job";
 
@@ -125,9 +132,6 @@ function initTimeline() {
       ].join("\n");
     }
     detailsEl.classList.add("show");
-    setTimeout(function () {
-      detailsEl.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100);
   }
 }
 
