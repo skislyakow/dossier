@@ -34,6 +34,31 @@ body {
         linear-gradient(90deg, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
     background-size: 80px 80px;
     pointer-events: none;
+    z-index: -1;
+}
+
+.hero-blur {
+    position: absolute;
+    inset: 0;
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    -webkit-mask: radial-gradient(
+        circle 200px at var(--mx, 50%) var(--my, 50%),
+        transparent 0%, black 100%
+    );
+    mask: radial-gradient(
+        circle 200px at var(--mx, 50%) var(--my, 50%),
+        transparent 0%, black 100%
+    );
+    pointer-events: none;
+    z-index: -1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-blur {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+    }
 }
 
 .content-body {
@@ -55,6 +80,21 @@ h1 {
 .hero h1 {
     color: #fff3ea;
     font-size: 4.5rem;
+    background-image: radial-gradient(
+        circle at var(--mx, 50%) var(--my, 50%),
+        #fff3ea 0%, #fff3ea 40%,
+        #e4b592 75%,
+        rgba(228, 181, 146, 0.15) 95%
+    );
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero h1 {
+        background-image: none;
+        -webkit-text-fill-color: unset;
+    }
 }
 
 .title {

@@ -13,6 +13,7 @@
 </head>
 <body>
     <div class="hero">
+        <div class="hero-blur"></div>
         <h1>Sergey Kislyakov</h1>
         <p class="title"><span id="typing-text"></span><span class="cursor">|</span></p>
         <div class="content-row">
@@ -94,5 +95,18 @@
     <script src="{% static 'js/portfolio.js' %}"></script>
     <script src="{% static 'js/timeline.js' %}"></script>
     <script src="{% static 'js/typewriter.js' %}"></script>
+    <script>
+        (function() {
+            var hero = document.querySelector('.hero');
+            if (!hero) return;
+            hero.addEventListener('mousemove', function(e) {
+                var rect = hero.getBoundingClientRect();
+                var x = ((e.clientX - rect.left) / rect.width) * 100;
+                var y = ((e.clientY - rect.top) / rect.height) * 100;
+                hero.style.setProperty('--mx', x + '%');
+                hero.style.setProperty('--my', y + '%');
+            });
+        })();
+    </script>
 </body>
 </html>
