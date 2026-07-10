@@ -169,3 +169,144 @@ Then push to `main` — site updates automatically.
 Каждая карточка — не просто `fadeIn`, а заголовок с `overflow: hidden` + `translateY` + `transition-delay` по индексу.
 
 **Рекомендация:** 1 → 2 → 3 → 4 по приоритету. 1+2 дают максимум вау-эффекта за минимум кода.
+
+---
+
+## Идеи с roshan-sahu.com (анализ)
+
+**Сайт:** минималистичный креативный дев — тёмный hero, белый контент, 3D/GSAP эксперименты.
+
+### Что интегрировать (от простого к сложному)
+
+### 1. Текущее время MSK в hero
+Добавить `<span class="current-time">17:52 MSK</span>` в hero (под заголовком или рядом с социальными ссылками).
+
+**JS** (~5 строк в `index.html` inline):
+```js
+function updateTime() {
+  document.querySelector('.current-time').textContent =
+    new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) + ' MSK';
+}
+updateTime();
+setInterval(updateTime, 30000);
+```
+
+**CSS:**
+```css
+.current-time { font-family: 'Fira Code', monospace; color: #71717a; font-size: 0.85rem; }
+```
+
+Приоритет: ★☆☆, займёт 5 мин.
+
+---
+
+### 2. Contact секция (выделить Telegram)
+Заменить п. «Контактная форма» на минимальную контактную секцию в `content-body`:
+- Иконка/ссылка Telegram (уже есть)
+- Email: `skislyakow@gmail.com`
+- Без формы — только ссылки
+
+**HTML** — блок после `#portfolio`:
+```html
+<div id="contact" class="contact hidden">
+  <h2>Contact</h2>
+  <a href="mailto:skislyakow@gmail.com" class="contact-link">skislyakow@gmail.com</a>
+  <a href="https://t.me/kislyakow" class="contact-link">@kislyakow</a>
+</div>
+```
+
+**JS** — кнопка в `.social-links` (или отдельная nav-ссылка), тоггл как у portfolio/github.
+
+**CSS** — минимально, стиль под existing cards.
+
+Приоритет: ★☆☆
+
+---
+
+### 3. Back to top
+Кнопка в правом нижнем углу, появляется при скролле вниз.
+
+**HTML:**
+```html
+<button id="back-to-top" class="back-to-top hidden" aria-label="Back to top">
+  <!-- SVG arrow up -->
+</button>
+```
+
+**CSS:**
+```css
+.back-to-top {
+  position: fixed; bottom: 2rem; right: 2rem;
+  z-index: 100; opacity: 0; pointer-events: none;
+  transition: opacity 0.3s var(--ease-expo);
+}
+.back-to-top.visible { opacity: 1; pointer-events: auto; }
+```
+
+**JS** — `scroll` listener → toggle `.visible`; `click` → `window.scrollTo({ top: 0, behavior: 'smooth' })`.
+
+Приоритет: ★☆☆
+
+---
+
+### 4. SVG-path scroll animation (frame corners)
+Уже есть frame corners на терминале с `stroke-dashoffset` анимацией на hover.
+Расширить: привязать `stroke-dashoffset` к scroll position страницы (от hero до конца контента).
+
+**Как:** добавить `data-scroll` атрибут на SVG paths → в `scroll` listener вычислять прогресс (0–1) и обновлять `stroke-dashoffset`.
+
+**JS:**
+```js
+window.addEventListener('scroll', () => {
+  const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+  document.querySelectorAll('.fc path').forEach(path => {
+    const len = path.getTotalLength();
+    path.style.strokeDashoffset = len * (1 - Math.min(scrollPercent, 1));
+  });
+});
+```
+
+**CSS bonus:** убрать hover-анимацию на frame corners при скролле (или сделать combined).
+
+Приоритет: ★★☆ — красивый вау-эффект, код уже есть.
+
+---
+
+### 5. Теги карточек портфолио с ролями
+Добавить в карточки портфолио метку «Role» (как у Рошана `Role: Web Development`).
+
+**Как:** добавить опциональное поле `role` в объекты `PORTFOLIO` массива. Отображать как badge с префиксом `role:`.
+
+```js
+{
+  repo: "...",
+  role: "Fullstack Development",   // new optional field
+  // ...
+}
+```
+
+В шаблоне карточки:
+```js
+${project.role ? `<span class="badge badge-role">role: ${project.role}</span>` : ''}
+```
+
+**CSS:**
+```css
+.badge-role { background: #e4b59220; color: #e4b592; border-color: #e4b59240; }
+```
+
+Приоритет: ★☆☆
+
+---
+
+### Приоритет выполнения
+1. **Time MSK** — быстрый, заметный, стильный
+2. **Contact секция** — уже висит в to-do
+3. **Back to top** — тривиально, улучшает UX
+4. **SVG-path scroll** — красивый эффект, инфраструктура готова
+5. **Role-теги** — мелочь, но завершает карточки
+
+### Что НЕ берём
+- Three.js / 3D сцены — нет сборщика
+- GSAP — библиотека, не вписывается в zero-dependency
+- Webflow / Shopify / Next.js — не релевантно

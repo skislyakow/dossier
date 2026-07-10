@@ -16,6 +16,7 @@
         <div class="hero-blur"></div>
         <h1>Sergey Kislyakov</h1>
         <p class="title"><span id="typing-text"></span><span class="cursor">|</span></p>
+        <span class="current-time" id="current-time"></span>
         <div class="content-row">
             <div class="content-column">
                 <div class="terminal">
@@ -105,6 +106,17 @@
                 hero.style.setProperty('--mx', x + '%');
                 hero.style.setProperty('--my', y + '%');
             });
+        })();
+    </script>
+    <script>
+        (function() {
+            var el = document.getElementById('current-time');
+            if (!el) return;
+            function updateTime() {
+                el.textContent = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) + ' MSK';
+            }
+            updateTime();
+            setInterval(updateTime, 30000);
         })();
     </script>
 </body>

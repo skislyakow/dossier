@@ -125,6 +125,16 @@ h1 {
     50% { opacity: 0; }
 }
 
+.current-time {
+    font-family: 'Fira Code', monospace;
+    color: #52525b;
+    font-size: 0.85rem;
+    display: block;
+    text-align: center;
+    margin-top: 0.75rem;
+    margin-bottom: 0.5rem;
+}
+
 .social-links {
     display: flex;
     gap: 0;
