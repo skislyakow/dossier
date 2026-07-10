@@ -273,6 +273,7 @@ h1 {
 }
 
 .terminal {
+    position: relative;
     background: #1a1a1a;
     border: 1px solid #333;
     border-radius: 12px;
@@ -404,6 +405,38 @@ h1 {
 
 .terminal-cursor.blink {
     animation: blink 0.7s steps(1) infinite;
+}
+
+.fc {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.4s cubic-bezier(0.61, 1, 0.88, 1);
+}
+
+.fc-tl { top: -4px; left: -4px; }
+.fc-tr { top: -4px; right: -4px; }
+.fc-bl { bottom: -4px; left: -4px; }
+.fc-br { bottom: -4px; right: -4px; }
+
+.fc path {
+    fill: none;
+    stroke: #e4b592;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-dasharray: 56;
+    stroke-dashoffset: 56;
+    transition: stroke-dashoffset 0.5s cubic-bezier(0.61, 1, 0.88, 1);
+}
+
+.terminal:hover .fc {
+    opacity: 1;
+}
+
+.terminal:hover .fc path {
+    stroke-dashoffset: 0;
 }
 
 .content-row {
