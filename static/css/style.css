@@ -599,7 +599,7 @@ h1 {
 }
 
 .tag {
-    font-family: 'Share Tech Mono', monospace;
+    font-family: 'Fira Code', monospace;
     color: #2a241f;
     transition: all 0.3s cubic-bezier(0.61, 1, 0.88, 1);
     display: inline-block;
@@ -893,7 +893,7 @@ h1 {
 
 .portfolio-tag {
     font-size: 0.7rem;
-    font-family: 'Share Tech Mono', monospace;
+    font-family: 'Fira Code', monospace;
     padding: 0.2rem 0.55rem;
     background: #e4e4e7;
     color: #52525b;
@@ -909,7 +909,7 @@ h1 {
 
 .badge {
     display: inline-flex;
-    font-family: 'Share Tech Mono', monospace;
+    font-family: 'Fira Code', monospace;
     font-size: 0.7rem;
     line-height: 1;
     border-radius: 3px;
