@@ -255,7 +255,7 @@ portfolioBtn.addEventListener('click', async (e) => {
         })
         .join('');
 
-      let linksHtml = `<a href="${project.repo.html_url}" target="_blank" rel="noopener noreferrer" class="portfolio-link-icon" title="GitHub">${ICONS.github}</a>`;
+      let linksHtml = `<a href="${project.repo?.html_url || '#'}" target="_blank" rel="noopener noreferrer" class="portfolio-link-icon" title="GitHub">${ICONS.github}</a>`;
       for (const [label, url] of Object.entries(project.links)) {
         const icon = ICONS[label] || ICONS.github;
         linksHtml += `<a href="${url}" target="_blank" rel="noopener noreferrer" class="portfolio-link-icon" title="${label}">${icon}</a>`;
@@ -265,7 +265,7 @@ portfolioBtn.addEventListener('click', async (e) => {
         <div class="portfolio-card" style="--card-index: ${i}; animation-delay: ${i * 0.2}s">
           <div class="portfolio-card-header">
             <div class="portfolio-card-title-wrap"><h3>${project.title}</h3></div>
-            <span class="portfolio-stars"><svg height="14" width="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> ${project.repo.stargazers_count}</span>
+            <span class="portfolio-stars"><svg height="14" width="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> ${project.repo?.stargazers_count ?? ''}</span>
           </div>
           <p class="portfolio-tagline">${project.tagline}</p>
           ${project.role ? `<span class="badge badge-role">role: ${project.role}</span>` : ''}
