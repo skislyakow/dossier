@@ -1,120 +1,76 @@
-const JOB = {
-  title: "ЭФКО Цифровые решения",
-  role: "ИТ-Специалист",
-  dateRange: "Январь 2026 — настоящее время",
-  url: "https://efko.digital/",
-  desc: "",
-};
-
-const PRESENT = {
-  title: "Настоящее время",
-  desc: "Продолжаю развиваться как Python-разработчик: pet-проекты, open-source, изучение новых технологий.",
-};
-
-const TIMELINE = [
-  {
-    date: "Апрель 2026",
-    title: "Dossier",
-    desc: "Персональный сайт-визитка: Django + Gunicorn + Nginx на VPS, CI/CD через GitHub Actions",
-    repo: "skislyakow/dossier",
-  },
-  {
-    date: "Июнь 2026",
-    title: "Онлайн библиотека",
-    desc: "Генератор статического сайта на Jinja2 + Bootstrap 5. 92 книги с пагинацией, обложками и чтением онлайн.",
-    repo: "skislyakow/online_library",
-  },
-  {
-    date: "Июнь 2026",
-    title: "Ferma",
-    desc: "Автоматизированная ферма Telegram-каналов: парсинг доноров, фильтрация рекламы, автоперевод, CPA-ссылки.",
-    repo: "skislyakow/ferma",
-  },
-  {
-    date: "Июнь 2026",
-    title: "Devman Bot",
-    desc: "Telegram-бот для уведомлений о проверке работ на Devman через Long Polling API.",
-    repo: "skislyakow/devman-bot",
-  },
-  {
-    date: "Июль 2026",
-    title: "opencode-py",
-    desc: "Python SDK для opencode AI агента: sync + async API, SSE-стриминг, опубликован на PyPI.",
-    repo: "skislyakow/opencode-py",
-  },
-];
-
 function initTimeline() {
   const dotsEl = document.getElementById("timeline-dots");
   const detailsEl = document.getElementById("timeline-details");
   const progressEl = document.getElementById("timeline-progress");
-  let active = "present";
-
   if (!dotsEl) return;
 
-  function scrollToDetails() {
-    setTimeout(function () {
-      detailsEl.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 100);
-  }
+  fetch('/api/timeline/').then(function (r) { return r.json(); }).then(function (data) {
+    const JOB = data.job;
+    const PRESENT = data.present;
+    const TIMELINE = data.timeline;
+    let active = "present";
 
-  TIMELINE.forEach((item, i) => {
-    // projects distributed between job (0%) and present (100%)
-    var pct = TIMELINE.length > 1 ? ((i + 1) / (TIMELINE.length + 1)) * 100 : 50;
+    function scrollToDetails() {
+      setTimeout(function () {
+        detailsEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 100);
+    }
 
-    var dot = document.createElement("div");
-    dot.className = "tl-dot";
-    dot.style.left = pct + "%";
-    dot.title = item.title;
+    TIMELINE.forEach(function (item, i) {
+      var pct = TIMELINE.length > 1 ? ((i + 1) / (TIMELINE.length + 1)) * 100 : 50;
 
-    var label = document.createElement("div");
-    label.className = "tl-label";
-    label.style.left = pct + "%";
-    label.textContent = item.date;
+      var dot = document.createElement("div");
+      dot.className = "tl-dot";
+      dot.style.left = pct + "%";
+      dot.title = item.title;
 
-    dot.addEventListener("click", function () {
-      select("project-" + i);
+      var label = document.createElement("div");
+      label.className = "tl-label";
+      label.style.left = pct + "%";
+      label.textContent = item.date;
+
+      dot.addEventListener("click", function () {
+        select("project-" + i);
+        scrollToDetails();
+      });
+      dotsEl.appendChild(dot);
+      dotsEl.appendChild(label);
+    });
+
+    // job start dot at 0%
+    var jobDot = document.createElement("div");
+    jobDot.className = "tl-dot tl-dot-job";
+    jobDot.style.left = "0%";
+    jobDot.title = JOB.title;
+    var jobLabel = document.createElement("div");
+    jobLabel.className = "tl-label tl-label-job";
+    jobLabel.style.left = "0%";
+    jobLabel.textContent = JOB.dateRange.split(" — ")[0];
+    jobDot.addEventListener("click", function () {
+      select("job");
       scrollToDetails();
     });
-    dotsEl.appendChild(dot);
-    dotsEl.appendChild(label);
-  });
+    dotsEl.appendChild(jobDot);
+    dotsEl.appendChild(jobLabel);
 
-  // job start dot at 0% (logically before April)
-  var jobDot = document.createElement("div");
-  jobDot.className = "tl-dot tl-dot-job";
-  jobDot.style.left = "0%";
-  jobDot.title = JOB.title;
-  var jobLabel = document.createElement("div");
-  jobLabel.className = "tl-label tl-label-job";
-  jobLabel.style.left = "0%";
-  jobLabel.textContent = JOB.dateRange.split(" — ")[0];
-  jobDot.addEventListener("click", function () {
-    select("job");
-    scrollToDetails();
-  });
-  dotsEl.appendChild(jobDot);
-  dotsEl.appendChild(jobLabel);
+    // present dot at 100%
+    var presentDot = document.createElement("div");
+    presentDot.className = "tl-dot tl-dot-present";
+    presentDot.style.left = "100%";
+    presentDot.title = PRESENT.title;
+    var presentLabel = document.createElement("div");
+    presentLabel.className = "tl-label tl-label-present";
+    presentLabel.style.left = "100%";
+    presentLabel.textContent = "сейчас";
+    presentDot.addEventListener("click", function () {
+      select("present");
+      scrollToDetails();
+    });
+    dotsEl.appendChild(presentDot);
+    dotsEl.appendChild(presentLabel);
 
-  // present dot at 100%
-  var presentDot = document.createElement("div");
-  presentDot.className = "tl-dot tl-dot-present";
-  presentDot.style.left = "100%";
-  presentDot.title = PRESENT.title;
-  var presentLabel = document.createElement("div");
-  presentLabel.className = "tl-label tl-label-present";
-  presentLabel.style.left = "100%";
-  presentLabel.textContent = "сейчас";
-  presentDot.addEventListener("click", function () {
     select("present");
-    scrollToDetails();
-  });
-  dotsEl.appendChild(presentDot);
-  dotsEl.appendChild(presentLabel);
-
-  select("present");
-
-  document.getElementById("hero-timeline").classList.add("show");
+    document.getElementById("hero-timeline").classList.add("show");
 
   function select(id) {
     if (id === active) return;
@@ -175,8 +131,9 @@ function initTimeline() {
     }
     detailsEl.classList.add("show");
   }
+  });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
   setTimeout(initTimeline, 3600);
 });
