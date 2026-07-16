@@ -8,11 +8,13 @@ class Skill(models.Model):
         ('md', 'Medium'),
         ('sm', 'Small'),
     ]
-    name = models.CharField(max_length=50, unique=True)
-    size = models.CharField(max_length=2, choices=SIZE_CHOICES, default='sm')
-    order = models.PositiveSmallIntegerField(default=0)
+    name = models.CharField('Название', max_length=50, unique=True)
+    size = models.CharField('Размер', max_length=2, choices=SIZE_CHOICES, default='sm')
+    order = models.PositiveSmallIntegerField('Порядок', default=0)
 
     class Meta:
+        verbose_name = 'Навык'
+        verbose_name_plural = 'Навыки'
         ordering = ['order']
 
     def __str__(self):
@@ -20,18 +22,20 @@ class Skill(models.Model):
 
 
 class Project(models.Model):
-    title = models.CharField(max_length=200)
-    repo = models.CharField(max_length=200, help_text='GitHub repo: username/repo')
-    pypi = models.CharField(max_length=100, blank=True, help_text='PyPI package name (optional)')
-    role = models.CharField(max_length=100, blank=True, help_text='e.g. Fullstack Development')
-    tagline = models.TextField(blank=True)
-    features = models.JSONField(default=list, help_text='List of feature strings')
-    links = models.JSONField(default=dict, help_text='Dict of label->url, e.g. {"pypi": "https://..."}')
-    badges_config = models.JSONField(default=list, help_text='List of badge objects: [{"label": "pypi", "source": "pypi_version"}]')
-    order = models.PositiveSmallIntegerField(default=0)
-    is_published = models.BooleanField(default=True)
+    title = models.CharField('Название', max_length=200)
+    repo = models.CharField('Репозиторий', max_length=200, help_text='GitHub: username/repo')
+    pypi = models.CharField('PyPI пакет', max_length=100, blank=True, help_text='Название пакета на PyPI (опционально)')
+    role = models.CharField('Роль', max_length=100, blank=True, help_text='например: Fullstack Development')
+    tagline = models.TextField('Слоган', blank=True)
+    features = models.JSONField('Особенности', default=list, blank=True, help_text='Список характеристик')
+    links = models.JSONField('Ссылки', default=dict, blank=True, help_text='{"pypi": "https://...", "www": "https://..."}')
+    badges_config = models.JSONField('Бейджи', default=list, blank=True, help_text='[{"label": "pypi", "source": "pypi_version"}]')
+    order = models.PositiveSmallIntegerField('Порядок', default=0)
+    is_published = models.BooleanField('Опубликован', default=True)
 
     class Meta:
+        verbose_name = 'Проект'
+        verbose_name_plural = 'Проекты'
         ordering = ['order']
 
     def __str__(self):
@@ -40,21 +44,23 @@ class Project(models.Model):
 
 class TimelineItem(models.Model):
     TYPE_CHOICES = [
-        ('project', 'Project'),
-        ('job', 'Job'),
-        ('present', 'Present'),
+        ('project', 'Проект'),
+        ('job', 'Работа'),
+        ('present', 'Настоящее'),
     ]
-    item_type = models.CharField(max_length=10, choices=TYPE_CHOICES)
-    date_label = models.CharField(max_length=100, help_text='e.g. "Апрель 2026", "Январь 2026", "сейчас"')
-    title = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    repo = models.CharField(max_length=200, blank=True, help_text='GitHub repo (for projects)')
-    url = models.URLField(blank=True, help_text='External URL (for job)')
-    role = models.CharField(max_length=100, blank=True, help_text='e.g. ИТ-Специалист')
-    date_range = models.CharField(max_length=100, blank=True, help_text='e.g. "Январь 2026 — настоящее время"')
-    order = models.PositiveSmallIntegerField(default=0)
+    item_type = models.CharField('Тип', max_length=10, choices=TYPE_CHOICES)
+    date_label = models.CharField('Дата', max_length=100, help_text='например: Апрель 2026, сейчас')
+    title = models.CharField('Название', max_length=200)
+    description = models.TextField('Описание', blank=True)
+    repo = models.CharField('Репозиторий', max_length=200, blank=True, help_text='GitHub репозиторий (для проектов)')
+    url = models.URLField('Ссылка', blank=True, help_text='Внешняя ссылка (для работы)')
+    role = models.CharField('Роль', max_length=100, blank=True, help_text='например: ИТ-Специалист')
+    date_range = models.CharField('Период', max_length=100, blank=True, help_text='например: Январь 2026 — настоящее время')
+    order = models.PositiveSmallIntegerField('Порядок', default=0)
 
     class Meta:
+        verbose_name = 'Событие'
+        verbose_name_plural = 'События'
         ordering = ['order']
 
     def __str__(self):
@@ -66,14 +72,15 @@ class ContactInfo(models.Model):
         ('email', 'Email'),
         ('telegram', 'Telegram'),
     ]
-    contact_type = models.CharField(max_length=10, choices=TYPE_CHOICES)
-    label = models.CharField(max_length=100, help_text='Display text, e.g. "s.kislyakov84@gmail.com"')
-    value = models.CharField(max_length=200, help_text='Actual value, e.g. email address or @username')
-    order = models.PositiveSmallIntegerField(default=0)
+    contact_type = models.CharField('Тип', max_length=10, choices=TYPE_CHOICES)
+    label = models.CharField('Метка', max_length=100, help_text='Отображаемый текст')
+    value = models.CharField('Значение', max_length=200, help_text='email или @username')
+    order = models.PositiveSmallIntegerField('Порядок', default=0)
 
     class Meta:
+        verbose_name = 'Контакт'
+        verbose_name_plural = 'Контакты'
         ordering = ['order']
-        verbose_name_plural = 'Contact info'
 
     def __str__(self):
         return f'{self.get_contact_type_display()}: {self.label}'
