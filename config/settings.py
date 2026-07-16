@@ -32,6 +32,7 @@ CSRF_TRUSTED_ORIGINS = ['http://132.243.121.192']
 # Application definition
 
 INSTALLED_APPS = [
+    'unfold',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,6 +41,35 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
 ]
+
+UNFOLD = {
+    "SITE_TITLE": "Dossier Admin",
+    "SITE_HEADER": "Dossier Admin",
+    "SITE_URL": "/",
+    "SITE_ICON": lambda request: None,
+    "COLORS": {
+        "primary": {
+            "50": "250 245 240",
+            "100": "245 235 225",
+            "200": "235 215 195",
+            "300": "228 181 146",
+            "400": "220 160 115",
+            "500": "210 140 85",
+            "600": "195 120 60",
+            "700": "175 100 40",
+            "800": "150 80 30",
+            "900": "120 60 20",
+        },
+        "font": {
+            "subtle-light": "160 150 140",
+            "subtle-dark": "160 150 140",
+            "default-light": "255 243 234",
+            "default-dark": "35 35 35",
+            "important-light": "255 243 234",
+            "important-dark": "25 25 25",
+        },
+    },
+}
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
