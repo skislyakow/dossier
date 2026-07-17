@@ -1495,5 +1495,17 @@ h1 {
         gap: 0.5rem;
         flex-direction: column;
         align-items: flex-start;
+        position: relative;
+        top: 0;
+        left: 0;
+        align-self: flex-start;
+        margin-bottom: 1rem;
+    }
+    .hero {
+        justify-content: flex-start;
+        padding-top: 1.5rem;
+    }
+    .hero .content-row {
+        flex: 0 1 auto;
     }
 }
