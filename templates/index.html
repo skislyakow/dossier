@@ -166,8 +166,7 @@
             if (!container) return;
             fetch('/api/skills/').then(function(r) { return r.json(); }).then(function(skills) {
                 container.innerHTML = skills.map(function(s) {
-                    var icon = s.icon ? '<span class="material-symbols-outlined tag-icon">' + s.icon + '</span>' : '';
-                    return '<span class="tag tag-' + s.size + '">' + icon + s.name + '</span>';
+                    return '<span class="tag tag-' + s.size + '">' + s.name + '</span>';
                 }).join('');
             }).catch(function() {});
         })();
