@@ -75,15 +75,19 @@ body {
     position: absolute;
     top: 2.5rem;
     left: 2rem;
-    text-align: left;
     z-index: 1;
     pointer-events: none;
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 1.5rem;
+    flex-wrap: wrap;
 }
 
 .hero-text h1 {
     color: #fff3ea;
-    font-size: 4.5rem;
-    margin: 0 0 0.5rem 0;
+    font-size: 6.75rem;
+    margin: 0;
     background-image: radial-gradient(
         circle at var(--mx, 50%) var(--my, 50%),
         #fff3ea 0%, #fff3ea 40%,
