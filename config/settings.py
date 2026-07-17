@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 
 import os
 from pathlib import Path
+from django.urls import reverse_lazy
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -56,10 +57,10 @@ UNFOLD = {
                 "separator": True,
                 "collapsible": True,
                 "items": [
-                    {"title": "Навыки", "icon": "code", "model": "main.Skill"},
-                    {"title": "Проекты", "icon": "dashboard", "model": "main.Project"},
-                    {"title": "События", "icon": "timeline", "model": "main.TimelineItem"},
-                    {"title": "Контакты", "icon": "contacts", "model": "main.ContactInfo"},
+                    {"title": "Навыки", "icon": "code", "link": reverse_lazy("admin:main_skill_changelist")},
+                    {"title": "Проекты", "icon": "dashboard", "link": reverse_lazy("admin:main_project_changelist")},
+                    {"title": "События", "icon": "timeline", "link": reverse_lazy("admin:main_timelineitem_changelist")},
+                    {"title": "Контакты", "icon": "contacts", "link": reverse_lazy("admin:main_contactinfo_changelist")},
                 ],
             },
             {
@@ -67,8 +68,8 @@ UNFOLD = {
                 "separator": True,
                 "collapsible": True,
                 "items": [
-                    {"title": "Пользователи", "icon": "people", "model": "auth.User"},
-                    {"title": "Группы", "icon": "manage_accounts", "model": "auth.Group"},
+                    {"title": "Пользователи", "icon": "people", "link": reverse_lazy("admin:auth_user_changelist")},
+                    {"title": "Группы", "icon": "manage_accounts", "link": reverse_lazy("admin:auth_group_changelist")},
                 ],
             },
         ],
