@@ -15,30 +15,30 @@ class Command(BaseCommand):
     def _seed_skills(self):
         Skill.objects.all().delete()
         skills = [
-            ('Python', 'xl', 0),
-            ('Django', 'lg', 1),
-            ('SQLite', 'md', 2),
-            ('Docker', 'md', 3),
-            ('Nginx', 'md', 4),
-            ('Gunicorn', 'md', 5),
-            ('Ubuntu', 'md', 6),
-            ('Git', 'md', 7),
-            ('REST API', 'md', 8),
-            ('asyncio', 'sm', 9),
-            ('requests', 'sm', 10),
-            ('httpx', 'sm', 11),
-            ('Pydantic', 'sm', 12),
-            ('PyPI', 'sm', 13),
-            ('Jinja2', 'sm', 14),
-            ('Bootstrap', 'sm', 15),
-            ('GitHub Actions', 'sm', 16),
-            ('HTML', 'sm', 17),
-            ('CSS', 'sm', 18),
-            ('JavaScript', 'sm', 19),
-            ('opencode-py', 'sm', 20),
+            ('Python', 'xl', 0, 'python'),
+            ('Django', 'lg', 1, 'api'),
+            ('SQLite', 'md', 2, 'database'),
+            ('Docker', 'md', 3, 'deployed_code'),
+            ('Nginx', 'md', 4, 'cloud'),
+            ('Gunicorn', 'md', 5, 'dns'),
+            ('Ubuntu', 'md', 6, 'computer'),
+            ('Git', 'md', 7, 'commit'),
+            ('REST API', 'md', 8, 'api'),
+            ('asyncio', 'sm', 9, 'sync_alt'),
+            ('requests', 'sm', 10, 'http'),
+            ('httpx', 'sm', 11, 'http'),
+            ('Pydantic', 'sm', 12, 'schema'),
+            ('PyPI', 'sm', 13, 'package'),
+            ('Jinja2', 'sm', 14, 'code'),
+            ('Bootstrap', 'sm', 15, 'design_services'),
+            ('GitHub Actions', 'sm', 16, 'deployed_code_update'),
+            ('HTML', 'sm', 17, 'html'),
+            ('CSS', 'sm', 18, 'css'),
+            ('JavaScript', 'sm', 19, 'javascript'),
+            ('opencode-py', 'sm', 20, 'smart_toy'),
         ]
-        for name, size, order in skills:
-            Skill.objects.create(name=name, size=size, order=order)
+        for name, size, order, icon in skills:
+            Skill.objects.create(name=name, size=size, order=order, icon=icon)
         self.stdout.write(f'  Created {len(skills)} skills')
 
     def _seed_projects(self):
