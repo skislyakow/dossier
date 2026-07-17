@@ -3,11 +3,7 @@ function initGhostSkills() {
   if (!container) return;
 
   fetch('/api/skills/').then(function (r) { return r.json(); }).then(function (skills) {
-    var shuffled = skills.slice().sort(function () { return Math.random() - 0.5; });
-    var selected = shuffled.slice(0, Math.min(shuffled.length, 8));
-    var sizes = { xl: '5rem', lg: '4rem', md: '3rem', sm: '2rem' };
-
-    selected.forEach(function (skill) {
+    skills.forEach(function (skill) {
       var el = document.createElement('span');
       el.className = 'ghost-skill';
       el.style.cssText = [
@@ -19,8 +15,8 @@ function initGhostSkills() {
 
       var icon = document.createElement('span');
       icon.className = 'material-symbols-outlined ghost-skill-icon';
-      var iconSize = sizes[skill.size] || '3rem';
-      icon.style.cssText = 'font-size: ' + iconSize;
+      var size = 1.5 + Math.random() * 4;
+      icon.style.cssText = 'font-size: ' + size.toFixed(1) + 'rem';
       icon.textContent = skill.icon || 'code';
       el.appendChild(icon);
 
