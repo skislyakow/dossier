@@ -18,6 +18,7 @@ jobs:
             cd /root/dossier
             git pull origin main
             .venv/bin/pip install -r requirements.txt -q
+            .venv/bin/python manage.py migrate --noinput
             .venv/bin/python manage.py collectstatic --noinput
             chown -R www-data:www-data /var/www/dossier/static
             systemctl restart dossier
