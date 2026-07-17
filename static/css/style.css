@@ -845,7 +845,6 @@ h1 {
     border: 1px solid #e4e4e7;
     border-left: 3px solid #e4b592;
     border-radius: 12px;
-    padding: 1.5rem;
     text-align: left;
     animation: cardFadeIn 0.5s cubic-bezier(0.61, 1, 0.88, 1) forwards;
     opacity: 0;
@@ -854,7 +853,7 @@ h1 {
     transition: all 0.3s cubic-bezier(0.61, 1, 0.88, 1);
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    overflow: hidden;
 }
 
 .portfolio-card:hover {
@@ -869,6 +868,35 @@ h1 {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+.portfolio-card-media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+    background: #e4e4e7;
+}
+
+.portfolio-card-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.portfolio-card-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.portfolio-card-body {
+    padding: 1rem 1.25rem 1.25rem;
 }
 
 .portfolio-card-header {

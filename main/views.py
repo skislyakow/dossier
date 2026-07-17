@@ -69,6 +69,7 @@ def api_projects(request):
             'features': p.features,
             'links': p.links,
             'badges': p.badges_config,
+            'screenshot': p.screenshot or None,
         }
         for p in projects
     ], safe=False)

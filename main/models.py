@@ -31,6 +31,7 @@ class Project(models.Model):
     features = models.JSONField('Особенности', default=list, blank=True, help_text='Список характеристик')
     links = models.JSONField('Ссылки', default=dict, blank=True, help_text='{"pypi": "https://...", "www": "https://..."}')
     badges_config = models.JSONField('Бейджи', default=list, blank=True, help_text='[{"label": "pypi", "source": "pypi_version"}]')
+    screenshot = models.URLField('Скриншот', blank=True, help_text='URL изображения для карточки проекта')
     order = models.PositiveSmallIntegerField('Порядок', default=0)
     is_published = models.BooleanField('Опубликован', default=True)
 

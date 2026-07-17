@@ -4,6 +4,38 @@ const ICONS = {
   www: '<svg height="18" width="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>',
 };
 
+const PLACEHOLDER_THEMES = {
+  "Python SDK Development": {
+    gradient: "linear-gradient(135deg, #306998 0%, #FFD43B 100%)",
+    icon: '<svg height="40" width="40" viewBox="0 0 24 24" fill="none"><path d="M12 2C7.58 2 4 3.79 4 6v2c0 1.66 3.58 3 8 3s8-1.34 8-3V6c0-2.21-3.58-4-8-4z" fill="currentColor" opacity="0.7"/><path d="M4 10v2c0 2.21 3.58 4 8 4s8-1.79 8-4v-2c0 2.21-3.58 4-8 4s-8-1.79-8-4z" fill="currentColor" opacity="0.5"/><path d="M4 14v2c0 2.21 3.58 4 8 4s8-1.79 8-4v-2c0 2.21-3.58 4-8 4s-8-1.79-8-4z" fill="currentColor" opacity="0.3"/></svg>',
+  },
+  "Fullstack Development": {
+    gradient: "linear-gradient(135deg, #e4b592 0%, #d4a87a 50%, #c09060 100%)",
+    icon: '<svg height="40" width="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h16M4 18h16"/><path d="M9 4v16M15 4v16" stroke-width="1" opacity="0.4"/></svg>',
+  },
+  "Bot Development": {
+    gradient: "linear-gradient(135deg, #0d9488 0%, #14b8a6 50%, #5eead4 100%)",
+    icon: '<svg height="40" width="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>',
+  },
+  "Web Development": {
+    gradient: "linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #93c5fd 100%)",
+    icon: '<svg height="40" width="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 010 18 15 15 0 010-18z" stroke-width="1" opacity="0.4"/></svg>',
+  },
+};
+
+const DEFAULT_PLACEHOLDER = {
+  gradient: "linear-gradient(135deg, #71717a 0%, #a1a1aa 50%, #d4d4d8 100%)",
+  icon: '<svg height="40" width="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>',
+};
+
+function renderProjectMedia(project) {
+  if (project.screenshot) {
+    return `<img src="${project.screenshot}" alt="${project.title}" class="portfolio-card-img" loading="lazy">`;
+  }
+  const theme = PLACEHOLDER_THEMES[project.role] || DEFAULT_PLACEHOLDER;
+  return `<div class="portfolio-card-placeholder" style="background: ${theme.gradient}">${theme.icon}</div>`;
+}
+
 async function fetchProjectData(project) {
   const promises = [
     fetch(`https://api.github.com/repos/${project.repo}`),
@@ -140,6 +172,8 @@ portfolioBtn.addEventListener('click', async (e) => {
 
       html += `
         <div class="portfolio-card" style="--card-index: ${i}; animation-delay: ${i * 0.2}s">
+          <div class="portfolio-card-media">${renderProjectMedia(project)}</div>
+          <div class="portfolio-card-body">
           <div class="portfolio-card-header">
             <div class="portfolio-card-title-wrap"><h3>${project.title}</h3></div>
             <span class="portfolio-stars"><svg height="14" width="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> ${project.repo?.stargazers_count ?? ''}</span>
@@ -159,6 +193,7 @@ portfolioBtn.addEventListener('click', async (e) => {
           </ul>
           <hr class="portfolio-divider">
           <div class="portfolio-links">${linksHtml}</div>
+          </div>
         </div>
       `;
     });
