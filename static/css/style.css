@@ -132,22 +132,22 @@ body {
         transform: translateY(20px) scale(0.95);
     }
     10% {
-        opacity: 0.04;
+        opacity: var(--ghost-opacity, 0.04);
     }
     30% {
-        opacity: 0.06;
+        opacity: var(--ghost-opacity, 0.06);
         transform: translateY(-10px) scale(1);
     }
     50% {
-        opacity: 0.04;
+        opacity: var(--ghost-opacity, 0.04);
         transform: translateY(0) scale(1.02);
     }
     70% {
-        opacity: 0.05;
+        opacity: var(--ghost-opacity, 0.05);
         transform: translateY(-15px) scale(1);
     }
     90% {
-        opacity: 0.03;
+        opacity: var(--ghost-opacity, 0.03);
     }
     100% {
         opacity: 0;
@@ -1602,9 +1602,10 @@ h1 {
 }
 
 [data-theme="light"] .ghost-skill {
-    color: var(--border);
+    color: #d0d7de;
     opacity: 0;
     mix-blend-mode: normal;
+    --ghost-opacity: 0.18;
 }
 
 [data-theme="light"] .hero-blur {
