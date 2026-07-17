@@ -10,7 +10,7 @@ function initGhostSkills() {
         'top: ' + (Math.random() * 80 + 5) + '%',
         'left: ' + (Math.random() * 80 + 5) + '%',
         'animation-duration: ' + (14 + Math.random() * 10) + 's',
-        'animation-delay: ' + (Math.random() * 12) + 's',
+        'animation-delay: ' + (Math.random() * 5) + 's',
       ].join(';');
 
       var icon = document.createElement('span');
@@ -25,6 +25,4 @@ function initGhostSkills() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', function () {
-  setTimeout(initGhostSkills, 500);
-});
+initGhostSkills();
