@@ -10,14 +10,20 @@ function initGhostSkills() {
     selected.forEach(function (skill) {
       var el = document.createElement('span');
       el.className = 'ghost-skill';
-      el.textContent = skill.name;
       el.style.cssText = [
         'top: ' + (Math.random() * 80 + 5) + '%',
         'left: ' + (Math.random() * 80 + 5) + '%',
-        'font-size: ' + (sizes[skill.size] || '3rem'),
         'animation-duration: ' + (14 + Math.random() * 10) + 's',
         'animation-delay: ' + (Math.random() * 12) + 's',
       ].join(';');
+
+      var icon = document.createElement('span');
+      icon.className = 'material-symbols-outlined ghost-skill-icon';
+      var iconSize = sizes[skill.size] || '3rem';
+      icon.style.cssText = 'font-size: ' + iconSize;
+      icon.textContent = skill.icon || 'code';
+      el.appendChild(icon);
+
       container.appendChild(el);
     });
   });
