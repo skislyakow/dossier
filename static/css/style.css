@@ -74,8 +74,8 @@ body {
 .hero-text {
     position: absolute;
     top: 2.5rem;
-    right: 2rem;
-    text-align: right;
+    left: 2rem;
+    text-align: left;
     z-index: 1;
     pointer-events: none;
 }
