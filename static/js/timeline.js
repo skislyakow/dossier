@@ -12,7 +12,7 @@ function initTimeline() {
 
     function scrollToDetails() {
       setTimeout(function () {
-        detailsEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        document.getElementById("hero-timeline").scrollIntoView({ behavior: "smooth", block: "start" });
       }, 100);
     }
 
