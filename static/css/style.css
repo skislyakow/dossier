@@ -677,8 +677,8 @@ h1 {
     flex-direction: column;
 }
 
-.hero .content-column:first-child .terminal {
-    flex: 1;
+.hero .content-column:last-child {
+    justify-content: center;
 }
 
 .skills-cloud {
