@@ -52,7 +52,7 @@ def ask_stream(request):
 def api_skills(request):
     skills = Skill.objects.all()
     return JsonResponse([
-        {'name': s.name, 'size': s.size}
+        {'name': s.name, 'size': s.size, 'icon': s.icon}
         for s in skills
     ], safe=False)
 

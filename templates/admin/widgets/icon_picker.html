@@ -1,0 +1,42 @@
+<div class="icon-picker-wrapper" x-data="iconPicker('{{ widget.value|default:'' }}')">
+  <div class="icon-picker-input">
+    <span class="icon-picker-preview" :class="icon ? 'has-icon' : ''">
+      <span class="material-symbols-outlined" x-text="icon || 'add_circle_outline'"></span>
+    </span>
+    <input type="text" name="{{ widget.name }}" id="{{ widget.id }}" value="{{ widget.value|default:'' }}"
+           x-model="icon" x-on:input="onInput($event)"
+           placeholder="Поиск иконки..." autocomplete="off"
+           class="vTextField">
+    <button type="button" class="icon-picker-clear" x-show="icon" x-on:click="clear()" aria-label="Очистить">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <div class="icon-picker-dropdown" x-show="open" x-on:click.outside="open = false" x-cloak>
+    <div class="icon-picker-search">
+      <span class="material-symbols-outlined">search</span>
+      <input type="text" x-model="query" x-on:input="onQuery($event)" placeholder="Поиск..." autofocus>
+      <span class="material-symbols-outlined icon-picker-close" x-on:click="open = false">close</span>
+    </div>
+    <div class="icon-picker-grid">
+      <template x-for="cat in filteredCategories" :key="cat.name">
+        <div class="icon-picker-category">
+          <div class="icon-picker-category-title" x-text="cat.name"></div>
+          <div class="icon-picker-category-icons">
+            <template x-for="icn in cat.icons" :key="icn">
+              <button type="button" class="icon-picker-item" :class="{active: icn === icon}"
+                      x-on:click="select(icn)" :title="icn">
+                <span class="material-symbols-outlined" x-text="icn"></span>
+              </button>
+            </template>
+          </div>
+        </div>
+      </template>
+      <div class="icon-picker-empty" x-show="filteredCategories.length === 0">
+        Нет иконок для «<span x-text="query"></span>»
+      </div>
+    </div>
+  </div>
+  <button type="button" class="icon-picker-browse" x-on:click="open = !open">
+    <span class="material-symbols-outlined">grid_view</span> Выбрать
+  </button>
+</div>

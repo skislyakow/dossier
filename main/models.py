@@ -10,6 +10,7 @@ class Skill(models.Model):
     ]
     name = models.CharField('Название', max_length=50, unique=True)
     size = models.CharField('Размер', max_length=2, choices=SIZE_CHOICES, default='sm')
+    icon = models.CharField('Иконка', max_length=50, blank=True, help_text='Название Material Symbols иконки')
     order = models.PositiveSmallIntegerField('Порядок', default=0)
 
     class Meta:
