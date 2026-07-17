@@ -132,13 +132,13 @@ h1 {
 }
 
 .title {
-    font-size: 1.25rem;
+    font-size: 1.5rem;
     font-weight: 500;
     color: #71717a;
     margin: 0 0 2rem 0;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    min-height: 1.5rem;
+    min-height: 2rem;
 }
 
 .hero .title {
@@ -656,23 +656,23 @@ h1 {
 }
 
 .tag-xl {
-    font-size: 1.3rem;
-    padding: 0.35rem 0.8rem;
+    font-size: 1.5rem;
+    padding: 0.4rem 0.9rem;
 }
 
 .tag-lg {
-    font-size: 1.15rem;
-    padding: 0.3rem 0.7rem;
+    font-size: 1.35rem;
+    padding: 0.35rem 0.8rem;
 }
 
 .tag-md {
-    font-size: 1rem;
-    padding: 0.25rem 0.6rem;
+    font-size: 1.2rem;
+    padding: 0.3rem 0.7rem;
 }
 
 .tag-sm {
-    font-size: 0.85rem;
-    padding: 0.2rem 0.5rem;
+    font-size: 1rem;
+    padding: 0.25rem 0.6rem;
 }
 
 @media (max-width: 640px) {
@@ -882,7 +882,7 @@ h1 {
 
 .portfolio-card-title-wrap h3 {
     margin: 0;
-    font-size: 1.1rem;
+    font-size: 1.35rem;
     font-weight: 700;
     color: #2a241f;
     line-height: 1.3;
@@ -908,7 +908,7 @@ h1 {
 
 .portfolio-tagline {
     margin: 0;
-    font-size: 0.8rem;
+    font-size: 0.95rem;
     color: #a1a1aa;
     line-height: 1.4;
 }
@@ -920,9 +920,9 @@ h1 {
 }
 
 .portfolio-tag {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     font-family: 'Fira Code', monospace;
-    padding: 0.2rem 0.55rem;
+    padding: 0.25rem 0.65rem;
     background: #e4e4e7;
     color: #52525b;
     border-radius: 4px;
@@ -938,7 +938,7 @@ h1 {
 .badge {
     display: inline-flex;
     font-family: 'Fira Code', monospace;
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     line-height: 1;
     border-radius: 3px;
     overflow: hidden;
@@ -963,10 +963,10 @@ h1 {
 }
 
 .badge-role {
-    padding: 0.35rem 0.75rem;
+    padding: 0.4rem 0.85rem;
     background: rgba(228, 181, 146, 0.12);
     color: #e4b592;
-    font-size: 0.8rem;
+    font-size: 0.9rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -986,7 +986,7 @@ h1 {
 }
 
 .portfolio-features li {
-    font-size: 0.85rem;
+    font-size: 0.95rem;
     color: #52525b;
     padding: 0.15rem 0;
     padding-left: 1.25rem;
@@ -1164,28 +1164,28 @@ h1 {
 }
 
 .tl-details-date {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     color: #a1a1aa;
     font-family: 'Fira Code', monospace;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.35rem;
 }
 
 .tl-details-title {
-    margin: 0 0 0.35rem;
-    font-size: 1rem;
+    margin: 0 0 0.5rem;
+    font-size: 1.35rem;
     font-weight: 700;
     color: #2a241f;
 }
 
 .tl-details-job-range {
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     color: #a1a1aa;
     font-family: 'Fira Code', monospace;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.35rem;
 }
 
 .tl-details-job-role {
-    font-size: 0.85rem;
+    font-size: 1rem;
     color: #e4b592;
     font-weight: 600;
     margin-bottom: 0.5rem;
@@ -1193,7 +1193,7 @@ h1 {
 
 .tl-details-desc {
     margin: 0 0 0.5rem;
-    font-size: 0.8rem;
+    font-size: 0.95rem;
     color: #71717a;
     line-height: 1.5;
 }
@@ -1202,7 +1202,7 @@ h1 {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: #e4b592;
     text-decoration: none;
     transition: opacity 0.3s cubic-bezier(0.61, 1, 0.88, 1);
@@ -1263,7 +1263,7 @@ h1 {
     text-decoration: none;
     color: #27272a;
     font-family: 'Fira Code', monospace;
-    font-size: 0.85rem;
+    font-size: 1rem;
     transition: all 0.2s cubic-bezier(0.61, 1, 0.88, 1);
 }
 
