@@ -72,16 +72,16 @@ body {
 }
 
 .hero-text {
-    position: absolute;
-    top: 2.5rem;
-    left: 2rem;
+    text-align: center;
     z-index: 1;
     pointer-events: none;
     display: flex;
     flex-direction: row;
     align-items: baseline;
+    justify-content: center;
     gap: 1.5rem;
     flex-wrap: wrap;
+    margin-bottom: 2rem;
 }
 
 .hero-text h1 {
@@ -661,7 +661,6 @@ h1 {
 }
 
 .hero .content-row {
-    flex: 1;
     min-height: 0;
     max-width: 1100px;
     margin: 0 auto 1rem;
@@ -1467,8 +1466,6 @@ h1 {
     }
     .hero-text {
         gap: 0.75rem;
-        left: 1rem;
-        top: 1.5rem;
     }
     .hero {
         padding: 1.5rem 1rem 0;
@@ -1494,18 +1491,10 @@ h1 {
     .hero-text {
         gap: 0.5rem;
         flex-direction: column;
-        align-items: flex-start;
-        position: relative;
-        top: 0;
-        left: 0;
-        align-self: flex-start;
+        align-items: center;
         margin-bottom: 1rem;
     }
     .hero {
-        justify-content: flex-start;
         padding-top: 1.5rem;
-    }
-    .hero .content-row {
-        flex: 0 1 auto;
     }
 }
