@@ -47,6 +47,32 @@ UNFOLD = {
     "SITE_HEADER": "Dossier Admin",
     "SITE_URL": "/",
     "SITE_ICON": lambda request: None,
+    "SIDEBAR": {
+        "show_search": False,
+        "show_all_applications": False,
+        "navigation": [
+            {
+                "title": "Контент",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {"title": "Навыки", "icon": "code", "model": "main.Skill"},
+                    {"title": "Проекты", "icon": "dashboard", "model": "main.Project"},
+                    {"title": "События", "icon": "timeline", "model": "main.TimelineItem"},
+                    {"title": "Контакты", "icon": "contacts", "model": "main.ContactInfo"},
+                ],
+            },
+            {
+                "title": "Пользователи",
+                "separator": True,
+                "collapsible": True,
+                "items": [
+                    {"title": "Пользователи", "icon": "people", "model": "auth.User"},
+                    {"title": "Группы", "icon": "manage_accounts", "model": "auth.Group"},
+                ],
+            },
+        ],
+    },
     "COLORS": {
         "base": {
             "50": "oklch(98.5% .002 80)",
