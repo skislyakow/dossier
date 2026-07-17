@@ -801,8 +801,9 @@ h1 {
 }
 
 .hero-timeline {
-    width: 100vw;
-    margin-left: calc(-50vw + 50%);
+    width: 100%;
+    max-width: 860px;
+    margin: 0 auto;
     padding: 0 0 1.5rem;
     opacity: 0;
     transform: translateY(10px);
