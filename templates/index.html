@@ -22,13 +22,7 @@
 <body>
     <div class="hero">
         <div class="hero-blur"></div>
-        <div class="hero-ghost" aria-hidden="true">
-            <span class="ghost-skill ghost-skill--1">PostgreSQL</span>
-            <span class="ghost-skill ghost-skill--2">DRF</span>
-            <span class="ghost-skill ghost-skill--3">PostgreSQL</span>
-            <span class="ghost-skill ghost-skill--4">DRF</span>
-            <span class="ghost-skill ghost-skill--5">PostgreSQL</span>
-        </div>
+        <div class="hero-ghost" aria-hidden="true"></div>
         <h1>Sergey Kislyakov</h1>
         <p class="title"><span id="typing-text"></span><span class="cursor">|</span></p>
         <div class="content-row">
@@ -137,6 +131,7 @@
             });
         })();
     </script>
+    <script src="{% static 'js/ghost.js' %}"></script>
     <button id="back-to-top" class="back-to-top" aria-label="Back to top">
         <svg height="20" width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 15l-6-6-6 6"/>

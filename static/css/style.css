@@ -78,47 +78,8 @@ body {
     color: #fff3ea;
     opacity: 0;
     mix-blend-mode: screen;
-    animation: ghostFloat 12s cubic-bezier(0.61, 1, 0.88, 1) infinite;
-}
-
-.ghost-skill--1 {
-    font-size: 4.5rem;
-    top: 8%;
-    left: -5%;
-    animation-duration: 14s;
-    animation-delay: 0s;
-}
-
-.ghost-skill--2 {
-    font-size: 3rem;
-    bottom: 15%;
-    right: -5%;
-    animation-duration: 16s;
-    animation-delay: 2s;
-}
-
-.ghost-skill--3 {
-    font-size: 5rem;
-    top: 40%;
-    left: 60%;
-    animation-duration: 18s;
-    animation-delay: 4s;
-}
-
-.ghost-skill--4 {
-    font-size: 3.5rem;
-    bottom: 30%;
-    left: 10%;
-    animation-duration: 15s;
-    animation-delay: 6s;
-}
-
-.ghost-skill--5 {
-    font-size: 6rem;
-    top: 15%;
-    right: 20%;
-    animation-duration: 20s;
-    animation-delay: 8s;
+    animation: ghostFloat cubic-bezier(0.61, 1, 0.88, 1) infinite;
+    white-space: nowrap;
 }
 
 @keyframes ghostFloat {
