@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="ru" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -204,7 +204,12 @@
             var root = document.documentElement;
             var toggle = document.getElementById('theme-toggle');
             var stored = localStorage.getItem('theme');
-            if (stored === 'light') root.setAttribute('data-theme', 'light');
+            if (stored === 'dark') {
+                root.removeAttribute('data-theme');
+            } else {
+                root.setAttribute('data-theme', 'light');
+                if (!stored) localStorage.setItem('theme', 'light');
+            }
             if (!toggle) return;
             toggle.addEventListener('click', function(e) {
                 e.preventDefault();
