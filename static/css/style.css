@@ -63,6 +63,93 @@ body {
     z-index: -1;
 }
 
+.hero-ghost {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.ghost-skill {
+    position: absolute;
+    font-family: 'Fira Code', monospace;
+    font-weight: 700;
+    color: #fff3ea;
+    opacity: 0;
+    mix-blend-mode: screen;
+    animation: ghostFloat 12s cubic-bezier(0.61, 1, 0.88, 1) infinite;
+}
+
+.ghost-skill--1 {
+    font-size: 4.5rem;
+    top: 8%;
+    left: -5%;
+    animation-duration: 14s;
+    animation-delay: 0s;
+}
+
+.ghost-skill--2 {
+    font-size: 3rem;
+    bottom: 15%;
+    right: -5%;
+    animation-duration: 16s;
+    animation-delay: 2s;
+}
+
+.ghost-skill--3 {
+    font-size: 5rem;
+    top: 40%;
+    left: 60%;
+    animation-duration: 18s;
+    animation-delay: 4s;
+}
+
+.ghost-skill--4 {
+    font-size: 3.5rem;
+    bottom: 30%;
+    left: 10%;
+    animation-duration: 15s;
+    animation-delay: 6s;
+}
+
+.ghost-skill--5 {
+    font-size: 6rem;
+    top: 15%;
+    right: 20%;
+    animation-duration: 20s;
+    animation-delay: 8s;
+}
+
+@keyframes ghostFloat {
+    0% {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    10% {
+        opacity: 0.04;
+    }
+    30% {
+        opacity: 0.06;
+        transform: translateY(-10px) scale(1);
+    }
+    50% {
+        opacity: 0.04;
+        transform: translateY(0) scale(1.02);
+    }
+    70% {
+        opacity: 0.05;
+        transform: translateY(-15px) scale(1);
+    }
+    90% {
+        opacity: 0.03;
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+    }
+}
+
 .hero-blur {
     position: absolute;
     inset: 0;
@@ -84,6 +171,9 @@ body {
     .hero-blur {
         backdrop-filter: none;
         -webkit-backdrop-filter: none;
+    }
+    .ghost-skill {
+        display: none;
     }
 }
 
