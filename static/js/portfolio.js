@@ -38,8 +38,8 @@ function renderProjectMedia(project) {
 
 async function fetchProjectData(project) {
   const promises = [
-    fetch(`https://api.github.com/repos/${project.repo}`),
-    fetch(`https://api.github.com/repos/${project.repo}/languages`),
+    fetch(`https://api.github.com/repos/${project.repo}`).catch(() => null),
+    fetch(`https://api.github.com/repos/${project.repo}/languages`).catch(() => null),
   ];
 
   if (project.pypi) {
@@ -52,15 +52,26 @@ async function fetchProjectData(project) {
   }
 
   const results = await Promise.all(promises);
-  const repo = results[0].ok ? await results[0].json() : {};
-  const langs = results[1].ok ? await results[1].json() : {};
+
+  let repo = {};
+  let langs = {};
+  try {
+    if (results[0]?.ok) repo = await results[0].json();
+  } catch (_) {}
+  try {
+    if (results[1]?.ok) langs = await results[1].json();
+  } catch (_) {}
 
   let pypi = null;
   let stats = null;
 
   if (project.pypi) {
-    pypi = results[2]?.ok ? await results[2].json() : null;
-    stats = results[3]?.ok ? await results[3].json() : null;
+    try {
+      if (results[2]?.ok) pypi = await results[2].json();
+    } catch (_) {}
+    try {
+      if (results[3]?.ok) stats = await results[3].json();
+    } catch (_) {}
   }
 
   return { ...project, repo, langs, pypi, stats };
@@ -165,7 +176,7 @@ portfolioBtn.addEventListener('click', async (e) => {
         .join('');
 
       let linksHtml = `<a href="${project.repo?.html_url || '#'}" target="_blank" rel="noopener noreferrer" class="portfolio-link-icon" title="GitHub">${ICONS.github}</a>`;
-      for (const [label, url] of Object.entries(project.links)) {
+      for (const [label, url] of Object.entries(project.links || {})) {
         const icon = ICONS[label] || ICONS.github;
         linksHtml += `<a href="${url}" target="_blank" rel="noopener noreferrer" class="portfolio-link-icon" title="${label}">${icon}</a>`;
       }
