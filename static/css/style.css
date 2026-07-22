@@ -305,7 +305,7 @@ h1 {
 }
 
 .hero .social-link:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.15);
 }
 
 .theme-toggle {
@@ -348,7 +348,6 @@ h1 {
 
 .social-link:hover {
     background: #e4e4e7;
-    mix-blend-mode: screen;
 }
 
 .social-link svg {
@@ -1622,8 +1621,17 @@ h1 {
     color: var(--text-muted);
 }
 
+[data-theme="light"] .hero .social-link:hover {
+    background: #e8e8eb;
+    color: #24292f;
+}
+
 [data-theme="light"] .hero .social-label {
     color: var(--text-muted);
+}
+
+[data-theme="light"] .hero .social-link:hover .social-label {
+    color: #24292f;
 }
 
 [data-theme="light"] .hero .telegram-link:hover {
