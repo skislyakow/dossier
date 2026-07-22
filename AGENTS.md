@@ -247,30 +247,7 @@ setInterval(updateTime, 30000);
 
 Приоритет: ★☆☆
 
----
 
-### 4. SVG-path scroll animation (frame corners)
-Уже есть frame corners на терминале с `stroke-dashoffset` анимацией на hover.
-Расширить: привязать `stroke-dashoffset` к scroll position страницы (от hero до конца контента).
-
-**Как:** добавить `data-scroll` атрибут на SVG paths → в `scroll` listener вычислять прогресс (0–1) и обновлять `stroke-dashoffset`.
-
-**JS:**
-```js
-window.addEventListener('scroll', () => {
-  const scrollPercent = window.scrollY / (document.body.scrollHeight - window.innerHeight);
-  document.querySelectorAll('.fc path').forEach(path => {
-    const len = path.getTotalLength();
-    path.style.strokeDashoffset = len * (1 - Math.min(scrollPercent, 1));
-  });
-});
-```
-
-**CSS bonus:** убрать hover-анимацию на frame corners при скролле (или сделать combined).
-
-Приоритет: ★★☆ — красивый вау-эффект, код уже есть.
-
----
 
 ### 5. Теги карточек портфолио с ролями
 Добавить в карточки портфолио метку «Role» (как у Рошана `Role: Web Development`).
@@ -303,8 +280,7 @@ ${project.role ? `<span class="badge badge-role">role: ${project.role}</span>` :
 1. **Time MSK** — быстрый, заметный, стильный
 2. **Contact секция** — уже висит в to-do
 3. **Back to top** — тривиально, улучшает UX
-4. **SVG-path scroll** — красивый эффект, инфраструктура готова
-5. **Role-теги** — мелочь, но завершает карточки
+4. **Role-теги** — мелочь, но завершает карточки
 
 ### Что НЕ берём
 - Three.js / 3D сцены — нет сборщика
