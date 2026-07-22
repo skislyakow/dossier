@@ -848,8 +848,9 @@ h1 {
 
 .hero .telegram-link:hover,
 .hero .github-link:hover,
-.hero .portfolio-link:hover {
-    background: rgba(255, 255, 255, 0.08);
+.hero .portfolio-link:hover,
+.hero .contact-link:hover {
+    background: rgba(255, 255, 255, 0.15);
     box-shadow: none;
 }
 

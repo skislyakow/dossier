@@ -24,7 +24,7 @@ link.addEventListener('click', async (e) => {
         const repos = await reposRes.json();
 
         const reposRes2 = await Promise.all(repos.map(r => 
-            fetch(`https://api.github.com/repos/skislyakow/${r.name}/languages`).then(res => res.json())
+            fetch(`https://api.github.com/repos/skislyakow/${r.name}/languages`).then(res => res.ok ? res.json() : {}).catch(() => {})
         ));
 
         const langCount = {};

@@ -78,8 +78,8 @@ function initTimeline() {
     const isJob = id === "job";
     const isPresent = id === "present";
 
-    dotsEl.querySelectorAll(".tl-dot:not(.tl-dot-job):not(.tl-dot-present)").forEach(function (d, i) {
-      d.classList.toggle("active", !isJob && !isPresent && i === TIMELINE.length - 1);
+    dotsEl.querySelectorAll(".tl-dot:not(.tl-dot-job):not(.tl-dot-present)").forEach(function (d) {
+      d.classList.remove("active");
     });
     var jobDotEl = dotsEl.querySelector(".tl-dot-job");
     if (jobDotEl) jobDotEl.classList.toggle("active", isJob);
@@ -112,8 +112,6 @@ function initTimeline() {
       dotsEl.querySelectorAll(".tl-dot:not(.tl-dot-job):not(.tl-dot-present)").forEach((d, i) => {
         d.classList.toggle("active", i === idx);
       });
-      if (jobDotEl) jobDotEl.classList.remove("active");
-      if (presentDotEl) presentDotEl.classList.remove("active");
       progressEl.style.width = ((idx + 1) / (TIMELINE.length + 1) * 100) + "%";
 
       const item = TIMELINE[idx];

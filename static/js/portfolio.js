@@ -200,7 +200,7 @@ portfolioBtn.addEventListener('click', async (e) => {
           ${badgesHtml ? `<div class="portfolio-badges">${badgesHtml}</div>` : ''}
           <hr class="portfolio-divider">
           <ul class="portfolio-features">
-            ${project.features.map(f => `<li>${f}</li>`).join('')}
+            ${(project.features || []).map(f => `<li>${f}</li>`).join('')}
           </ul>
           <hr class="portfolio-divider">
           <div class="portfolio-links">${linksHtml}</div>
