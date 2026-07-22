@@ -265,8 +265,38 @@ h1 {
     color: #a1a1aa;
     text-decoration: none;
     border-radius: 50%;
-    transition: all 0.3s cubic-bezier(0.61, 1, 0.88, 1);
+    transition: all 0.35s cubic-bezier(0.61, 1, 0.88, 1);
     position: relative;
+    overflow: hidden;
+}
+
+.social-link:not(.theme-toggle):hover {
+    width: 140px;
+    border-radius: 24px;
+}
+
+.social-label {
+    position: absolute;
+    left: 100%;
+    margin-left: 10px;
+    white-space: nowrap;
+    font-size: 0.85rem;
+    font-family: 'Fira Code', monospace;
+    font-weight: 500;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 0.25s 0.05s cubic-bezier(0.61, 1, 0.88, 1),
+                transform 0.25s 0.05s cubic-bezier(0.61, 1, 0.88, 1);
+    pointer-events: none;
+}
+
+.social-link:not(.theme-toggle):hover .social-label {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.social-link:not(.theme-toggle):hover svg {
+    transform: translateX(-10px);
 }
 
 .hero .social-link {
@@ -323,6 +353,8 @@ h1 {
 .social-link svg {
     width: 28px;
     height: 28px;
+    flex-shrink: 0;
+    transition: transform 0.35s cubic-bezier(0.61, 1, 0.88, 1);
 }
 
 .github-link:hover {
@@ -1586,6 +1618,10 @@ h1 {
 }
 
 [data-theme="light"] .hero .social-link {
+    color: var(--text-muted);
+}
+
+[data-theme="light"] .hero .social-label {
     color: var(--text-muted);
 }
 
