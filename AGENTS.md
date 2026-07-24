@@ -22,8 +22,11 @@
 3. Visit `http://127.0.0.1:8000/`
 
 ## Production
+- Domain: `kislyakov.pro` (reg.ru)
 - VPS: `132.243.121.192` (Ubuntu 24.04)
 - Nginx reverse proxy → gunicorn (127.0.0.1:8000)
+- HTTPS via Let's Encrypt (certbot, auto-renewal)
+- HTTP → HTTPS redirect, www → root redirect
 - systemd service: `dossier.service`
 - Static files: `/var/www/dossier/static/`
 - Auto-deploy: GitHub Actions on push to `main`
@@ -89,7 +92,7 @@ Then push to `main` — site updates automatically.
 ## To-do
 
 ### Critical
-- [ ] HTTPS + кастомный домен (Let's Encrypt)
+- [x] HTTPS + кастомный домен (Let's Encrypt) — kislyakov.pro
 - [ ] Разделить `requirements.txt` и `requirements-prod.txt`
 
 ### SEO / видимость
@@ -97,7 +100,7 @@ Then push to `main` — site updates automatically.
 - [ ] `og:image` / `twitter:image` — нет превью при шаринге
 
 ### UX / контент
-- [ ] Кастомный домен вместо裸 IP
+- [x] Кастомный домен — kislyakov.pro
 
 ### Код / доступность
 - [ ] XSS: innerHTML в portfolio.js / timeline.js / github.js — данные из API вставляются без экранирования (низкий риск — только admin/API)
