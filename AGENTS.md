@@ -96,7 +96,7 @@ Then push to `main` — site updates automatically.
 - [ ] Разделить `requirements.txt` и `requirements-prod.txt`
 
 ### SEO / видимость
-- [ ] `sitemap.xml`, `robots.txt`
+- [x] `sitemap.xml`, `robots.txt`
 - [ ] `og:image` / `twitter:image` — нет превью при шаринге
 
 ### UX / контент
