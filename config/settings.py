@@ -34,6 +34,7 @@ CSRF_TRUSTED_ORIGINS = ['http://132.243.121.192', 'https://kislyakov.pro', 'http
 
 INSTALLED_APPS = [
     'unfold',
+    'adminsortable2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

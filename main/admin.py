@@ -1,14 +1,14 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from unfold.admin import ModelAdmin
+from adminsortable2.admin import SortableAdminMixin
 from .models import Skill, Project, TimelineItem, ContactInfo
 from .widgets import IconPickerWidget
 
 
 @admin.register(Skill)
-class SkillAdmin(ModelAdmin):
-    list_display = ['icon_display', 'name', 'size', 'order']
-    list_editable = ['size', 'order']
+class SkillAdmin(SortableAdminMixin, ModelAdmin):
+    list_display = ['icon_display', 'name', 'size', 'sort_order']
     search_fields = ['name']
     list_filter = ['size']
 
@@ -29,9 +29,9 @@ class SkillAdmin(ModelAdmin):
 
 
 @admin.register(Project)
-class ProjectAdmin(ModelAdmin):
-    list_display = ['title', 'role', 'order', 'is_published']
-    list_editable = ['order', 'is_published']
+class ProjectAdmin(SortableAdminMixin, ModelAdmin):
+    list_display = ['title', 'role', 'sort_order', 'is_published']
+    list_editable = ['is_published']
     search_fields = ['title', 'tagline', 'role']
     list_filter = ['is_published', 'role']
     fieldsets = [
@@ -46,15 +46,14 @@ class ProjectAdmin(ModelAdmin):
             'classes': ['collapse'],
         }),
         ('Meta', {
-            'fields': ['order', 'is_published'],
+            'fields': ['is_published'],
         }),
     ]
 
 
 @admin.register(TimelineItem)
-class TimelineItemAdmin(ModelAdmin):
-    list_display = ['title', 'item_type', 'date_label', 'order']
-    list_editable = ['order']
+class TimelineItemAdmin(SortableAdminMixin, ModelAdmin):
+    list_display = ['title', 'item_type', 'date_label', 'sort_order']
     list_filter = ['item_type']
     search_fields = ['title', 'description']
     fieldsets = [
@@ -65,13 +64,12 @@ class TimelineItemAdmin(ModelAdmin):
             'fields': ['description', 'role', 'repo', 'url'],
         }),
         ('Meta', {
-            'fields': ['date_range', 'order'],
+            'fields': ['date_range'],
         }),
     ]
 
 
 @admin.register(ContactInfo)
-class ContactInfoAdmin(ModelAdmin):
-    list_display = ['contact_type', 'label', 'order']
-    list_editable = ['order']
+class ContactInfoAdmin(SortableAdminMixin, ModelAdmin):
+    list_display = ['contact_type', 'label', 'sort_order']
     list_filter = ['contact_type']

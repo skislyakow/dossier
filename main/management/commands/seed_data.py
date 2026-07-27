@@ -38,7 +38,7 @@ class Command(BaseCommand):
             ('opencode-py', 'sm', 20, 'smart_toy'),
         ]
         for name, size, order, icon in skills:
-            Skill.objects.create(name=name, size=size, order=order, icon=icon)
+            Skill.objects.create(name=name, size=size, sort_order=order, icon=icon)
         self.stdout.write(f'  Created {len(skills)} skills')
 
     def _seed_projects(self):
@@ -65,7 +65,7 @@ class Command(BaseCommand):
                     {'label': 'build', 'value': 'hatchling'},
                     {'label': 'http', 'value': 'httpx'},
                 ],
-                order=0,
+                sort_order=0,
             ),
             Project(
                 repo='skislyakow/ferma',
@@ -84,7 +84,7 @@ class Command(BaseCommand):
                     {'label': 'license', 'source': 'github_license'},
                     {'label': 'language', 'source': 'github_lang'},
                 ],
-                order=1,
+                sort_order=1,
             ),
             Project(
                 repo='skislyakow/devman-bot',
@@ -106,7 +106,7 @@ class Command(BaseCommand):
                     {'label': 'requests'},
                     {'label': 'Long Polling'},
                 ],
-                order=2,
+                sort_order=2,
             ),
             Project(
                 repo='skislyakow/dossier',
@@ -138,7 +138,7 @@ class Command(BaseCommand):
                     {'label': 'Ubuntu'},
                     {'label': 'opencode-py'},
                 ],
-                order=3,
+                sort_order=3,
             ),
             Project(
                 repo='skislyakow/online_library',
@@ -163,7 +163,7 @@ class Command(BaseCommand):
                     {'label': 'Bootstrap'},
                     {'label': 'Jinja2'},
                 ],
-                order=4,
+                sort_order=4,
             ),
         ]
         Project.objects.bulk_create(projects)
@@ -180,7 +180,7 @@ class Command(BaseCommand):
                 url='https://efko.digital/',
                 role='ИТ-Специалист',
                 date_range='Январь 2026 — настоящее время',
-                order=0,
+                sort_order=0,
             ),
             TimelineItem(
                 item_type='project',
@@ -188,7 +188,7 @@ class Command(BaseCommand):
                 title='Dossier',
                 description='Персональный сайт-визитка: Django + Gunicorn + Nginx на VPS, CI/CD через GitHub Actions',
                 repo='skislyakow/dossier',
-                order=1,
+                sort_order=1,
             ),
             TimelineItem(
                 item_type='project',
@@ -196,7 +196,7 @@ class Command(BaseCommand):
                 title='Онлайн библиотека',
                 description='Генератор статического сайта на Jinja2 + Bootstrap 5. 92 книги с пагинацией, обложками и чтением онлайн.',
                 repo='skislyakow/online_library',
-                order=2,
+                sort_order=2,
             ),
             TimelineItem(
                 item_type='project',
@@ -204,7 +204,7 @@ class Command(BaseCommand):
                 title='Ferma',
                 description='Автоматизированная ферма Telegram-каналов: парсинг доноров, фильтрация рекламы, автоперевод, CPA-ссылки.',
                 repo='skislyakow/ferma',
-                order=3,
+                sort_order=3,
             ),
             TimelineItem(
                 item_type='project',
@@ -212,7 +212,7 @@ class Command(BaseCommand):
                 title='Devman Bot',
                 description='Telegram-бот для уведомлений о проверке работ на Devman через Long Polling API.',
                 repo='skislyakow/devman-bot',
-                order=4,
+                sort_order=4,
             ),
             TimelineItem(
                 item_type='project',
@@ -220,14 +220,14 @@ class Command(BaseCommand):
                 title='opencode-py',
                 description='Python SDK для opencode AI агента: sync + async API, SSE-стриминг, опубликован на PyPI.',
                 repo='skislyakow/opencode-py',
-                order=5,
+                sort_order=5,
             ),
             TimelineItem(
                 item_type='present',
                 date_label='сейчас',
                 title='Настоящее время',
                 description='Продолжаю развиваться как Python-разработчик: pet-проекты, open-source, изучение новых технологий.',
-                order=6,
+                sort_order=6,
             ),
         ]
         TimelineItem.objects.bulk_create(items)
@@ -240,13 +240,13 @@ class Command(BaseCommand):
                 contact_type='email',
                 label='s.kislyakov84@gmail.com',
                 value='s.kislyakov84@gmail.com',
-                order=0,
+                sort_order=0,
             ),
             ContactInfo(
                 contact_type='telegram',
                 label='@kislyakow',
                 value='@kislyakow',
-                order=1,
+                sort_order=1,
             ),
         ]
         ContactInfo.objects.bulk_create(contacts)
