@@ -57,12 +57,13 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - Social link hover labels (icon slides, text appears)
 - Responsive: breakpoints at 1024px, 768px, 640px
 - All content managed via Django admin (Skills, Projects, TimelineItems, ContactInfo)
+- Drag-and-drop reordering in admin (django-admin-sortable2)
 
 ## CMS models
-- **Skill** — name, size (xl/lg/md/sm), icon (Material Symbol name), order
-- **Project** — title, repo, pypi, role, tagline, features (JSON), links (JSON), badges_config (JSON), screenshot (URL), order, is_published
-- **TimelineItem** — item_type (project/job/present), date_label, title, description, repo, url, role, date_range, order
-- **ContactInfo** — contact_type (email/telegram), label, value, order
+- **Skill** — name, size (xl/lg/md/sm), icon (Material Symbol name), sort_order
+- **Project** — title, repo, pypi, role, tagline, features (JSON), links (JSON), badges_config (JSON), screenshot (URL), sort_order, is_published
+- **TimelineItem** — item_type (project/job/present), date_label, title, description, repo, url, role, date_range, sort_order
+- **ContactInfo** — contact_type (email/telegram), label, value, sort_order
 
 ## Adding a project to portfolio
 Admin: Main → Projects → Add. Fill:
@@ -72,6 +73,8 @@ Admin: Main → Projects → Add. Fill:
 - Features: JSON list of strings
 - Badges: JSON array `[{"label": "pypi", "source": "pypi_version"}]`
 - Links: JSON dict `{"pypi": "https://...", "www": "https://..."}`
+
+Drag-and-drop rows in the list view to reorder projects.
 
 ### Dynamic badge sources
 | Source | Data | Requires |
@@ -91,16 +94,8 @@ Then push to `main` — site updates automatically.
 
 ## To-do
 
-### Critical
-- [x] HTTPS + кастомный домен (Let's Encrypt) — kislyakov.pro
-- [ ] Разделить `requirements.txt` и `requirements-prod.txt`
-
 ### SEO / видимость
-- [x] `sitemap.xml`, `robots.txt`
 - [ ] `og:image` / `twitter:image` — нет превью при шаринге
-
-### UX / контент
-- [x] Кастомный домен — kislyakov.pro
 
 ### Код / доступность
 - [ ] XSS: innerHTML в portfolio.js / timeline.js / github.js — данные из API вставляются без экранирования (низкий риск — только admin/API)

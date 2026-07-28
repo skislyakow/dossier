@@ -14,21 +14,24 @@
 ![Git](https://img.shields.io/badge/Git-F05032?style=flat-square&logo=git&logoColor=white&labelColor=F05032)
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white&labelColor=2088FF)
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=flat-square&logo=ubuntu&logoColor=white&labelColor=E95420)
-![opencode](https://img.shields.io/badge/opencode--py-0.5.1-6366f1?style=flat-square&labelColor=6366f1&color=6366f1)
 
 ## Возможности
 
-- **Интерактивный терминал** — macOS-style окно с AI-ассистентом через opencode-py (SSE-стриминг, посимвольный вывод)
-- Typing-анимация должности на чистом JS (без библиотек)
-- Skills cloud — облако тегов с технологиями
-- Интеграция с GitHub API: статистика репозиториев, языки, звёзды
-- Секция портфолио с карточками проектов, бейджами и распределением языков
-- Production-stек: Django + Gunicorn + Nginx на Ubuntu VPS
-- CI/CD через GitHub Actions (автодеплой при пуше в main)
+- **Интерактивный терминал** — macOS-style окно с AI-ассистентом через opencode-py (SSE-стриминг)
+- **Typing-анимация** должности на чистом JS (без библиотек)
+- **Skills cloud** — облако тегов с технологиями + ghost-иконки, плавающие в фоне hero
+- **Career timeline** — горизонтальная линия с точками (работа → проекты → настоящее время)
+- **Портфолио** — карточки проектов с бейджами (GitHub API, PyPI, PyPistats), скриншотами или role-based placeholder-темами
+- **Светлая/тёмная тема** — GitHub-style light + dark, переключатель в hero, сохраняется в localStorage
+- **Соцсети с hover-лейблами** — иконка съезжает влево, появляется название
+- **Drag-and-drop сортировка** в админке (django-admin-sortable2)
+- **Django admin (unfold)** — управление контентом: навыки, проекты, таймлайн, контакты
+- **Production-stек**: Django + Gunicorn + Nginx на Ubuntu VPS
+- **CI/CD** через GitHub Actions (автодеплой при пуше в main)
 
 ## Сайт
 
-:earth_americas: [132.243.121.192](http://132.243.121.192/)
+:earth_americas: [kislyakov.pro](https://kislyakov.pro/)
 
 ## Запуск
 
@@ -46,13 +49,10 @@ python manage.py runserver
 При пуше в ветку `main` GitHub Actions автоматически деплоит сайт на VPS:
 
 ```
-git pull origin main
-.venv/bin/pip install -r requirements.txt
-.venv/bin/python manage.py collectstatic --noinput
-systemctl restart dossier
+git pull → pip install → migrate → collectstatic → restart gunicorn
 ```
 
-VPS: Ubuntu 24.04 | Nginx → Gunicorn (127.0.0.1:8000) | systemd
+VPS: Ubuntu 24.04 | Nginx → Gunicorn (127.0.0.1:8000) | systemd | HTTPS (Let's Encrypt)
 
 ## Контакты
 

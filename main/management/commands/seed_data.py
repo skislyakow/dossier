@@ -121,7 +121,7 @@ class Command(BaseCommand):
                     'Production: Django + Gunicorn + Nginx на Ubuntu VPS',
                     'Автодеплой через GitHub Actions',
                 ],
-                links={'www': 'http://132.243.121.192/'},
+                links={'www': 'https://kislyakov.pro/'},
                 badges_config=[
                     {'label': 'stars', 'source': 'github_stars'},
                     {'label': 'license', 'source': 'github_license'},

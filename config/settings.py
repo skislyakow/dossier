@@ -25,9 +25,9 @@ SECRET_KEY = os.environ.get(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['132.243.121.192', 'kislyakov.pro', 'www.kislyakov.pro', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['kislyakov.pro', 'www.kislyakov.pro', 'localhost', '127.0.0.1', '132.243.121.192']
 
-CSRF_TRUSTED_ORIGINS = ['http://132.243.121.192', 'https://kislyakov.pro', 'https://www.kislyakov.pro']
+CSRF_TRUSTED_ORIGINS = ['https://kislyakov.pro', 'https://www.kislyakov.pro', 'http://132.243.121.192']
 
 
 # Application definition
