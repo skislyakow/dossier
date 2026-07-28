@@ -4,7 +4,7 @@ from django.utils.html import format_html
 from django import forms
 from unfold.admin import ModelAdmin
 from .models import Skill, Project, TimelineItem, ContactInfo
-from .widgets import IconPickerWidget
+from .widgets import IconPickerWidget, BadgePickerWidget
 from .admin_views import admin_reorder
 
 
@@ -75,6 +75,12 @@ class ProjectAdmin(SortableAdminMixin, ModelAdmin):
             'fields': ['is_published'],
         }),
     ]
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        if 'badges_config' in form.base_fields:
+            form.base_fields['badges_config'].widget = BadgePickerWidget()
+        return form
 
 
 @admin.register(TimelineItem)

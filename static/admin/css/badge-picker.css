@@ -1,0 +1,149 @@
+.badge-picker {
+  margin-top: 4px;
+}
+
+.bp-catalog {
+  margin-bottom: 12px;
+}
+
+.bp-group {
+  margin-bottom: 8px;
+}
+
+.bp-group__title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.bp-group__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.bp-catalog__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: #fff;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.15s;
+  line-height: 1;
+}
+
+.bp-catalog__item:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.bp-catalog__item--active {
+  background: #dcfce7;
+  border-color: #22c55e;
+  color: #166534;
+}
+
+.bp-catalog__icon {
+  font-size: 15px;
+}
+
+.bp-catalog__label {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+}
+
+.bp-catalog__item--add {
+  border-style: dashed;
+  color: #6b7280;
+}
+
+.bp-active {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 8px;
+}
+
+.bp-active__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.bp-active__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+}
+
+.bp-badge {
+  display: inline-flex;
+  font-family: 'Fira Code', monospace;
+  font-size: 12px;
+  border-radius: 3px;
+  overflow: hidden;
+  line-height: 1;
+}
+
+.bp-badge__label {
+  padding: 4px 6px;
+  background: #e4e4e7;
+  color: #52525b;
+}
+
+.bp-badge__source {
+  padding: 4px 6px;
+  background: #fde68a;
+  color: #92400e;
+  font-style: italic;
+  font-size: 10px;
+}
+
+.bp-badge__value {
+  padding: 4px 6px;
+  background: #e4b592;
+  color: #fff;
+}
+
+.bp-badge--single {
+  padding: 4px 8px;
+  background: #e4b592;
+  color: #fff;
+}
+
+.bp-active__remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin-left: 2px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #9ca3af;
+  border-radius: 50%;
+  transition: all 0.15s;
+}
+
+.bp-active__remove:hover {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+.bp-active__remove .material-symbols-outlined {
+  font-size: 14px;
+}
+
+.bp-active__empty {
+  color: #9ca3af;
+  font-size: 12px;
+  font-style: italic;
+}
