@@ -57,7 +57,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - Social link hover labels (icon slides, text appears)
 - Responsive: breakpoints at 1024px, 768px, 640px
 - All content managed via Django admin (Skills, Projects, TimelineItems, ContactInfo)
-- Drag-and-drop reordering in admin (django-admin-sortable2)
+- Drag-and-drop reordering in admin (unfold `ordering_field` + AJAX save)
 
 ## CMS models
 - **Skill** — name, size (xl/lg/md/sm), icon (Material Symbol name), sort_order
@@ -74,7 +74,7 @@ Admin: Main → Projects → Add. Fill:
 - Badges: JSON array `[{"label": "pypi", "source": "pypi_version"}]`
 - Links: JSON dict `{"pypi": "https://...", "www": "https://..."}`
 
-Drag-and-drop rows in the list view to reorder projects.
+Drag-and-drop the `drag_indicator` handle in the list view to reorder. Changes save automatically via AJAX.
 
 ### Dynamic badge sources
 | Source | Data | Requires |
