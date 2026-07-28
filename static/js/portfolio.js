@@ -112,6 +112,19 @@ function resolveBadge(badge, ctx) {
     value = ctx.repo.license?.spdx_id || null;
   } else if (source === "github_lang") {
     value = ctx.repo.language || null;
+  } else if (source === "github_issues") {
+    value = ctx.repo.open_issues_count;
+    if (value !== undefined) value = String(value);
+  } else if (source === "github_size") {
+    value = ctx.repo.size;
+    if (value !== undefined) {
+      if (value >= 1024) value = `${(value / 1024).toFixed(1)} MB`;
+      else value = `${value} KB`;
+    }
+  } else if (source === "github_created") {
+    value = ctx.repo.created_at
+      ? new Date(ctx.repo.created_at).toLocaleDateString("ru-RU")
+      : null;
   } else if (source === "github_updated") {
     value = ctx.repo.pushed_at
       ? new Date(ctx.repo.pushed_at).toLocaleDateString("ru-RU")

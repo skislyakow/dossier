@@ -74,8 +74,11 @@ class IconPickerWidget(forms.TextInput):
 GITHUB_BADGES = [
     {"label": "stars", "source": "github_stars", "icon": "star"},
     {"label": "forks", "source": "github_forks", "icon": "call_split"},
+    {"label": "issues", "source": "github_issues", "icon": "track_changes"},
     {"label": "license", "source": "github_license", "icon": "balance"},
     {"label": "language", "source": "github_lang", "icon": "code"},
+    {"label": "size", "source": "github_size", "icon": "hard_drive"},
+    {"label": "created", "source": "github_created", "icon": "calendar_today"},
     {"label": "updated", "source": "github_updated", "icon": "update"},
 ]
 
