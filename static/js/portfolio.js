@@ -6,36 +6,24 @@ const ICONS = {
   vk: '<svg height="18" width="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.576-1.496c.588-.19 1.341 1.26 2.14 1.818.605.422 1.064.33 1.064.33l2.137-.03s1.117-.071.587-.964c-.043-.073-.308-.661-1.588-1.87-1.34-1.264-1.16-1.059.453-3.246.983-1.332 1.376-2.145 1.253-2.493-.117-.332-.84-.244-.84-.244l-2.406.015s-.178-.025-.31.056c-.13.079-.213.262-.213.262s-.382 1.03-.892 1.906c-1.074 1.846-1.504 1.943-1.68 1.829-.408-.263-.306-1.057-.306-1.62 0-1.762.264-2.497-.516-2.687-.26-.063-.451-.104-1.115-.112-.854-.009-1.577.003-1.987.206-.273.135-.484.435-.356.452.158.021.515.098.704.36.245.34.236 1.106.236 1.106s.141 2.107-.33 2.368c-.324.179-.769-.186-1.722-1.853-.489-.854-.858-1.802-.858-1.802s-.141-.349-.327-.465c-.24-.15-.577-.098-.577-.098L5.8 11.54s-.758.024-.83.356c-.067.303.28.927.301 1.108.014.106.144.198.144.198.512.904 1.497 2.386 1.497 2.386.748 1.098 1.252 1.029 1.252 1.029.244.006.706-.07.863-.276.153-.2.375-.476.375-.476s1.121-.18 2.383-.49z"/></svg>',
 };
 
-const PLACEHOLDER_THEMES = {
-  "Python SDK Development": {
-    gradient: "linear-gradient(135deg, #306998 0%, #FFD43B 100%)",
-    icon: '<svg height="40" width="40" viewBox="0 0 24 24" fill="none"><path d="M12 2C7.58 2 4 3.79 4 6v2c0 1.66 3.58 3 8 3s8-1.34 8-3V6c0-2.21-3.58-4-8-4z" fill="currentColor" opacity="0.7"/><path d="M4 10v2c0 2.21 3.58 4 8 4s8-1.79 8-4v-2c0 2.21-3.58 4-8 4s-8-1.79-8-4z" fill="currentColor" opacity="0.5"/><path d="M4 14v2c0 2.21 3.58 4 8 4s8-1.79 8-4v-2c0 2.21-3.58 4-8 4s-8-1.79-8-4z" fill="currentColor" opacity="0.3"/></svg>',
-  },
-  "Fullstack Development": {
-    gradient: "linear-gradient(135deg, #e4b592 0%, #d4a87a 50%, #c09060 100%)",
-    icon: '<svg height="40" width="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6h16M4 12h16M4 18h16"/><path d="M9 4v16M15 4v16" stroke-width="1" opacity="0.4"/></svg>',
-  },
-  "Bot Development": {
-    gradient: "linear-gradient(135deg, #0d9488 0%, #14b8a6 50%, #5eead4 100%)",
-    icon: '<svg height="40" width="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="8"/><path d="M8 12h8M12 8v8"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>',
-  },
-  "Web Development": {
-    gradient: "linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #93c5fd 100%)",
-    icon: '<svg height="40" width="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M3.6 9h16.8M3.6 15h16.8M12 3a15 15 0 010 18 15 15 0 010-18z" stroke-width="1" opacity="0.4"/></svg>',
-  },
-};
+let skillsCache = null;
+function getSkills() {
+  if (skillsCache) return Promise.resolve(skillsCache);
+  return fetch('/api/skills/')
+    .then(r => r.json())
+    .then(skills => { skillsCache = skills; return skills; })
+    .catch(() => { skillsCache = []; return skillsCache; });
+}
 
-const DEFAULT_PLACEHOLDER = {
-  gradient: "linear-gradient(135deg, #71717a 0%, #a1a1aa 50%, #d4d4d8 100%)",
-  icon: '<svg height="40" width="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 19a2 2 0 01-2 2H4a2 2 0 01-2-2V5a2 2 0 012-2h5l2 3h9a2 2 0 012 2z"/></svg>',
-};
-
-function renderProjectMedia(project) {
+function renderProjectMedia(project, skills) {
   if (project.screenshot) {
     return `<img src="${project.screenshot}" alt="${project.title}" class="portfolio-card-img" loading="lazy">`;
   }
-  const theme = PLACEHOLDER_THEMES[project.role] || DEFAULT_PLACEHOLDER;
-  return `<div class="portfolio-card-placeholder" style="background: ${theme.gradient}">${theme.icon}</div>`;
+  const ghost = (skills || []).map(skill => {
+    const size = 1.1 + Math.random() * 2.8;
+    return `<span class="material-symbols-outlined portfolio-ghost-skill" style="top: ${(5 + Math.random() * 80).toFixed(1)}%; left: ${(5 + Math.random() * 80).toFixed(1)}%; font-size: ${size.toFixed(1)}rem; animation-duration: ${(12 + Math.random() * 10).toFixed(1)}s; animation-delay: ${(Math.random() * 5).toFixed(1)}s;">${skill.icon || 'code'}</span>`;
+  }).join('');
+  return `<div class="portfolio-card-placeholder">${ghost}</div>`;
 }
 
 async function fetchProjectData(project) {
@@ -156,7 +144,7 @@ function resolveBadge(badge, ctx) {
 const portfolioBtn = document.getElementById('portfolio-btn');
 const portfolioSection = document.getElementById('portfolio');
 
-function buildPreviewHtml(project) {
+function buildPreviewHtml(project, skills) {
   const langEntries = Object.entries(project.langs);
   const totalBytes = Object.values(project.langs).reduce((a, b) => a + b, 0);
 
@@ -178,27 +166,31 @@ function buildPreviewHtml(project) {
   }
 
   return `
-    <div class="portfolio-preview-media">${renderProjectMedia(project)}</div>
     <div class="portfolio-preview-body">
-      <div class="portfolio-card-header">
-        <div class="portfolio-card-title-wrap"><h3>${project.title}</h3></div>
-        <span class="portfolio-stars"><svg height="14" width="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> ${project.repo?.stargazers_count ?? ''}</span>
+      <div class="portfolio-preview-content">
+        <div class="portfolio-preview-info">
+          <div class="portfolio-card-header">
+            <div class="portfolio-card-title-wrap"><h3>${project.title}</h3></div>
+            <span class="portfolio-stars"><svg height="14" width="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> ${project.repo?.stargazers_count ?? ''}</span>
+          </div>
+          <p class="portfolio-tagline">${project.tagline}</p>
+          ${project.role ? `<span class="badge badge-role">role: ${project.role}</span>` : ''}
+          <div class="portfolio-tags">
+            ${langEntries.map(([lang, bytes]) => {
+              const pct = totalBytes ? Math.round((bytes / totalBytes) * 100) : 0;
+              return `<span class="portfolio-tag">${lang} ${pct}%</span>`;
+            }).join('')}
+          </div>
+          ${badgesHtml ? `<div class="portfolio-badges">${badgesHtml}</div>` : ''}
+          <hr class="portfolio-divider">
+          <ul class="portfolio-features">
+            ${(project.features || []).map(f => `<li>${f}</li>`).join('')}
+          </ul>
+          <hr class="portfolio-divider">
+          <div class="portfolio-links">${linksHtml}</div>
+        </div>
+        <div class="portfolio-preview-media">${renderProjectMedia(project, skills)}</div>
       </div>
-      <p class="portfolio-tagline">${project.tagline}</p>
-      ${project.role ? `<span class="badge badge-role">role: ${project.role}</span>` : ''}
-      <div class="portfolio-tags">
-        ${langEntries.map(([lang, bytes]) => {
-          const pct = totalBytes ? Math.round((bytes / totalBytes) * 100) : 0;
-          return `<span class="portfolio-tag">${lang} ${pct}%</span>`;
-        }).join('')}
-      </div>
-      ${badgesHtml ? `<div class="portfolio-badges">${badgesHtml}</div>` : ''}
-      <hr class="portfolio-divider">
-      <ul class="portfolio-features">
-        ${(project.features || []).map(f => `<li>${f}</li>`).join('')}
-      </ul>
-      <hr class="portfolio-divider">
-      <div class="portfolio-links">${linksHtml}</div>
     </div>
   `;
 }
@@ -217,14 +209,16 @@ portfolioBtn.addEventListener('click', async (e) => {
   portfolioSection.classList.add('show');
 
   try {
-    const res = await fetch('/api/projects/');
-    const projects = await res.json();
+    const [projects, skills] = await Promise.all([
+      fetch('/api/projects/').then(r => r.json()),
+      getSkills(),
+    ]);
     const cards = await Promise.all(projects.map(fetchProjectData));
 
     const previewCache = new Map();
     cards.forEach(project => {
       const key = project.repo.full_name || project.title;
-      previewCache.set(key, buildPreviewHtml(project));
+      previewCache.set(key, buildPreviewHtml(project, skills));
     });
 
     const listHtml = cards.map((project, i) => {
