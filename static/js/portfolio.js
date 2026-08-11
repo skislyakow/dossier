@@ -156,6 +156,53 @@ function resolveBadge(badge, ctx) {
 const portfolioBtn = document.getElementById('portfolio-btn');
 const portfolioSection = document.getElementById('portfolio');
 
+function buildPreviewHtml(project) {
+  const langEntries = Object.entries(project.langs);
+  const totalBytes = Object.values(project.langs).reduce((a, b) => a + b, 0);
+
+  const badgesHtml = (project.badges || [])
+    .map(b => resolveBadge(b, project))
+    .filter(Boolean)
+    .map(b => {
+      if (b.value) {
+        return `<span class="badge"><span class="badge-label">${b.label}</span><span class="badge-value">${b.value}</span></span>`;
+      }
+      return `<span class="badge badge--single">${b.label}</span>`;
+    })
+    .join('');
+
+  let linksHtml = `<a href="${project.repo?.html_url || '#'}" target="_blank" rel="noopener noreferrer" class="portfolio-link-icon" title="GitHub">${ICONS.github}</a>`;
+  for (const [label, url] of Object.entries(project.links || {})) {
+    const icon = ICONS[label] || ICONS.github;
+    linksHtml += `<a href="${url}" target="_blank" rel="noopener noreferrer" class="portfolio-link-icon" title="${label}">${icon}</a>`;
+  }
+
+  return `
+    <div class="portfolio-preview-media">${renderProjectMedia(project)}</div>
+    <div class="portfolio-preview-body">
+      <div class="portfolio-card-header">
+        <div class="portfolio-card-title-wrap"><h3>${project.title}</h3></div>
+        <span class="portfolio-stars"><svg height="14" width="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> ${project.repo?.stargazers_count ?? ''}</span>
+      </div>
+      <p class="portfolio-tagline">${project.tagline}</p>
+      ${project.role ? `<span class="badge badge-role">role: ${project.role}</span>` : ''}
+      <div class="portfolio-tags">
+        ${langEntries.map(([lang, bytes]) => {
+          const pct = totalBytes ? Math.round((bytes / totalBytes) * 100) : 0;
+          return `<span class="portfolio-tag">${lang} ${pct}%</span>`;
+        }).join('')}
+      </div>
+      ${badgesHtml ? `<div class="portfolio-badges">${badgesHtml}</div>` : ''}
+      <hr class="portfolio-divider">
+      <ul class="portfolio-features">
+        ${(project.features || []).map(f => `<li>${f}</li>`).join('')}
+      </ul>
+      <hr class="portfolio-divider">
+      <div class="portfolio-links">${linksHtml}</div>
+    </div>
+  `;
+}
+
 portfolioBtn.addEventListener('click', async (e) => {
   e.preventDefault();
 
@@ -174,57 +221,37 @@ portfolioBtn.addEventListener('click', async (e) => {
     const projects = await res.json();
     const cards = await Promise.all(projects.map(fetchProjectData));
 
-    let html = '';
-    cards.forEach((project, i) => {
-      const langEntries = Object.entries(project.langs);
-      const totalBytes = Object.values(project.langs).reduce((a, b) => a + b, 0);
-
-      const badgesHtml = (project.badges || [])
-        .map(b => resolveBadge(b, project))
-        .filter(Boolean)
-        .map(b => {
-          if (b.value) {
-            return `<span class="badge"><span class="badge-label">${b.label}</span><span class="badge-value">${b.value}</span></span>`;
-          }
-          return `<span class="badge badge--single">${b.label}</span>`;
-        })
-        .join('');
-
-      let linksHtml = `<a href="${project.repo?.html_url || '#'}" target="_blank" rel="noopener noreferrer" class="portfolio-link-icon" title="GitHub">${ICONS.github}</a>`;
-      for (const [label, url] of Object.entries(project.links || {})) {
-        const icon = ICONS[label] || ICONS.github;
-        linksHtml += `<a href="${url}" target="_blank" rel="noopener noreferrer" class="portfolio-link-icon" title="${label}">${icon}</a>`;
-      }
-
-      html += `
-        <div class="portfolio-card" style="--card-index: ${i}; animation-delay: ${i * 0.2}s">
-          <div class="portfolio-card-media">${renderProjectMedia(project)}</div>
-          <div class="portfolio-card-body">
-          <div class="portfolio-card-header">
-            <div class="portfolio-card-title-wrap"><h3>${project.title}</h3></div>
-            <span class="portfolio-stars"><svg height="14" width="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> ${project.repo?.stargazers_count ?? ''}</span>
-          </div>
-          <p class="portfolio-tagline">${project.tagline}</p>
-          ${project.role ? `<span class="badge badge-role">role: ${project.role}</span>` : ''}
-          <div class="portfolio-tags">
-            ${langEntries.map(([lang, bytes]) => {
-              const pct = totalBytes ? Math.round((bytes / totalBytes) * 100) : 0;
-              return `<span class="portfolio-tag">${lang} ${pct}%</span>`;
-            }).join('')}
-          </div>
-          ${badgesHtml ? `<div class="portfolio-badges">${badgesHtml}</div>` : ''}
-          <hr class="portfolio-divider">
-          <ul class="portfolio-features">
-            ${(project.features || []).map(f => `<li>${f}</li>`).join('')}
-          </ul>
-          <hr class="portfolio-divider">
-          <div class="portfolio-links">${linksHtml}</div>
-          </div>
-        </div>
-      `;
+    const previewCache = new Map();
+    cards.forEach(project => {
+      const key = project.repo.full_name || project.title;
+      previewCache.set(key, buildPreviewHtml(project));
     });
 
-    portfolioSection.innerHTML = html;
+    const listHtml = cards.map((project, i) => {
+      const key = project.repo.full_name || project.title;
+      return `<button class="portfolio-list-item${i === 0 ? ' active' : ''}" data-repo="${key}" type="button">${project.title}</button>`;
+    }).join('');
+
+    portfolioSection.innerHTML = `
+      <div class="portfolio-layout">
+        <div class="portfolio-list">${listHtml}</div>
+        <div class="portfolio-preview">${previewCache.get(cards[0].repo)}</div>
+      </div>
+    `;
+
+    const preview = portfolioSection.querySelector('.portfolio-preview');
+    portfolioSection.querySelectorAll('.portfolio-list-item').forEach((item) => {
+      item.addEventListener('click', () => {
+        if (item.classList.contains('active')) return;
+        portfolioSection.querySelectorAll('.portfolio-list-item').forEach(el => el.classList.remove('active'));
+        item.classList.add('active');
+        preview.classList.remove('fade-in');
+        void preview.offsetWidth;
+        preview.innerHTML = previewCache.get(item.dataset.repo);
+        preview.classList.add('fade-in');
+      });
+    });
+
     setTimeout(() => portfolioSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
   } catch (err) {
     console.error('Portfolio error:', err);
