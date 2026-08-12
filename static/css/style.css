@@ -183,16 +183,7 @@ body {
 }
 
 .content-body {
-    background: repeating-linear-gradient(
-        0deg,
-        #f0e8e0 0px, #f0e8e0 1px,
-        transparent 1px, transparent 40px
-    ),
-    repeating-linear-gradient(
-        90deg,
-        #f0e8e0 0px, #f0e8e0 1px,
-        transparent 1px, transparent 40px
-    );
+    background: #f5f0eb;
     padding: 4rem 0;
     display: flex;
     flex-direction: column;
@@ -1850,16 +1841,7 @@ h1 {
 }
 
 [data-theme="light"] .content-body {
-    background: repeating-linear-gradient(
-        0deg,
-        #f0f0f0 0px, #f0f0f0 1px,
-        transparent 1px, transparent 40px
-    ),
-    repeating-linear-gradient(
-        90deg,
-        #f0f0f0 0px, #f0f0f0 1px,
-        transparent 1px, transparent 40px
-    );
+    background: #ffffff;
 }
 
 [data-theme="light"] .gh-card,

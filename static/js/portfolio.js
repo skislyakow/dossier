@@ -226,10 +226,11 @@ portfolioBtn.addEventListener('click', async (e) => {
       return `<button class="portfolio-list-item${i === 0 ? ' active' : ''}" data-repo="${key}" type="button">${project.title}</button>`;
     }).join('');
 
+    const firstKey = cards[0].repo.full_name || cards[0].title;
     portfolioSection.innerHTML = `
       <div class="portfolio-layout">
         <div class="portfolio-list">${listHtml}</div>
-        <div class="portfolio-preview">${previewCache.get(cards[0].repo)}</div>
+        <div class="portfolio-preview">${previewCache.get(firstKey)}</div>
       </div>
     `;
 
