@@ -227,7 +227,7 @@ portfolioBtn.addEventListener('click', async (e) => {
     const total = cards.length;
 
     const catBtn = (role, label, count, active) =>
-      `<button class="portfolio-cat${active ? ' active' : ''}" data-role="${role}" type="button"><span class="cat-brace">{ </span><span class="cat-name">${label}</span><span class="cat-brace"> }</span><span class="cat-count"> // ${count}</span></button>`;
+      `<button class="portfolio-cat${active ? ' active' : ''}" data-role="${role}" type="button"><span class="cat-brace">{ </span><span class="cat-name">${label}</span><span class="cat-count">: ${count}</span><span class="cat-brace"> }</span></button>`;
 
     const catsHtml = catBtn('', 'All', total, true) +
       roles.map(role => catBtn(role, role, counts.get(role) || 0, false)).join('');
