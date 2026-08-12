@@ -221,13 +221,19 @@ portfolioBtn.addEventListener('click', async (e) => {
       previewCache.set(key, buildPreviewHtml(project, skills));
     });
 
+    const roles = [...new Set(cards.map(p => p.role).filter(Boolean))];
+
+    const catsHtml = `<button class="portfolio-cat active" data-role="" type="button">All</button>` +
+      roles.map(role => `<button class="portfolio-cat" data-role="${role}" type="button">${role}</button>`).join('');
+
     const listHtml = cards.map((project, i) => {
       const key = project.repo.full_name || project.title;
-      return `<button class="portfolio-list-item${i === 0 ? ' active' : ''}" data-repo="${key}" type="button">${project.title}</button>`;
+      return `<button class="portfolio-list-item${i === 0 ? ' active' : ''}" data-repo="${key}" data-role="${project.role || ''}" type="button">${project.title}</button>`;
     }).join('');
 
     const firstKey = cards[0].repo.full_name || cards[0].title;
     portfolioSection.innerHTML = `
+      <div class="portfolio-cats">${catsHtml}</div>
       <div class="portfolio-layout">
         <div class="portfolio-list">${listHtml}</div>
         <div class="portfolio-preview">${previewCache.get(firstKey)}</div>
@@ -235,16 +241,38 @@ portfolioBtn.addEventListener('click', async (e) => {
     `;
 
     const preview = portfolioSection.querySelector('.portfolio-preview');
-    portfolioSection.querySelectorAll('.portfolio-list-item').forEach((item) => {
+    const listItems = () => portfolioSection.querySelectorAll('.portfolio-list-item');
+
+    listItems().forEach((item) => {
       item.addEventListener('click', () => {
         if (item.classList.contains('active')) return;
-        portfolioSection.querySelectorAll('.portfolio-list-item').forEach(el => el.classList.remove('active'));
+        listItems().forEach(el => el.classList.remove('active'));
         item.classList.add('active');
         preview.classList.remove('fade-in');
         void preview.offsetWidth;
         preview.innerHTML = previewCache.get(item.dataset.repo);
         preview.classList.add('fade-in');
       });
+    });
+
+    portfolioSection.querySelector('.portfolio-cats').addEventListener('click', (e) => {
+      const btn = e.target.closest('.portfolio-cat');
+      if (!btn || btn.classList.contains('active')) return;
+      portfolioSection.querySelectorAll('.portfolio-cat').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const role = btn.dataset.role;
+      let firstVisible = null;
+      listItems().forEach(item => {
+        const show = !role || item.dataset.role === role;
+        item.style.display = show ? '' : 'none';
+        if (show && !firstVisible) firstVisible = item;
+      });
+
+      const active = portfolioSection.querySelector('.portfolio-list-item.active');
+      if (active && active.style.display === 'none' && firstVisible) {
+        firstVisible.click();
+      }
     });
 
     setTimeout(() => portfolioSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
