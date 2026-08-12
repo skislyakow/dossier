@@ -222,9 +222,15 @@ portfolioBtn.addEventListener('click', async (e) => {
     });
 
     const roles = [...new Set(cards.map(p => p.role).filter(Boolean))];
+    const counts = new Map();
+    cards.forEach(p => counts.set(p.role || '', (counts.get(p.role || '') || 0) + 1));
+    const total = cards.length;
 
-    const catsHtml = `<button class="portfolio-cat active" data-role="" type="button">All</button>` +
-      roles.map(role => `<button class="portfolio-cat" data-role="${role}" type="button">${role}</button>`).join('');
+    const catBtn = (role, label, count, active) =>
+      `<button class="portfolio-cat${active ? ' active' : ''}" data-role="${role}" type="button"><span class="cat-brace">{ </span><span class="cat-name">${label}</span><span class="cat-brace"> }</span><span class="cat-count"> // ${count}</span></button>`;
+
+    const catsHtml = catBtn('', 'All', total, true) +
+      roles.map(role => catBtn(role, role, counts.get(role) || 0, false)).join('');
 
     const listHtml = cards.map((project, i) => {
       const key = project.repo.full_name || project.title;

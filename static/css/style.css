@@ -1041,14 +1041,13 @@ h1 {
     white-space: nowrap;
 }
 
-.portfolio-cat::before {
-    content: "{ ";
+.cat-brace {
     color: #e4b592;
 }
 
-.portfolio-cat::after {
-    content: " }";
-    color: #e4b592;
+.cat-count {
+    color: #71717a;
+    font-size: 0.85rem;
 }
 
 .portfolio-cat:hover {
@@ -1912,9 +1911,12 @@ h1 {
     color: #57606a;
 }
 
-[data-theme="light"] .portfolio-cat::before,
-[data-theme="light"] .portfolio-cat::after {
+[data-theme="light"] .cat-brace {
     color: var(--accent);
+}
+
+[data-theme="light"] .cat-count {
+    color: #8b949e;
 }
 
 [data-theme="light"] .portfolio-cat:hover,
