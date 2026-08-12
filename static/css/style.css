@@ -962,6 +962,7 @@ h1 {
     .portfolio-list {
         flex-direction: row;
         overflow-x: auto;
+        justify-content: flex-start;
         padding-right: 0;
         padding-bottom: 0.5rem;
         border-right: none;
@@ -1062,6 +1063,7 @@ h1 {
     display: flex;
     flex-direction: column;
     gap: 0.35rem;
+    justify-content: center;
     padding-right: 1rem;
     border-right: 1px solid #e4e4e7;
     min-width: 0;
