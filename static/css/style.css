@@ -972,15 +972,9 @@ h1 {
     .portfolio-list-item {
         flex-shrink: 0;
         width: auto;
-        border-left: none;
-        border-bottom: 3px solid transparent;
+        border: none;
         border-radius: 8px;
         white-space: nowrap;
-    }
-
-    .portfolio-list-item.active {
-        border-left: none;
-        border-bottom-color: #e4b592;
     }
 
     .portfolio-preview-content {
@@ -1026,12 +1020,11 @@ h1 {
     text-align: left;
     background: transparent;
     border: none;
-    border-left: 3px solid transparent;
     border-radius: 8px;
     padding: 0.65rem 1rem;
     font-family: inherit;
     font-size: 1.05rem;
-    font-weight: 600;
+    font-weight: 500;
     color: #a1a1aa;
     cursor: pointer;
     transition: all 0.25s cubic-bezier(0.61, 1, 0.88, 1);
@@ -1046,20 +1039,16 @@ h1 {
 
 .portfolio-list-item.active {
     color: #e4b592;
-    background: rgba(228, 181, 146, 0.12);
-    border-left-color: #e4b592;
+    font-size: 1.3rem;
+    font-weight: 700;
 }
 
 .portfolio-preview {
-    background: rgba(255, 255, 255, 0.82);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid #e4e4e7;
-    border-left: 3px solid #e4b592;
-    border-radius: 12px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
     text-align: left;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    overflow: hidden;
+    box-shadow: none;
     min-width: 0;
     opacity: 0;
     transform: translateY(10px);
@@ -1845,16 +1834,10 @@ h1 {
 }
 
 [data-theme="light"] .gh-card,
-[data-theme="light"] .portfolio-preview,
 [data-theme="light"] .tl-details-card,
 [data-theme="light"] .contact-card {
     background: #ffffff;
     border-color: var(--border);
-}
-
-[data-theme="light"] .portfolio-preview {
-    border-left-color: var(--accent);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
 }
 
 [data-theme="light"] .portfolio-ghost-skill {
@@ -1877,8 +1860,6 @@ h1 {
 
 [data-theme="light"] .portfolio-list-item.active {
     color: #0550ae;
-    background: rgba(5, 80, 174, 0.08);
-    border-left-color: #0550ae;
 }
 
 [data-theme="light"] .tl-details-card {
