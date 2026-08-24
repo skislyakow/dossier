@@ -12,7 +12,7 @@
 - `templates/` — HTML templates
 - `static/css/` — Styles
 - `static/js/` — Scripts (typing.js, typewriter.js, github.js, portfolio.js, timeline.js, ghost.js)
-- `static/fonts/` — Material Symbols font (локальный **subset** `MaterialSymbolsOutlined.woff2`; в `style.css` `@font-face` полный Google Fonts woff2 стоит **первым**, локальный — fallback для офлайна)
+- `static/fonts/` — Material Symbols font (локальный **subset** `MaterialSymbolsOutlined.woff2` ~3 КБ, сгенерирован через `fonttools` только из используемых лигатур: `fonttools subset` по codepoint'ам из `MaterialIconsOutlined-Regular.codepoints`; в `style.css` `@font-face` локальный файл — **первый**, полный Google Fonts woff2 — fallback для офлайна). В subset входят иконки навыков + UI-иконки админки. Каталог `IconPickerWidget` (COMMON_ICONS) в subset **не** входит — при добавлении новой иконки через админку она не отрисуется, пока subset не перегенерирован.
 - `static/favicon.svg`
 - `requirements.txt` — Python dependencies
 
