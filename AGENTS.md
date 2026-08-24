@@ -41,8 +41,7 @@ Required GitHub secrets: `VPS_HOST`, `VPS_SSH_KEY`
 ## Project overview
 Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack Developer).
 - Typing animation for job title
-- Interactive terminal with macOS-style window (opencode-py SSE streaming)
-- AI assistant with system prompt (portfolio manager role)
+- Interactive terminal with macOS-style window — animated tech/stack list (typewriter on vanilla JS)
 - Skills cloud with curly braces `{ Python } { Django }`
 - Two-column layout: skills cloud (left) + terminal (right) in hero
 - Hero: centered name + title gradient following cursor, ghost floating skill icons
