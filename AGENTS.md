@@ -12,7 +12,7 @@
 - `templates/` — HTML templates
 - `static/css/` — Styles
 - `static/js/` — Scripts (typing.js, typewriter.js, github.js, portfolio.js, timeline.js, ghost.js)
-- `static/fonts/` — Material Symbols font (local)
+- `static/fonts/` — Material Symbols font (локальный **subset** `MaterialSymbolsOutlined.woff2`; в `style.css` `@font-face` полный Google Fonts woff2 стоит **первым**, локальный — fallback для офлайна)
 - `static/favicon.svg`
 - `requirements.txt` — Python dependencies
 
@@ -58,6 +58,16 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - Responsive: breakpoints at 1024px, 768px, 640px
 - All content managed via Django admin (Skills, Projects, TimelineItems, ContactInfo)
 - Drag-and-drop reordering in admin (unfold `ordering_field` + AJAX save)
+- Начальный контент (проекты/навыки/таймлайн) сеется через **data-migrations** в `main/migrations/` (см. `0005_add_devman_monitor_data.py`, `0007_add_support_bot_data.py`, `0008_add_quiz_bot_data.py`). Каждая миграция — `RunPython(forwards, backwards)` с `get_or_create` по `repo`/`name` и сдвигом `sort_order` существующих таймлайн-записей. Редактирование наполнения — через admin, массовое добавление новых проектов — через миграцию (чтобы попало на прод при пуше).
+
+## Current CMS content
+### Projects (role = "Bot Development")
+- **Devman Monitor** — `skislyakow/Devman-monitor` — монитор systemd-сервиса с уведомлениями в Telegram
+- **Support Bot** — `skislyakow/support-bot` — поддержка в TG/VK на Dialogflow (aiogram + vk_api)
+- **Quiz Bot** — `skislyakow/quiz-bot` — викторина в TG/VK на ~300k вопросов: aiogram + vkbottle, состояние в Redis, нормализация через pymorphy3 (НЕ на PyPI → только github-бейджи)
+
+### Skills
+`systemd`, `python-dotenv`, `Telegram Bot API`, `Dialogflow`, `aiogram`, `vk_api`, `Redis`, `vkbottle`, `VK API`, `pymorphy3`, `mypy`
 
 ## CMS models
 - **Skill** — name, size (xl/lg/md/sm), icon (Material Symbol name), sort_order
@@ -75,6 +85,8 @@ Admin: Main → Projects → Add. Fill:
 - Links: JSON dict `{"pypi": "https://...", "www": "https://..."}`
 
 Drag-and-drop the `drag_indicator` handle in the list view to reorder. Changes save automatically via AJAX.
+
+Чтобы новый проект/навык попал на прод при пуше — оформляйте массовое добавление через **data-migration** (паттерн `0008_add_quiz_bot_data.py`): `RunPython` + `get_or_create` по `repo`/`name`, со сдвигом `sort_order` таймлайн-записей в `backwards`. Летающие «призраки» (`ghost.js`), облако навыков и placeholder-карточки портфолио (`portfolio.js`) читают `/api/skills/` динамически — добавление `Skill` само обновляет эти места, правка JS не нужна.
 
 ### Dynamic badge sources
 | Source | Data | Requires |
