@@ -54,7 +54,7 @@
 
         var promptLine = document.createElement('div');
         promptLine.className = 'terminal-input-line';
-        promptLine.innerHTML = '<span class="prompt">$ </span><span class="terminal-cursor blink">█</span>';
+        promptLine.innerHTML = '<span class="prompt">$ </span>';
         contentEl.appendChild(promptLine);
     }
 
