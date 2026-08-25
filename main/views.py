@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Skill, Project, TimelineItem, ContactInfo
+from .badge_utils import enrich_project
 
 
 def home(request):
@@ -17,20 +18,23 @@ def api_skills(request):
 
 def api_projects(request):
     projects = Project.objects.filter(is_published=True)
-    return JsonResponse([
-        {
-            'repo': p.repo,
+    data = []
+    for p in projects:
+        enriched = enrich_project(p)
+        data.append({
+            'repo': enriched['repo'],
             'pypi': p.pypi or None,
             'title': p.title,
             'role': p.role or None,
             'tagline': p.tagline,
             'features': p.features,
             'links': p.links,
-            'badges': p.badges_config,
+            'badges': enriched['badges'],
             'screenshot': p.screenshot or None,
-        }
-        for p in projects
-    ], safe=False)
+            'langs': enriched['langs'],
+            'stars': enriched['stars'],
+        })
+    return JsonResponse(data, safe=False)
 
 
 def api_timeline(request):

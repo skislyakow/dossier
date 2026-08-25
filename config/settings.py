@@ -153,6 +153,17 @@ DATABASES = {
 }
 
 
+# Cache (shared across gunicorn workers, persistent). Table created via
+# `python manage.py createcachetable` (run in deploy after migrate).
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+        'LOCATION': 'django_cache',
+        'TIMEOUT': 21600,  # 6 hours
+    }
+}
+
+
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 

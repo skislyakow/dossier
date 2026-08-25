@@ -17,121 +17,6 @@ function renderProjectMedia(project, skills) {
   return `<div class="portfolio-card-placeholder">${ghost}</div>`;
 }
 
-async function fetchProjectData(project) {
-  const promises = [
-    fetch(`https://api.github.com/repos/${project.repo}`).catch(() => null),
-    fetch(`https://api.github.com/repos/${project.repo}/languages`).catch(() => null),
-  ];
-
-  if (project.pypi) {
-    promises.push(
-      fetch(`https://pypi.org/pypi/${project.pypi}/json`).catch(() => null)
-    );
-    promises.push(
-      fetch(`https://pypistats.org/api/packages/${project.pypi}/recent`).catch(() => null)
-    );
-  }
-
-  const results = await Promise.all(promises);
-
-  let repo = {};
-  let langs = {};
-  try {
-    if (results[0]?.ok) repo = await results[0].json();
-  } catch (_) {}
-  try {
-    if (results[1]?.ok) langs = await results[1].json();
-  } catch (_) {}
-
-  let pypi = null;
-  let stats = null;
-
-  if (project.pypi) {
-    try {
-      if (results[2]?.ok) pypi = await results[2].json();
-    } catch (_) {}
-    try {
-      if (results[3]?.ok) stats = await results[3].json();
-    } catch (_) {}
-  }
-
-  return { ...project, repo, langs, pypi, stats };
-}
-
-function parsePythonVersions(requiresPython) {
-  if (!requiresPython) return "";
-  const match = requiresPython.match(/[\d.]+/g);
-  if (!match) return requiresPython;
-  return match.join(" | ");
-}
-
-function formatDownloads(count) {
-  if (!count || count < 0) return null;
-  if (count >= 1000000) return `${(count / 1000000).toFixed(1)}m`;
-  if (count >= 1000) return `${(count / 1000).toFixed(1)}k`;
-  return String(count);
-}
-
-function resolveBadge(badge, ctx) {
-  if (!badge.source) {
-    if (badge.value) {
-      return { label: badge.label, value: badge.value };
-    }
-    return { label: badge.label };
-  }
-
-  const { source } = badge;
-  let value = null;
-
-  if (source === "github_stars") {
-    value = ctx.repo.stargazers_count;
-    if (value !== undefined) value = String(value);
-  } else if (source === "github_forks") {
-    value = ctx.repo.forks_count;
-    if (value !== undefined) value = String(value);
-  } else if (source === "github_license") {
-    value = ctx.repo.license?.spdx_id || null;
-  } else if (source === "github_lang") {
-    value = ctx.repo.language || null;
-  } else if (source === "github_issues") {
-    value = ctx.repo.open_issues_count;
-    if (value !== undefined) value = String(value);
-  } else if (source === "github_size") {
-    value = ctx.repo.size;
-    if (value !== undefined) {
-      if (value >= 1024) value = `${(value / 1024).toFixed(1)} MB`;
-      else value = `${value} KB`;
-    }
-  } else if (source === "github_created") {
-    value = ctx.repo.created_at
-      ? new Date(ctx.repo.created_at).toLocaleDateString("ru-RU")
-      : null;
-  } else if (source === "github_updated") {
-    value = ctx.repo.pushed_at
-      ? new Date(ctx.repo.pushed_at).toLocaleDateString("ru-RU")
-      : null;
-  } else if (source === "pypi_version") {
-    value = ctx.pypi?.info?.version ? `v${ctx.pypi.info.version}` : null;
-  } else if (source === "pypi_python") {
-    value = ctx.pypi?.info?.requires_python
-      ? parsePythonVersions(ctx.pypi.info.requires_python)
-      : null;
-  } else if (source === "pypi_license") {
-    value = ctx.pypi?.info?.license || null;
-  } else if (source === "pypistats_month") {
-    value = ctx.stats?.data?.last_month != null
-      ? `${formatDownloads(ctx.stats.data.last_month)}/mo`
-      : null;
-  } else if (source === "pypistats_total") {
-    value = ctx.stats?.data?.total != null
-      ? formatDownloads(ctx.stats.data.total)
-      : null;
-  }
-
-  if (value === null || value === undefined) return null;
-  return { label: badge.label, value: String(value) };
-}
-
 const portfolioBtn = document.getElementById('portfolio-btn');
 const portfolioSection = document.getElementById('portfolio');
 
@@ -139,16 +24,14 @@ function buildPreviewHtml(project, skills) {
   const langEntries = Object.entries(project.langs);
   const totalBytes = Object.values(project.langs).reduce((a, b) => a + b, 0);
 
-  const badgesHtml = (project.badges || [])
-    .map(b => resolveBadge(b, project))
-    .filter(Boolean)
-    .map(b => {
-      if (b.value) {
-        return `<span class="badge"><span class="badge-label">${b.label}</span><span class="badge-value">${b.value}</span></span>`;
-      }
-      return `<span class="badge badge--single">${b.label}</span>`;
-    })
-    .join('');
+   const badgesHtml = (project.badges || [])
+     .map(b => {
+       if (b.value) {
+         return `<span class="badge"><span class="badge-label">${b.label}</span><span class="badge-value">${b.value}</span></span>`;
+       }
+       return `<span class="badge badge--single">${b.label}</span>`;
+     })
+     .join('');
 
   let linksHtml = `<a href="${project.repo?.html_url || '#'}" target="_blank" rel="noopener noreferrer" class="portfolio-link-icon" title="GitHub">${ICONS.github}</a>`;
   for (const [label, url] of Object.entries(project.links || {})) {
@@ -204,7 +87,7 @@ portfolioBtn.addEventListener('click', async (e) => {
       fetch('/api/projects/').then(r => r.json()),
       window.getSkills(),
     ]);
-    const cards = await Promise.all(projects.map(fetchProjectData));
+    const cards = projects;
 
     const previewCache = new Map();
     cards.forEach(project => {
