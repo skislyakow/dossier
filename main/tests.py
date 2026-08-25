@@ -79,3 +79,33 @@ class ApiProjectsEnrichTest(TestCase):
         self.assertEqual(by_label['ver'], 'v1.2.3')
         self.assertEqual(by_label['note'], 'static')
 
+
+class ApiGithubTest(TestCase):
+    @mock.patch.object(badge_utils, '_get_json')
+    def test_github_stats_without_network(self, mock_get):
+        def fake(url, headers=None, timeout=None):
+            if url.endswith('/users/skislyakow'):
+                return {
+                    'login': 'skislyakow',
+                    'name': 'Sergey',
+                    'avatar_url': 'http://x/a.png',
+                    'html_url': 'https://github.com/skislyakow',
+                    'bio': 'dev',
+                }
+            if 'repos?sort=stars' in url:
+                return [{'name': 'repo1'}, {'name': 'repo2'}]
+            if url.endswith('/languages'):
+                return {'Python': 100, 'JavaScript': 50}
+            return None
+
+        mock_get.side_effect = fake
+
+        response = self.client.get('/api/github/')
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data['user']['login'], 'skislyakow')
+        self.assertEqual(len(data['langs']), 2)
+        by_lang = {l['lang']: l['percent'] for l in data['langs']}
+        self.assertEqual(by_lang['Python'], 67)
+        self.assertEqual(by_lang['JavaScript'], 33)
+

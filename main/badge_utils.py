@@ -180,3 +180,40 @@ def enrich_project(project):
     badges = resolve_badges(project.badges_config, ctx)
     stars = repo_obj.get("stargazers_count") or 0
     return {"repo": repo_obj, "langs": langs, "stars": stars, "badges": badges}
+
+
+def fetch_github_stats(username="skislyakow"):
+    key = f"github:stats:{username}"
+    cached = cache.get(key)
+    if cached is not None:
+        return cached
+
+    hdrs = _github_headers()
+    user = _get_json(f"https://api.github.com/users/{username}", hdrs)
+    repos = _get_json(
+        f"https://api.github.com/users/{username}/repos?sort=stars&per_page=6", hdrs
+    ) or []
+
+    lang_count = {}
+    for repo in repos:
+        name = repo.get("name")
+        if not name:
+            continue
+        langs = fetch_repo_data(f"{username}/{name}")["langs"] or {}
+        for lang, bytes_ in langs.items():
+            lang_count[lang] = lang_count.get(lang, 0) + bytes_
+
+    total = sum(lang_count.values())
+    sorted_langs = sorted(lang_count.items(), key=lambda kv: kv[1], reverse=True)[:5]
+    langs_out = []
+    if total:
+        for lang, bytes_ in sorted_langs:
+            langs_out.append({"lang": lang, "percent": round(bytes_ / total * 100)})
+
+    if user is None and not repos:
+        cache.set(key, {"user": None, "langs": []}, CACHE_FAIL)
+        return {"user": None, "langs": []}
+
+    result = {"user": user or {}, "langs": langs_out}
+    cache.set(key, result, CACHE_OK)
+    return result

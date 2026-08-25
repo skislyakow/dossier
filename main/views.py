@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Skill, Project, TimelineItem, ContactInfo
-from .badge_utils import enrich_project
+from .badge_utils import enrich_project, fetch_github_stats
 
 
 def home(request):
@@ -83,3 +83,7 @@ def api_contact(request):
         }
         for c in contacts
     ], safe=False)
+
+
+def api_github(request):
+    return JsonResponse(fetch_github_stats())

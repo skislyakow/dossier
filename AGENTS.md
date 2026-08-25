@@ -9,7 +9,7 @@
 ## Structure
 - `config/` — Django project settings (settings.py, urls.py, wsgi.py, asgi.py)
 - `main/` — Main app (views, models, admin, widgets, management/commands)
-- `main/badge_utils.py` — серверный резолв бейджей и данных GitHub+PyPI (звёзды, форки, лицензия, язык, размер, даты, PyPI-версия/python/лицензия, PyPistats). Ходит в сеть через stdlib `urllib` (без зависимостей), кэширует в БД (`DatabaseCache`, `TIMEOUT` 6ч; при сбое внешнего API — короткий кэш 5мин, чтобы не долбить). Опц. `GITHUB_TOKEN` из env поднимает лимит 60→5000/ч. Браузер внешние API **не** дёргает — только `/api/projects/`, который уже отдаёт обогащённые `repo/langs/stars/badges`.
+- `main/badge_utils.py` — серверный резолв бейджей и данных GitHub+PyPI (звёзды, форки, лицензия, язык, размер, даты, PyPI-версия/python/лицензия, PyPistats). Ходит в сеть через stdlib `urllib` (без зависимостей), кэширует в БД (`DatabaseCache`, `TIMEOUT` 6ч; при сбое внешнего API — короткий кэш 5мин, чтобы не долбить). Опц. `GITHUB_TOKEN` из env поднимает лимит 60→5000/ч. Браузер внешние API **не** дёргает — только `/api/projects/` (обогащённые `repo/langs/stars/badges`) и `/api/github/` (GitHub-stats toggle: профиль владельца + топ-5 языков, `fetch_github_stats()`), которые сами ходят в сеть и кэшируют.
 - `templates/` — HTML templates
 - `static/css/` — Styles
 - `static/js/` — Scripts (typing.js, typewriter.js, github.js, portfolio.js, timeline.js, ghost.js)

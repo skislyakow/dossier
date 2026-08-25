@@ -15,45 +15,26 @@ link.addEventListener('click', async (e) => {
     statsContainer.classList.add('show');
 
     try {
-        const [userRes, reposRes] = await Promise.all([
-            fetch('https://api.github.com/users/skislyakow'),
-            fetch('https://api.github.com/users/skislyakow/repos?sort=stars&per_page=6')
-        ]);
-
-        const userData = await userRes.json();
-        const repos = await reposRes.json();
-
-        const reposRes2 = await Promise.all(repos.map(r => 
-            fetch(`https://api.github.com/repos/skislyakow/${r.name}/languages`).then(res => res.ok ? res.json() : {}).catch(() => {})
-        ));
-
-        const langCount = {};
-        repos.forEach((repo, i) => {
-            const langs = reposRes2[i];
-            for (const [lang, bytes] of Object.entries(langs)) {
-                langCount[lang] = (langCount[lang] || 0) + bytes;
-            }
-        });
-
-        const total = Object.values(langCount).reduce((a, b) => a + b, 0);
-        const sorted = Object.entries(langCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
+        const res = await fetch('/api/github/');
+        if (!res.ok) throw new Error('bad status');
+        const data = await res.json();
+        const user = data.user || {};
 
         let html = `
-            <a href="${userData.html_url}" target="_blank" rel="noopener noreferrer" class="gh-card">
+            <a href="${user.html_url || '#'}" target="_blank" rel="noopener noreferrer" class="gh-card">
                 <div class="gh-card-avatar">
-                    <img src="${userData.avatar_url}" alt="${userData.login}" />
+                    <img src="${user.avatar_url || ''}" alt="${user.login || ''}" />
                 </div>
                 <div class="gh-card-info">
-                    <span class="gh-card-name">${userData.name || userData.login}</span>
-                    <span class="gh-card-login">@${userData.login}</span>
-                    ${userData.bio ? `<span class="gh-card-bio">${userData.bio}</span>` : ''}
+                    <span class="gh-card-name">${user.name || user.login || ''}</span>
+                    <span class="gh-card-login">@${user.login || ''}</span>
+                    ${user.bio ? `<span class="gh-card-bio">${user.bio}</span>` : ''}
                 </div>
             </a>
         `;
 
         html += `<div class="langs-container">`;
-        sorted.forEach(([lang, bytes]) => {
-            const percent = Math.round((bytes / total) * 100);
+        (data.langs || []).forEach(({ lang, percent }) => {
             html += `
                 <div class="lang-row">
                     <span class="lang-name">${lang}</span>
