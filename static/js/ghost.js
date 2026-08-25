@@ -2,7 +2,7 @@ function initGhostSkills() {
   var container = document.querySelector('.hero-ghost');
   if (!container) return;
 
-  fetch('/api/skills/').then(function (r) { return r.json(); }).then(function (skills) {
+  window.getSkills().then(function (skills) {
     skills.forEach(function (skill) {
       var el = document.createElement('span');
       el.className = 'ghost-skill';

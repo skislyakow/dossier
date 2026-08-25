@@ -14,10 +14,18 @@
     <meta name="twitter:description" content="Сергей Кисляков — Python Fullstack Developer. Django, Gunicorn, Nginx, CI/CD. Пет-проекты, open-source, интерактивный терминал с перечнем технологий.">
     {% load static %}
     <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Fira+Code:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script>
+        window.getSkills = function () {
+            if (!window.__skillsPromise) {
+                window.__skillsPromise = fetch('/api/skills/')
+                    .then(function (r) { return r.json(); })
+                    .catch(function () { return []; });
+            }
+            return window.__skillsPromise;
+        };
+    </script>
 </head>
 <body>
     <div class="hero">
@@ -180,7 +188,7 @@
         (function() {
             var container = document.getElementById('skills-cloud');
             if (!container) return;
-            fetch('/api/skills/').then(function(r) { return r.json(); }).then(function(skills) {
+            window.getSkills().then(function(skills) {
                 container.innerHTML = skills.map(function(s) {
                     return '<span class="tag tag-' + s.size + '">' + s.name + '</span>';
                 }).join('');
