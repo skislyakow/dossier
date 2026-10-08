@@ -105,6 +105,20 @@ Drag-and-drop the `drag_indicator` handle in the list view to reorder. Changes s
 
 Then push to `main` — site updates automatically.
 
+## Agent skills
+
+### Issue tracker
+
+Local markdown under `.scratch/<feature>/`. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Five canonical roles as-is (`needs-triage`, `needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`). See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+
 ## To-do
 
 ### SEO / видимость

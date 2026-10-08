@@ -5,3 +5,5 @@ check_*.py
 fix_*.py
 staticfiles/
 db.sqlite3
+.agents/
+skills-lock.json
