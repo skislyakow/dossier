@@ -4,7 +4,7 @@
 
 **Blocked by:** None (can start immediately).
 
-**Status:** ready-for-agent
+**Status:** ready-for-human
 
 - [x] Терминал, typing-заголовок, призраки и часы не отрисовываются; их скрипты, стили и разметка удалены
 - [x] Hero — одна колонка; секции идут в порядке Hero → Projects → Опыт → Skills → Contact

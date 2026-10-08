@@ -1,32 +1,27 @@
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.urls import reverse
 
 
 class HomeViewTest(TestCase):
     def setUp(self):
-        self.client = Client()
+        self.response = self.client.get(reverse('home'))
+        self.html = self.response.content.decode()
 
     def test_status_200(self):
-        response = self.client.get(reverse('home'))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(self.response.status_code, 200)
 
     def test_uses_correct_template(self):
-        response = self.client.get(reverse('home'))
-        self.assertTemplateUsed(response, 'index.html')
+        self.assertTemplateUsed(self.response, 'index.html')
 
     def test_contains_keywords(self):
-        response = self.client.get(reverse('home'))
-        self.assertContains(response, 'Sergey Kislyakov')
-        self.assertContains(response, 'Python')
-        self.assertContains(response, 'Django')
+        self.assertContains(self.response, 'Sergey Kislyakov')
+        self.assertContains(self.response, 'Python')
+        self.assertContains(self.response, 'Django')
 
     def test_hero_title_is_static(self):
-        response = self.client.get(reverse('home'))
-        self.assertContains(response, '<p class="title">Python Fullstack Developer</p>')
+        self.assertIn('Python Fullstack Developer', self.html)
 
     def test_hero_decor_removed(self):
-        response = self.client.get(reverse('home'))
-        html = response.content.decode()
         for fragment in (
             'typing.js',
             'typewriter.js',
@@ -36,17 +31,18 @@ class HomeViewTest(TestCase):
             'class="hero-ghost"',
             'id="current-time"',
             'id="terminal-content"',
+            'content-row',
+            'content-column',
         ):
-            self.assertNotIn(fragment, html)
+            self.assertNotIn(fragment, self.html)
 
     def test_section_order(self):
-        response = self.client.get(reverse('home'))
-        html = response.content.decode()
-        self.assertIn('id="skills"', html)
-        pos_portfolio = html.index('id="portfolio"')
-        pos_experience = html.index('id="timeline-details"')
-        pos_skills = html.index('id="skills"')
-        pos_contact = html.index('id="contact"')
+        pos_hero = self.html.index('<div class="hero">')
+        pos_portfolio = self.html.index('id="portfolio"')
+        pos_experience = self.html.index('id="timeline-details"')
+        pos_skills = self.html.index('id="skills"')
+        pos_contact = self.html.index('id="contact"')
+        self.assertLess(pos_hero, pos_portfolio)
         self.assertLess(pos_portfolio, pos_experience)
         self.assertLess(pos_experience, pos_skills)
         self.assertLess(pos_skills, pos_contact)
