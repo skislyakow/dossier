@@ -25,6 +25,7 @@
 3. Tests: `uv run manage.py test`
 4. Run server: `uv run manage.py runserver`
 5. Visit `http://127.0.0.1:8000/`
+6. Синхронизация доков: если изменено поведение сайта или команды запуска — обновить README и AGENTS.md в рамках того же изменения. README держать тонким (что это, бейджи, запуск, деплой, контакты); инвентаризация фич живёт в `## Project overview` ниже
 
 ## Production
 - Domain: `kislyakov.pro` (reg.ru)
