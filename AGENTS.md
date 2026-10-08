@@ -21,8 +21,10 @@
 
 ## Dev workflow
 1. Activate venv: `.venv\Scripts\activate`
-2. Run server: `python manage.py runserver`
-3. Visit `http://127.0.0.1:8000/`
+2. Lint: `ruff check .` (правила в `ruff.toml`; Ruff ставится из `requirements-dev.txt`)
+3. Tests: `python manage.py test`
+4. Run server: `python manage.py runserver`
+5. Visit `http://127.0.0.1:8000/`
 
 ## Production
 - Domain: `kislyakov.pro` (reg.ru)
@@ -35,7 +37,7 @@
 - Auto-deploy: GitHub Actions on push to `main`
 
 ## Auto-deploy
-GitHub Actions SSH into VPS and runs:
+On push to `main` GitHub Actions сначала гоняет чек-гейт (`ruff check .` + `python manage.py test`) на Ubuntu; при его успехе — SSH into VPS and runs:
 ```
 git pull → pip install → migrate → createcachetable → collectstatic → restart gunicorn
 ```

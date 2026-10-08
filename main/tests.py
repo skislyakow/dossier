@@ -1,5 +1,10 @@
+from unittest import mock
+
 from django.test import TestCase
 from django.urls import reverse
+
+from main import badge_utils
+from main.models import Project
 
 
 class HomeViewTest(TestCase):
@@ -46,11 +51,6 @@ class HomeViewTest(TestCase):
         self.assertLess(pos_portfolio, pos_experience)
         self.assertLess(pos_experience, pos_skills)
         self.assertLess(pos_skills, pos_contact)
-
-
-from unittest import mock
-from main.models import Project
-from main import badge_utils
 
 
 class ApiProjectsEnrichTest(TestCase):
@@ -131,7 +131,7 @@ class ApiGithubTest(TestCase):
         data = response.json()
         self.assertEqual(data['user']['login'], 'skislyakow')
         self.assertEqual(len(data['langs']), 2)
-        by_lang = {l['lang']: l['percent'] for l in data['langs']}
+        by_lang = {lang['lang']: lang['percent'] for lang in data['langs']}
         self.assertEqual(by_lang['Python'], 67)
         self.assertEqual(by_lang['JavaScript'], 33)
 
