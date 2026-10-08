@@ -17,7 +17,7 @@
 - [x] `requirements.txt` и `requirements-dev.txt` удалены; все ссылки на них обновлены (`deploy.yml`, `AGENTS.md`, где ещё встретится)
 - [x] CI: `astral-sh/setup-uv` → `uv sync --frozen` → `uv run ruff check .` → `uv run manage.py test`; деплой-job: `uv sync --frozen --no-dev` и `uv run manage.py ...` вместо прямых путей к `.venv/bin/*`
 - [x] VPS: uv установлен условной командой в деплой-скрипте (`command -v uv || curl -LsSf https://astral.sh/uv/install.sh | sh`, PATH из `~/.local/bin`) — ручной вход не требуется
-- [ ] systemd-сервис `dossier.service` продолжает работать (путь `/root/dossier/.venv/bin/gunicorn` сохраняется — uv использует тот же `.venv`)
+- [x] systemd-сервис `dossier.service` продолжает работать (путь `/root/dossier/.venv/bin/gunicorn` сохраняется — uv использует тот же `.venv`)
 - [x] `AGENTS.md`: Setup (установка uv, `uv run` вместо активации venv), Dev workflow (`uv run manage.py test`, `uv run ruff check .`), Auto-deploy
 - [x] Локально: `uv sync --frozen` + `uv run manage.py test` + `uv run ruff check .` проходят
-- [ ] Push → workflow `Deploy to VPS` success (check + deploy)
+- [x] Push → workflow `Deploy to VPS` success (check + deploy), kislyakov.pro отвечает 200
