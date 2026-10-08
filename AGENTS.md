@@ -1,10 +1,10 @@
 # Agents
 
 ## Setup
-- Virtual environment: `.venv/`
-- Python: 3.12+
+- Tooling: [uv](https://docs.astral.sh/uv/) — зависимости описаны в `pyproject.toml`, лок в `uv.lock` (закоммичен), версия Python пинится в `.python-version` (3.12). Установка uv: `pip install uv` или по докам
+- `uv sync --frozen` создаёт/обновляет `.venv/`; команды запускаются через `uv run` (активация venv не нужна)
 - Django: 6.0.4
-- Run dev server: `python manage.py runserver`
+- Run dev server: `uv run manage.py runserver`
 - Agent skills: после первого клонирования выполнить `npx skills experimental_install` — восстанавливает `.agents/skills/` из закоммиченного `skills-lock.json` (хеши версий пинятся там же; сам каталог `.agents/` в git не входит)
 
 ## Structure
@@ -14,16 +14,16 @@
 - `templates/` — HTML templates
 - `static/css/` — Styles
 - `static/js/` — Scripts (typing.js, typewriter.js, github.js, portfolio.js, timeline.js, ghost.js)
-- `static/fonts/` — Material Symbols font (локальный **subset** `MaterialSymbolsOutlined.woff2` ~3 КБ, сгенерирован через `fonttools` только из используемых лигатур: `fonttools subset` по codepoint'ам из `MaterialIconsOutlined-Regular.codepoints`; в `style.css` `@font-face` локальный файл — **первый**, полный Google Fonts woff2 — fallback для офлайна). В subset входят иконки навыков + UI-иконки админки. Каталог `IconPickerWidget` (COMMON_ICONS) в subset **не** входит — при добавлении новой иконки через админку она не отрисуется, пока subset не перегенерирован.
+- `static/fonts/` — Material Symbols font (локальный **subset** `MaterialSymbolsOutlined.woff2` ~3 КБ, сгенерирован через `fonttools` только из используемых лигатур: `uvx --from fonttools fonttools subset` по codepoint'ам из `MaterialIconsOutlined-Regular.codepoints` (сама утилита в venv не входит); в `style.css` `@font-face` локальный файл — **первый**, полный Google Fonts woff2 — fallback для офлайна). В subset входят иконки навыков + UI-иконки админки. Каталог `IconPickerWidget` (COMMON_ICONS) в subset **не** входит — при добавлении новой иконки через админку она не отрисуется, пока subset не перегенерирован.
 - `static/css/fonts.css` — **самохост** текстовых шрифтов (Inter 400/600/700 + Fira Code 400/700, подмножества latin + cyrillic, скачаны с Google Fonts css2 как woff2 в `static/fonts/`). В `<head>` внешний Google Fonts `<link>` убран — подключается только локальный `fonts.css` (без внешних запросов, `font-display: swap`). При добавлении нового веса/семейства — докачать woff2 и дописать `@font-face` в `fonts.css`.
 - `static/favicon.svg`
-- `requirements.txt` — Python dependencies
+- `pyproject.toml` + `uv.lock` — Python dependencies (uv; dev-зависимости в `[dependency-groups] dev`)
 
 ## Dev workflow
-1. Activate venv: `.venv\Scripts\activate`
-2. Lint: `ruff check .` (правила в `ruff.toml`; Ruff ставится из `requirements-dev.txt`)
-3. Tests: `python manage.py test`
-4. Run server: `python manage.py runserver`
+1. Install/update deps: `uv sync --frozen`
+2. Lint: `uv run ruff check .` (правила в `ruff.toml`; Ruff в dev-группе)
+3. Tests: `uv run manage.py test`
+4. Run server: `uv run manage.py runserver`
 5. Visit `http://127.0.0.1:8000/`
 
 ## Production
@@ -37,9 +37,9 @@
 - Auto-deploy: GitHub Actions on push to `main`
 
 ## Auto-deploy
-On push to `main` GitHub Actions сначала гоняет чек-гейт (`ruff check .` + `python manage.py test`) на Ubuntu; при его успехе — SSH into VPS and runs:
+On push to `main` GitHub Actions сначала гоняет чек-гейт (`uv run ruff check .` + `uv run manage.py test`) на Ubuntu; при его успехе — SSH into VPS and runs:
 ```
-git pull → pip install → migrate → createcachetable → collectstatic → restart gunicorn
+git pull → установка uv (если нет) → uv sync --frozen --no-dev → migrate → createcachetable → collectstatic → restart gunicorn
 ```
 Required GitHub secrets: `VPS_HOST`, `VPS_SSH_KEY`
 
@@ -130,7 +130,7 @@ Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/d
 ### Код / доступность
 - [ ] XSS: innerHTML в portfolio.js / timeline.js / github.js — данные из API вставляются без экранирования (низкий риск — только admin/API)
 - [ ] Тесты на основные view/home page
-- [ ] `requirements-dev.txt` в CI (mypy)
+- [ ] mypy в CI (зависимости уже ставятся через `uv sync --frozen`)
 
 ---
 

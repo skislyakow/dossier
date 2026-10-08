@@ -9,15 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
+      - uses: astral-sh/setup-uv@v10.2.0
       - name: Install dependencies
-        run: pip install -r requirements-dev.txt
+        run: uv sync --frozen
       - name: Ruff lint
-        run: ruff check .
+        run: uv run ruff check .
       - name: Tests
-        run: python manage.py test
+        run: uv run manage.py test
 
   deploy:
     needs: check
@@ -32,9 +30,11 @@ jobs:
           script: |
             cd /root/dossier
             git pull origin main
-            .venv/bin/pip install -r requirements.txt -q
-            .venv/bin/python manage.py migrate --noinput
-            .venv/bin/python manage.py createcachetable
-            .venv/bin/python manage.py collectstatic --noinput
+            export PATH="$HOME/.local/bin:$PATH"
+            command -v uv >/dev/null 2>&1 || curl -LsSf https://astral.sh/uv/install.sh | sh
+            uv sync --frozen --no-dev
+            uv run manage.py migrate --noinput
+            uv run manage.py createcachetable
+            uv run manage.py collectstatic --noinput
             chown -R www-data:www-data /var/www/dossier/static
             systemctl restart dossier

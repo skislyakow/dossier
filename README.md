@@ -36,20 +36,20 @@
 ## Запуск
 
 ```bash
-python -m venv .venv
-.venv\Scripts\activate
-pip install -r requirements.txt
-python manage.py runserver
+uv sync --frozen
+uv run manage.py runserver
 ```
 
 Откройте http://127.0.0.1:8000/
+
+Нужен [uv](https://docs.astral.sh/uv/): `pip install uv`.
 
 ## Деплой
 
 При пуше в ветку `main` GitHub Actions автоматически деплоит сайт на VPS:
 
 ```
-git pull → pip install → migrate → collectstatic → restart gunicorn
+git pull → uv sync --frozen --no-dev → migrate → collectstatic → restart gunicorn
 ```
 
 VPS: Ubuntu 24.04 | Nginx → Gunicorn (127.0.0.1:8000) | systemd | HTTPS (Let's Encrypt)
