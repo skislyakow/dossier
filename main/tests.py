@@ -56,11 +56,16 @@ class HomeViewTest(TestCase):
 
 class DesignSystemTest(TestCase):
     CSS_PATH = Path(__file__).resolve().parent.parent / 'static' / 'css' / 'style.css'
+    JS_PATH = Path(__file__).resolve().parent.parent / 'static' / 'js' / 'timeline.js'
 
     def setUp(self):
         self.response = self.client.get(reverse('home'))
         self.html = self.response.content.decode()
         self.css = self.CSS_PATH.read_text(encoding='utf-8')
+
+    def css_rule(self, selector):
+        start = self.css.index(selector)
+        return self.css[start:self.css.index('}', start)]
 
     def test_design_tokens(self):
         self.assertIn(':root', self.css)
@@ -87,6 +92,12 @@ class DesignSystemTest(TestCase):
     def test_reduced_motion_guards(self):
         self.assertIn('prefers-reduced-motion', self.css)
         self.assertIn('prefers-reduced-motion', self.html)
+
+    def test_timeline_rail_vertical(self):
+        self.assertIn('position: absolute', self.css_rule('.hero-timeline {'))
+        self.assertIn('transition: height', self.css_rule('.tl-progress'))
+        js = self.JS_PATH.read_text(encoding='utf-8')
+        self.assertNotIn('3600', js)
 
 
 class ApiTimelineTest(TestCase):

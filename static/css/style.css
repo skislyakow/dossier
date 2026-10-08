@@ -46,7 +46,7 @@
     --text-card-muted: #52525b;
 
     /* Типографическая шкала */
-    --type-scale-hero: clamp(3.25rem, 10.5vw, 9rem);
+    --type-scale-hero: clamp(3.25rem, 9.75vw, 9rem);
     --type-scale-role: clamp(1rem, 2.4vw, 1.6rem);
     --type-scale-body: clamp(1rem, 1.5vw, 1.15rem);
 }
@@ -665,10 +665,14 @@ h1 {
 }
 
 .hero-timeline {
-    width: 100%;
-    max-width: 860px;
+    position: absolute;
+    top: 14vh;
+    bottom: 12vh;
+    right: clamp(1rem, 3vw, 3.5rem);
+    width: clamp(140px, 14vw, 190px);
+    z-index: 2;
     margin: 0;
-    padding: 0 0 1.5rem;
+    padding: 0;
     opacity: 0;
     transform: translateY(10px);
     transition: all 0.5s cubic-bezier(0.61, 1, 0.88, 1);
@@ -677,6 +681,12 @@ h1 {
 .hero-timeline.show {
     opacity: 1;
     transform: translateY(0);
+}
+
+@media (max-width: 1024px) {
+    .hero-timeline {
+        display: none;
+    }
 }
 
 .hero-timeline .tl-line {
@@ -713,6 +723,20 @@ h1 {
 
 .hero-timeline .tl-label {
     color: #888;
+}
+
+.hero-timeline .tl-dot-prior {
+    background: var(--page-bg);
+    border: 2px dashed #555;
+}
+
+.hero-timeline .tl-dot-prior:hover,
+.hero-timeline .tl-dot-prior.active {
+    border-color: var(--accent);
+}
+
+.hero-timeline .tl-label-prior {
+    color: #666;
 }
 
 .tl-details {
@@ -1148,26 +1172,27 @@ h1 {
 
 .timeline-track {
     position: relative;
-    height: 80px;
-    margin: 0 1rem;
+    height: 100%;
+    margin: 0;
 }
 
 .tl-line {
     position: absolute;
-    top: 38px;
-    left: 0;
-    right: 0;
-    height: 2px;
+    left: 15px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
     background: #e4e4e7;
 }
 
 .tl-progress {
     position: absolute;
-    top: 38px;
-    left: 0;
-    height: 2px;
+    left: 15px;
+    top: 0;
+    width: 2px;
+    height: 0;
     background: var(--accent);
-    transition: width 0.5s cubic-bezier(0.61, 1, 0.88, 1);
+    transition: height 0.5s cubic-bezier(0.61, 1, 0.88, 1);
 }
 
 .tl-dots {
@@ -1177,7 +1202,8 @@ h1 {
 
 .tl-dot {
     position: absolute;
-    top: 31px;
+    left: 15px;
+    top: 0;
     width: 16px;
     height: 16px;
     border-radius: 50%;
@@ -1185,13 +1211,13 @@ h1 {
     border: 2px solid #d4d4d8;
     cursor: pointer;
     z-index: 2;
-    transform: translateX(-50%);
+    transform: translate(-50%, -50%);
     transition: all 0.3s cubic-bezier(0.61, 1, 0.88, 1);
 }
 
 .tl-dot:hover {
     border-color: var(--accent);
-    transform: translateX(-50%) scale(1.25);
+    transform: translate(-50%, -50%) scale(1.25);
 }
 
 .tl-dot.active {
@@ -1216,10 +1242,12 @@ h1 {
 
 .tl-label {
     position: absolute;
-    top: 54px;
+    top: 0;
+    right: 24px;
     font-size: 0.65rem;
     color: #a1a1aa;
-    transform: translateX(-50%);
+    text-align: right;
+    transform: translateY(-50%);
     white-space: nowrap;
     font-family: 'Fira Code', monospace;
 }
@@ -1255,6 +1283,10 @@ h1 {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, color-mix(in srgb, var(--accent) 6%, white) 100%);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
+}
+
+.tl-details-card--prior {
+    border-left-color: var(--text-card-muted);
 }
 
 .tl-details-date {
@@ -1407,27 +1439,8 @@ h1 {
 }
 
 @media (max-width: 640px) {
-    .timeline-track {
-        margin: 0 0.5rem;
-        height: 70px;
-    }
-    .tl-label {
-        font-size: 0.55rem;
-        top: 48px;
-    }
-    .tl-dot {
-        width: 14px;
-        height: 14px;
-        top: 26px;
-    }
-    .tl-dot.active {
-        box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent);
-    }
     .tl-details-card {
         padding: 0.75rem 1rem;
-    }
-    .tl-line, .tl-progress {
-        top: 32px;
     }
 }
 
@@ -1642,6 +1655,10 @@ h1 {
 [data-theme="light"] .tl-details-card--present {
     background: #ffffff;
     border-left-color: var(--accent);
+}
+
+[data-theme="light"] .tl-details-card--prior {
+    border-left-color: var(--text-card-muted);
 }
 
 [data-theme="light"] .contact-item {
