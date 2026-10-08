@@ -69,6 +69,8 @@ class DesignSystemTest(TestCase):
         self.assertIn('--text-card', self.css)
         self.assertIn('color-mix', self.css)
         self.assertNotIn('rgba(205, 255, 80', self.css)
+        self.assertNotIn('#e4b592', self.css)
+        self.assertNotIn('228, 181, 146', self.css)
 
     def test_hero_signature_markup(self):
         self.assertIn('Python-разработчик: автоматизация, Telegram-боты и веб на Django', self.html)
