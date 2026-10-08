@@ -13,7 +13,7 @@
 - `main/badge_utils.py` — серверный резолв бейджей и данных GitHub+PyPI (звёзды, форки, лицензия, язык, размер, даты, PyPI-версия/python/лицензия, PyPistats). Ходит в сеть через stdlib `urllib` (без зависимостей), кэширует в БД (`DatabaseCache`, `TIMEOUT` 6ч; при сбое внешнего API — короткий кэш 5мин, чтобы не долбить). Опц. `GITHUB_TOKEN` из env поднимает лимит 60→5000/ч. Браузер внешние API **не** дёргает — только `/api/projects/` (обогащённые `repo/langs/stars/badges`) и `/api/github/` (GitHub-stats toggle: профиль владельца + топ-5 языков, `fetch_github_stats()`), которые сами ходят в сеть и кэшируют.
 - `templates/` — HTML templates
 - `static/css/` — Styles
-- `static/js/` — Scripts (typing.js, typewriter.js, github.js, portfolio.js, timeline.js, ghost.js)
+- `static/js/` — Scripts (github.js, portfolio.js, timeline.js)
 - `static/fonts/` — Material Symbols font (локальный **subset** `MaterialSymbolsOutlined.woff2` ~3 КБ, сгенерирован через `fonttools` только из используемых лигатур: `uvx --from fonttools fonttools subset` по codepoint'ам из `MaterialIconsOutlined-Regular.codepoints` (сама утилита в venv не входит); в `style.css` `@font-face` локальный файл — **первый**, полный Google Fonts woff2 — fallback для офлайна). В subset входят иконки навыков + UI-иконки админки. Каталог `IconPickerWidget` (COMMON_ICONS) в subset **не** входит — при добавлении новой иконки через админку она не отрисуется, пока subset не перегенерирован.
 - `static/css/fonts.css` — **самохост** текстовых шрифтов (Inter 400/600/700 + Fira Code 400/700, подмножества latin + cyrillic, скачаны с Google Fonts css2 как woff2 в `static/fonts/`). В `<head>` внешний Google Fonts `<link>` убран — подключается только локальный `fonts.css` (без внешних запросов, `font-display: swap`). При добавлении нового веса/семейства — докачать woff2 и дописать `@font-face` в `fonts.css`.
 - `static/favicon.svg`
@@ -49,7 +49,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - Design tokens in `:root`: монохром + кислотный лайм `#CDFF50` (fallback-акцент — правка одного токена через `color-mix`), типографическая шкала `--type-scale-*`, текст на карточках `--text-card*`
 - Skills cloud with curly braces `{ Python } { Django }`
 - Hero: full-width oversized name (clamp-шкала), приглушённый курсорный градиент, scroll-reveal через IntersectionObserver, строка позиционирования «Python-разработчик: автоматизация, Telegram-боты и веб на Django»
-- Timeline with career dots (job start → projects → present)
+- Timeline: вертикальный рельс справа в hero (скрыт ≤1024px), типы prior/job/project/present, карточка деталей по клику
 - GitHub stats toggle (stars, repos, languages via GitHub API)
 - Portfolio section with project cards (Django CMS, GitHub API + PyPI badges)
 - Dynamic badges from GitHub API, PyPI, PyPistats
@@ -75,7 +75,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 ## CMS models
 - **Skill** — name, size (xl/lg/md/sm), icon (Material Symbol name), sort_order
 - **Project** — title, repo, pypi, role, tagline, features (JSON), links (JSON), badges_config (JSON), screenshot (URL), sort_order, is_published
-- **TimelineItem** — item_type (project/job/present), date_label, title, description, repo, url, role, date_range, sort_order
+- **TimelineItem** — item_type (prior/job/project/present), date_label, title, description, repo, url, role, date_range, sort_order
 - **ContactInfo** — contact_type (email/telegram), label, value, sort_order
 
 ## Adding a project to portfolio
