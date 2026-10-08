@@ -46,17 +46,15 @@ Required GitHub secrets: `VPS_HOST`, `VPS_SSH_KEY`
 
 ## Project overview
 Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack Developer).
-- Typing animation for job title
-- Interactive terminal with macOS-style window — animated tech/stack list (typewriter on vanilla JS)
+- Design tokens in `:root`: монохром + кислотный лайм `#CDFF50` (fallback-акцент — правка одного токена через `color-mix`), типографическая шкала `--type-scale-*`, текст на карточках `--text-card*`
 - Skills cloud with curly braces `{ Python } { Django }`
-- Two-column layout: skills cloud (left) + terminal (right) in hero
-- Hero: centered name + title gradient following cursor, ghost floating skill icons
+- Hero: full-width oversized name (clamp-шкала), приглушённый курсорный градиент, scroll-reveal через IntersectionObserver, строка позиционирования «Python-разработчик: автоматизация, Telegram-боты и веб на Django»
 - Timeline with career dots (job start → projects → present)
 - GitHub stats toggle (stars, repos, languages via GitHub API)
 - Portfolio section with project cards (Django CMS, GitHub API + PyPI badges)
 - Dynamic badges from GitHub API, PyPI, PyPistats
 - Role-based placeholder themes for card media (SVG gradients)
-- Light/dark theme toggle (GitHub-style light theme, default)
+- Light/dark theme toggle (dark default; light — `data-theme="light"` + localStorage)
 - Contact section with email + Telegram
 - Back to top button
 - Social link hover labels (icon slides, text appears)
