@@ -49,7 +49,7 @@ uv run manage.py runserver
 При пуше в ветку `main` GitHub Actions автоматически деплоит сайт на VPS:
 
 ```
-git pull → uv sync --frozen --no-dev → migrate → collectstatic → restart gunicorn
+git pull → uv sync --frozen --no-dev → migrate → createcachetable → collectstatic → restart gunicorn
 ```
 
 VPS: Ubuntu 24.04 | Nginx → Gunicorn (127.0.0.1:8000) | systemd | HTTPS (Let's Encrypt)
