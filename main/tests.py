@@ -89,6 +89,18 @@ class DesignSystemTest(TestCase):
         self.assertIn('prefers-reduced-motion', self.html)
 
 
+class ApiTimelineTest(TestCase):
+    def test_api_timeline_shape(self):
+        response = self.client.get('/api/timeline/')
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        for key in ('prior', 'job', 'present', 'timeline'):
+            self.assertTrue(data[key], f'empty: {key}')
+        self.assertGreaterEqual(len(data['timeline']), 3)
+        for key in ('date', 'title', 'desc'):
+            self.assertIn(key, data['prior'])
+
+
 class ApiProjectsEnrichTest(TestCase):
     def setUp(self):
         self.project = Project.objects.create(

@@ -46,6 +46,7 @@ class Project(models.Model):
 
 class TimelineItem(models.Model):
     TYPE_CHOICES = [
+        ('prior', 'До разработки'),
         ('project', 'Проект'),
         ('job', 'Работа'),
         ('present', 'Настоящее'),

@@ -39,6 +39,7 @@ def api_projects(request):
 
 def api_timeline(request):
     items = TimelineItem.objects.all()
+    prior = None
     job = None
     present = None
     timeline = []
@@ -49,7 +50,13 @@ def api_timeline(request):
             'title': item.title,
             'desc': item.description,
         }
-        if item.item_type == 'job':
+        if item.item_type == 'prior':
+            prior = {
+                'date': item.date_label,
+                'title': item.title,
+                'desc': item.description,
+            }
+        elif item.item_type == 'job':
             job = {
                 'title': item.title,
                 'role': item.role,
@@ -67,6 +74,7 @@ def api_timeline(request):
             timeline.append(obj)
 
     return JsonResponse({
+        'prior': prior,
         'job': job,
         'present': present,
         'timeline': timeline,
