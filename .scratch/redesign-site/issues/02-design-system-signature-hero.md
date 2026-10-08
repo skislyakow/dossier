@@ -4,7 +4,7 @@
 
 **Blocked by:** 01 (Prefactor: выпилить hero-декор и двухколоночность).
 
-**Status:** ready-for-agent
+**Status:** ready-for-human
 
 - [x] Токены дизайна заданы CSS-переменными: акцент `#CDFF50` (запасной оранжевый включается правкой одного токена), монохромная палитра, типографическая шкала
 - [x] Hero: oversized имя/роль во всю ширину + scroll-reveal через IntersectionObserver
