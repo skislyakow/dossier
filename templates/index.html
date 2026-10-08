@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sergey Kislyakov — Python Fullstack Developer</title>
-    <meta name="description" content="Сергей Кисляков — Python Fullstack Developer. Django, Gunicorn, Nginx, CI/CD. Пет-проекты, open-source, интерактивный терминал с перечнем технологий.">
+    <meta name="description" content="Сергей Кисляков — Python Fullstack Developer. Django, автоматизация, Telegram-боты, CI/CD. Пет-проекты и open-source.">
     <meta property="og:title" content="Sergey Kislyakov — Python Fullstack Developer">
-    <meta property="og:description" content="Сергей Кисляков — Python Fullstack Developer. Django, Gunicorn, Nginx, CI/CD. Пет-проекты, open-source, интерактивный терминал с перечнем технологий.">
+    <meta property="og:description" content="Сергей Кисляков — Python Fullstack Developer. Django, автоматизация, Telegram-боты, CI/CD. Пет-проекты и open-source.">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://kislyakov.pro/">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="Sergey Kislyakov — Python Fullstack Developer">
-    <meta name="twitter:description" content="Сергей Кисляков — Python Fullstack Developer. Django, Gunicorn, Nginx, CI/CD. Пет-проекты, open-source, интерактивный терминал с перечнем технологий.">
+    <meta name="twitter:description" content="Сергей Кисляков — Python Fullstack Developer. Django, автоматизация, Telegram-боты, CI/CD. Пет-проекты и open-source.">
     {% load static %}
     <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
     <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
@@ -30,32 +30,9 @@
 <body>
     <div class="hero">
         <div class="hero-blur"></div>
-        <div class="hero-ghost" aria-hidden="true"></div>
         <div class="hero-text">
             <h1>Sergey Kislyakov</h1>
-            <p class="title"><span id="typing-text"></span></p>
-        </div>
-        <div class="content-row">
-            <div class="content-column">
-                <div class="skills-cloud" id="skills-cloud"></div>
-            </div>
-            <div class="content-column">
-                <div class="terminal">
-                    <div class="terminal-header">
-                        <span class="mac-dot dot-red"></span>
-                        <span class="mac-dot dot-yellow"></span>
-                        <span class="mac-dot dot-green"></span>
-                        <span class="current-time" id="current-time"></span>
-                    </div>
-                    <div class="terminal-body">
-                        <div id="terminal-content"></div>
-                    </div>
-                    <svg class="fc fc-tl" viewBox="0 0 32 32"><path d="M4 32 V4 H32"/></svg>
-                    <svg class="fc fc-tr" viewBox="0 0 32 32"><path d="M28 32 V4 H0"/></svg>
-                    <svg class="fc fc-bl" viewBox="0 0 32 32"><path d="M4 0 V28 H32"/></svg>
-                    <svg class="fc fc-br" viewBox="0 0 32 32"><path d="M28 0 V28 H0"/></svg>
-                </div>
-            </div>
+            <p class="title">Python Fullstack Developer</p>
         </div>
         <div class="social-links">
             <a href="https://github.com/skislyakow" target="_blank" rel="noopener noreferrer" class="social-link github-link" aria-label="GitHub">
@@ -100,18 +77,17 @@
         </div>
     </div>
     <div class="content-body">
-        <div class="tl-details" id="timeline-details"></div>
-        <div id="stats" class="stats hidden"></div>
         <div id="portfolio" class="portfolio hidden"></div>
+        <div id="stats" class="stats hidden"></div>
+        <div class="tl-details" id="timeline-details"></div>
+        <div id="skills" class="skills-cloud"></div>
         <div id="contact" class="contact hidden">
             <div class="contact-card" id="contact-card"></div>
         </div>
     </div>
-    <script src="{% static 'js/typing.js' %}"></script>
     <script src="{% static 'js/github.js' %}"></script>
     <script src="{% static 'js/portfolio.js' %}"></script>
     <script src="{% static 'js/timeline.js' %}"></script>
-    <script src="{% static 'js/typewriter.js' %}"></script>
     <script>
         (function() {
             var hero = document.querySelector('.hero');
@@ -123,17 +99,6 @@
                 hero.style.setProperty('--mx', x + '%');
                 hero.style.setProperty('--my', y + '%');
             });
-        })();
-    </script>
-    <script>
-        (function() {
-            var el = document.getElementById('current-time');
-            if (!el) return;
-            function updateTime() {
-                el.textContent = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) + ' MSK';
-            }
-            updateTime();
-            setInterval(updateTime, 30000);
         })();
     </script>
     <script>
@@ -153,7 +118,6 @@
             });
         })();
     </script>
-    <script src="{% static 'js/ghost.js' %}"></script>
     <button id="back-to-top" class="back-to-top" aria-label="Back to top">
         <svg height="20" width="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 15l-6-6-6 6"/>
@@ -186,7 +150,7 @@
     </script>
     <script>
         (function() {
-            var container = document.getElementById('skills-cloud');
+            var container = document.getElementById('skills');
             if (!container) return;
             window.getSkills().then(function(skills) {
                 container.innerHTML = skills.map(function(s) {

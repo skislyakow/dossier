@@ -17,9 +17,39 @@ class HomeViewTest(TestCase):
     def test_contains_keywords(self):
         response = self.client.get(reverse('home'))
         self.assertContains(response, 'Sergey Kislyakov')
-        self.assertContains(response, 'terminal')
         self.assertContains(response, 'Python')
         self.assertContains(response, 'Django')
+
+    def test_hero_title_is_static(self):
+        response = self.client.get(reverse('home'))
+        self.assertContains(response, '<p class="title">Python Fullstack Developer</p>')
+
+    def test_hero_decor_removed(self):
+        response = self.client.get(reverse('home'))
+        html = response.content.decode()
+        for fragment in (
+            'typing.js',
+            'typewriter.js',
+            'ghost.js',
+            'id="typing-text"',
+            'class="terminal"',
+            'class="hero-ghost"',
+            'id="current-time"',
+            'id="terminal-content"',
+        ):
+            self.assertNotIn(fragment, html)
+
+    def test_section_order(self):
+        response = self.client.get(reverse('home'))
+        html = response.content.decode()
+        self.assertIn('id="skills"', html)
+        pos_portfolio = html.index('id="portfolio"')
+        pos_experience = html.index('id="timeline-details"')
+        pos_skills = html.index('id="skills"')
+        pos_contact = html.index('id="contact"')
+        self.assertLess(pos_portfolio, pos_experience)
+        self.assertLess(pos_experience, pos_skills)
+        self.assertLess(pos_skills, pos_contact)
 
 
 from unittest import mock
