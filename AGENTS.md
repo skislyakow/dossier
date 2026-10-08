@@ -5,6 +5,7 @@
 - Python: 3.12+
 - Django: 6.0.4
 - Run dev server: `python manage.py runserver`
+- Agent skills: после первого клонирования выполнить `npx skills experimental_install` — восстанавливает `.agents/skills/` из закоммиченного `skills-lock.json` (хеши версий пинятся там же; сам каталог `.agents/` в git не входит)
 
 ## Structure
 - `config/` — Django project settings (settings.py, urls.py, wsgi.py, asgi.py)
