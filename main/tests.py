@@ -1,3 +1,4 @@
+from pathlib import Path
 from unittest import mock
 
 from django.test import TestCase
@@ -51,6 +52,36 @@ class HomeViewTest(TestCase):
         self.assertLess(pos_portfolio, pos_experience)
         self.assertLess(pos_experience, pos_skills)
         self.assertLess(pos_skills, pos_contact)
+
+
+class DesignSystemTest(TestCase):
+    CSS_PATH = Path(__file__).resolve().parent.parent / 'static' / 'css' / 'style.css'
+
+    def setUp(self):
+        self.response = self.client.get(reverse('home'))
+        self.html = self.response.content.decode()
+        self.css = self.CSS_PATH.read_text(encoding='utf-8')
+
+    def test_design_tokens(self):
+        self.assertIn(':root', self.css)
+        self.assertIn('--accent: #CDFF50', self.css)
+        self.assertIn('--type-scale', self.css)
+
+    def test_hero_signature_markup(self):
+        self.assertIn('Python-разработчик: автоматизация, Telegram-боты и веб на Django', self.html)
+        self.assertIn('class="hero-name reveal"', self.html)
+        self.assertIn('class="hero-positioning reveal"', self.html)
+
+    def test_default_theme_dark(self):
+        self.assertNotIn('<html lang="ru" data-theme="light">', self.html)
+        self.assertIn('<html lang="ru">', self.html)
+
+    def test_scroll_reveal_observer(self):
+        self.assertIn('IntersectionObserver', self.html)
+
+    def test_reduced_motion_guards(self):
+        self.assertIn('prefers-reduced-motion', self.css)
+        self.assertIn('prefers-reduced-motion', self.html)
 
 
 class ApiProjectsEnrichTest(TestCase):
