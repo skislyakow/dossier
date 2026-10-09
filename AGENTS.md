@@ -63,7 +63,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - Responsive: breakpoints at 1024px, 768px, 640px
 - All content managed via Django admin (Skills, Projects, TimelineItems, ContactInfo)
 - Drag-and-drop reordering in admin (unfold `ordering_field` + AJAX save)
-- Начальный контент (проекты/навыки/таймлайн) сеется через **data-migrations** в `main/migrations/` (см. `0005_add_devman_monitor_data.py`, `0007_add_support_bot_data.py`, `0008_add_quiz_bot_data.py`, `0010_skill_category.py`). Каждая миграция — `RunPython(forwards, backwards)` с `get_or_create` по `repo`/`name` и сдвигом `sort_order` существующих таймлайн-записей. Редактирование наполнения — через admin, массовое добавление новых проектов — через миграцию (чтобы попало на прод при пуше).
+- Начальный контент (проекты/навыки/таймлайн) сеется через **data-migrations** в `main/migrations/` (см. `0005_add_devman_monitor_data.py`, `0007_add_support_bot_data.py`, `0008_add_quiz_bot_data.py`): `RunPython(forwards, backwards)` с `get_or_create` по `repo`/`name` и сдвигом `sort_order` существующих таймлайн-записей. `0010_skill_category.py` — schema + data миграция нового поля: `AddField` + `RunPython` с распределением по имени (`CATEGORY_BY_NAME`), в `backwards` — сброс на дефолт. Редактирование наполнения — через admin, массовое добавление новых проектов — через миграцию (чтобы попало на прод при пуше).
 
 ## Current CMS content
 ### Projects (role = "Bot Development")

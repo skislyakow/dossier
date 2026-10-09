@@ -14,7 +14,9 @@
 - [x] Тесты: JSON-контракт `/api/skills/` с `category` + рендеринг групп; существующие автотесты зелёные (21/21)
 - [ ] Визуальная проверка на dev / в проде
 
-## Implementation notes
+## Comments
+
+### Реализация (2026-10-09)
 
 - **Schema**: `main/models.py` — `Skill.CATEGORY_CHOICES` + `Skill.category` (`max_length=10`, `default='tools'`). Виден в админке: `list_display = ['icon_display', 'name', 'category', 'size']`, `list_filter = ['category', 'size']`.
 - **Migration**: `main/migrations/0010_skill_category.py` — `AddField` + `RunPython(assign_categories, reset_categories)`. Распределение по словарю `CATEGORY_BY_NAME` (по `name`); навык со старым/неизвестным именем → `tools` (default). Обратно — `reset_categories` (все в `tools`), сам столбец убирает реверс `AddField`. Проверено: `migrate main 0009` → `migrate main` — категории переназначаются.

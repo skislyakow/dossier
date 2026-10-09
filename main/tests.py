@@ -162,10 +162,11 @@ class DesignSystemTest(TestCase):
         self.assertIn('aria-label="Telegram"', self.html)
 
     def test_skills_section_grouped_by_category(self):
-        self.assertIn('skill-group', self.html)
-        self.assertIn("['backend', 'Backend']", self.html)
-        self.assertIn("['bots', 'Bots & Integrations']", self.html)
-        self.assertIn('s.category === pair[0]', self.html)
+        self.assertIn('class="skill-group"', self.html)
+        self.assertIn('class="skill-group-title"', self.html)
+        self.assertIn('Bots & Integrations', self.html)
+        self.assertIn('s.category', self.html)
+        self.assertIn('if (!items.length) return;', self.html)
 
     def test_skills_curly_cloud_removed(self):
         self.assertNotIn('content: "{ "', self.css)
@@ -195,7 +196,7 @@ class ApiSkillsTest(TestCase):
         response = self.client.get('/api/skills/')
         self.assertEqual(response.status_code, 200)
         data = response.json()
-        valid = {'backend', 'web', 'devops', 'bots', 'tools'}
+        valid = {code for code, _label in Skill.CATEGORY_CHOICES}
         for skill in data:
             self.assertIn('category', skill)
             self.assertIn(skill['category'], valid)

@@ -56,7 +56,7 @@ def assign_categories(apps, schema_editor):
     Skill = apps.get_model('main', 'Skill')
     for name, category in CATEGORY_BY_NAME.items():
         Skill.objects.filter(name=name).update(category=category)
-    Skill.objects.exclude(category__in=CATEGORY_BY_NAME.values()).update(category='tools')
+    Skill.objects.exclude(name__in=CATEGORY_BY_NAME).update(category='tools')
 
 
 def reset_categories(apps, schema_editor):

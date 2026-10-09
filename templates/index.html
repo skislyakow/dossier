@@ -205,6 +205,12 @@
         (function() {
             var container = document.getElementById('skills');
             if (!container) return;
+            function esc(v) {
+                return String(v).replace(/[&<>"']/g, function(c) {
+                    return {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c];
+                });
+            }
+            var sizes = {xl: 1, lg: 1, md: 1, sm: 1};
             var categories = [
                 ['backend', 'Backend'],
                 ['web', 'Web'],
@@ -217,9 +223,10 @@
                 categories.forEach(function(pair) {
                     var items = skills.filter(function(s) { return s.category === pair[0]; });
                     if (!items.length) return;
-                    html += '<div class="skill-group"><h3 class="skill-group-title">' + pair[1] + '</h3><div class="skill-group-items">';
+                    html += '<div class="skill-group"><h3 class="skill-group-title">' + esc(pair[1]) + '</h3><div class="skill-group-items">';
                     html += items.map(function(s) {
-                        return '<span class="tag tag-' + s.size + '">' + s.name + '</span>';
+                        var size = sizes[s.size] ? s.size : 'sm';
+                        return '<span class="tag tag-' + size + '">' + esc(s.name) + '</span>';
                     }).join('');
                     html += '</div></div>';
                 });
