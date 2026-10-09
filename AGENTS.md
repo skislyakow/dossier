@@ -59,7 +59,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - Placeholder медиа карточки (нет скриншота) — статичная монограмма проекта на лаймовом градиенте с сеткой (без анимаций, без призраков)
 - Dynamic badges from GitHub API, PyPI, PyPistats
 - Light/dark theme toggle (dark default; light — `data-theme="light"` + localStorage)
-- Contact section with email + Telegram
+- Contact: секция тремя крупными каналами (email / Telegram / GitHub) — сетка карточек `--bg-card` (иконка + тип моно + значение), метка `{ контакты: N }` (общий компонент `.sec-label` с Опытом); данные из ContactInfo через `/api/contact/`, рендер в index.html с экранированием `esc()`; href по типу (mailto / t.me / github.com)
 - Back to top button
 - Social link hover labels (icon slides, text appears)
 - Responsive: breakpoints at 1024px, 768px, 640px
@@ -80,7 +80,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - **Skill** — name, category (backend/web/devops/bots/tools), size (xl/lg/md/sm), icon (Material Symbol name), sort_order
 - **Project** — title, repo, pypi, role, tagline, features (JSON), links (JSON), badges_config (JSON), screenshot (URL), sort_order, is_published
 - **TimelineItem** — item_type (prior/job/project/present), date_label, title, description, repo, url, role, date_range, sort_order
-- **ContactInfo** — contact_type (email/telegram), label, value, sort_order
+- **ContactInfo** — contact_type (email/telegram/github), label, value, sort_order
 
 ## Adding a project to portfolio
 Admin: Main → Projects → Add. Fill:
@@ -131,7 +131,7 @@ Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/d
 - [ ] `og:image` / `twitter:image` — нет превью при шаринге
 
 ### Код / доступность
-- [ ] XSS: innerHTML в github.js и в contact-рендере index.html — данные из API вставляются без экранирования (низкий риск — только admin/API); portfolio.js, секция Skills и timeline.js экранируют через `esc()`/`tlEsc()` (закрыто в тикетах 04–06)
+- [ ] XSS: innerHTML в github.js — данные из API вставляются без экранирования (низкий риск — только admin/API); portfolio.js, секция Skills, timeline.js и contact-рендер экранируют через `esc()`/`tlEsc()` (закрыто в тикетах 04–07)
 - [ ] Тесты на основные view/home page
 - [ ] mypy в CI (зависимости уже ставятся через `uv sync --frozen`)
 

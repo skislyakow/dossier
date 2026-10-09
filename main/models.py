@@ -82,10 +82,11 @@ class ContactInfo(models.Model):
     TYPE_CHOICES = [
         ('email', 'Email'),
         ('telegram', 'Telegram'),
+        ('github', 'GitHub'),
     ]
     contact_type = models.CharField('Тип', max_length=10, choices=TYPE_CHOICES)
     label = models.CharField('Метка', max_length=100, help_text='Отображаемый текст')
-    value = models.CharField('Значение', max_length=200, help_text='email или @username')
+    value = models.CharField('Значение', max_length=200, help_text='email, @username или username GitHub')
     sort_order = models.PositiveSmallIntegerField('Порядок', default=0)
 
     class Meta:

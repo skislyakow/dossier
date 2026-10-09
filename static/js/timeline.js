@@ -73,9 +73,9 @@ function initTimeline() {
     }
 
     experienceEl.innerHTML =
-      '<div class="exp-label">' +
-      '<span class="exp-brace">{ </span><span class="exp-name">опыт</span>' +
-      '<span class="exp-count">: ' + total + '</span><span class="exp-brace"> }</span>' +
+      '<div class="sec-label">' +
+      '<span class="sec-brace">{ </span><span class="sec-name">опыт</span>' +
+      '<span class="sec-count">: ' + total + '</span><span class="sec-brace"> }</span>' +
       '</div>' +
       '<div class="exp-list">' + slots.map(itemHtml).join("") + '</div>';
 

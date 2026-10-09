@@ -756,7 +756,9 @@ h1 {
 
     .experience,
     .exp-item,
-    .exp-link {
+    .exp-link,
+    .contact-item,
+    .contact-item svg {
         transition: none;
     }
 }
@@ -1417,18 +1419,19 @@ body:has(#portfolio.show) #experience {
     min-height: 0;
 }
 
-.exp-label {
+/* Метка секции: `{ название: N }` — общий компонент (Опыт, Контакты) */
+.sec-label {
     font-family: 'Fira Code', monospace;
     font-size: 1.05rem;
     color: var(--text-secondary);
     margin-bottom: 1rem;
 }
 
-.exp-brace {
+.sec-brace {
     color: var(--accent);
 }
 
-.exp-count {
+.sec-count {
     color: var(--text-secondary);
 }
 
@@ -1559,48 +1562,66 @@ body:has(#portfolio.show) #experience {
 }
 
 .contact-card {
-    max-width: 400px;
+    max-width: 860px;
     margin: 0 auto;
-    background: var(--bg-card);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+}
+
+.contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
 }
 
 .contact-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    background: rgba(250, 250, 250, 0.82);
+    gap: 0.9rem;
+    padding: 1.25rem 1.4rem;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: var(--bg-card);
     backdrop-filter: blur(4px);
     -webkit-backdrop-filter: blur(4px);
     text-decoration: none;
-    color: #27272a;
-    font-family: 'Fira Code', monospace;
-    font-size: 1rem;
-    transition: all 0.2s cubic-bezier(0.61, 1, 0.88, 1);
+    color: var(--text-card);
+    transition: border-color 0.25s cubic-bezier(0.61, 1, 0.88, 1),
+        transform 0.25s cubic-bezier(0.61, 1, 0.88, 1);
 }
 
 .contact-item:hover {
-    background: var(--accent-soft);
-    color: var(--accent-on-card);
+    border-color: var(--accent-on-card);
+    transform: translateY(-2px);
 }
 
 .contact-item svg {
     flex-shrink: 0;
+    width: 24px;
+    height: 24px;
     color: var(--text-card-muted);
-    transition: color 0.2s ease;
+    transition: color 0.25s ease;
 }
 
 .contact-item:hover svg {
     color: var(--accent-on-card);
+}
+
+.contact-kind {
+    display: block;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-card-muted);
+    margin-bottom: 0.25rem;
+}
+
+.contact-value {
+    display: block;
+    font-family: 'Fira Code', monospace;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-card);
+    word-break: break-all;
 }
 
 .back-to-top {
@@ -1642,7 +1663,7 @@ body:has(#portfolio.show) #experience {
         font-size: 1.15rem;
     }
 
-    .exp-label {
+    .sec-label {
         font-size: 0.95rem;
     }
 }
@@ -1802,7 +1823,6 @@ body:has(#portfolio.show) #experience {
 }
 
 [data-theme="light"] .gh-card,
-[data-theme="light"] .contact-card,
 [data-theme="light"] .portfolio-preview-body {
     background: #ffffff;
     border-color: var(--border);
@@ -1840,15 +1860,6 @@ body:has(#portfolio.show) #experience {
 
 [data-theme="light"] .portfolio-list-item.active {
     color: #0550ae;
-}
-
-[data-theme="light"] .contact-item {
-    background: #f6f8fa;
-}
-
-[data-theme="light"] .contact-item:hover {
-    background: #f0f0f0;
-    color: var(--accent);
 }
 
 [data-theme="light"] .tl-progress {

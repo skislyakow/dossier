@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from main import badge_utils
-from main.models import Project, Skill
+from main.models import ContactInfo, Project, Skill
 
 
 class _ElementTree(HTMLParser):
@@ -165,6 +165,20 @@ class DesignSystemTest(TestCase):
         self.assertNotIn('timeline-details', js)
         self.assertNotIn('tl-details', js)
 
+    def test_contact_section_three_channels_and_escapes(self):
+        self.assertIn('id="contact-card"', self.html)
+        self.assertIn('contact-grid', self.html)
+        self.assertIn('contact-kind', self.html)
+        self.assertIn('contact-value', self.html)
+        self.assertIn("https://github.com/' + v.replace(/^@/, '')", self.html)
+        for raw in ('+ item.label +', '+ item.value +'):
+            self.assertNotIn(raw, self.html)
+        self.assertIn('.contact-grid', self.css)
+        self.assertIn('.contact-item', self.css)
+        self.assertIn('.sec-label', self.css)
+        self.assertNotIn('#27272a', self.css)
+        self.assertNotIn('rgba(250, 250, 250', self.css)
+
     def test_timeline_rail_is_page_chrome(self):
         parser = _ElementTree()
         parser.feed(self.html)
@@ -238,6 +252,23 @@ class ApiTimelineTest(TestCase):
         self.assertGreaterEqual(len(data['timeline']), 3)
         for key in ('date', 'title', 'desc'):
             self.assertIn(key, data['prior'])
+
+
+class ApiContactTest(TestCase):
+    def test_api_contact_shape_and_github(self):
+        response = self.client.get('/api/contact/')
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        valid = {code for code, _label in ContactInfo.TYPE_CHOICES}
+        types = set()
+        for item in data:
+            for key in ('type', 'label', 'value'):
+                self.assertIn(key, item)
+            self.assertIn(item['type'], valid)
+            types.add(item['type'])
+        self.assertIn('github', types)
+        github = next(i for i in data if i['type'] == 'github')
+        self.assertEqual(github['value'], 'skislyakow')
 
 
 class ApiSkillsTest(TestCase):

@@ -6,7 +6,19 @@
 
 **Status:** ready-for-agent
 
-- [ ] Тип `github` добавлен в ContactInfo (миграция), доступен в админке
-- [ ] Секция Contact показывает три канала крупно, ссылки кликабельны
-- [ ] Существующие email/telegram отображаются
-- [ ] Существующие автотесты зелёные; визуальная проверка на dev
+- [x] Тип `github` добавлен в ContactInfo (миграция), доступен в админке
+- [x] Секция Contact показывает три канала крупно, ссылки кликабельны
+- [x] Существующие email/telegram отображаются
+- [x] Существующие автотесты зелёные (27/27)
+- [ ] Визуальная проверка на dev / в проде
+
+## Comments
+
+### Реализация (2026-10-09)
+
+- **Model + migration**: `ContactInfo.TYPE_CHOICES` += `('github', 'GitHub')`, help_text `value` уточнён. `main/migrations/0011_contact_github.py` — `AlterField` (contact_type + value, чтобы `makemigrations --check` был чист) + `RunPython(add_github_contact, remove_github_contact)`: `get_or_create` по `contact_type='github'` с `{label: '@skislyakow', value: 'skislyakow', sort_order: 2}` — контакт попадает на прод при пуше (паттерн 0008/0010).
+- **Render** (`templates/index.html`, inline-скрипт): `esc()` на всех значениях (закрыт XSS-ToDo по contact-рендеру); карточка канала: иконка (email/telegram/github, GitHub — path из hero) + `.contact-kind` (имя типа из карты kinds, моно uppercase) + `.contact-value` (label, крупно); href по типу: `mailto:` / `https://t.me/` / `https://github.com/` (username без `@`), `target=_blank rel=noopener` для не-mailto; неизвестный тип — нессылочный `<div>` (безопасный fallback); метка секции `{ контакты: N }`.
+- **CSS**: `.contact-card` (max-width 860px, без поверхности) + `.contact-grid` (`repeat(auto-fit, minmax(220px, 1fr))` — 3 канала на десктопе, 1 на мобиле) + `.contact-item` — поверхность `--bg-card`, hover: border accent + translateY(-2px); старые правила (400px-карточка, хардкод `#27272a`/`rgba(250,250,250,.82)`, light-оверрайды `#f6f8fa`) удалены. `.contact-item` добавлен в reduced-motion блок.
+- **Компонент метки секции**: `.exp-label/.exp-brace/.exp-count` переименованы в `.sec-label/.sec-brace/.sec-count` (метка теперь общая для Опыта и Контактов, без дублирования CSS).
+- **Tests**: `ApiContactTest` (контракт type/label/value, валидные choices, github-seed `skislyakow`) + `test_contact_section_three_channels_and_escapes` (разметка/стили, запрет сырых конкатенаций, запрет старых хардкодов). 27/27, ruff чисто, `makemigrations --check` — No changes detected.
+- **Docs-sync**: AGENTS.md — буллет Contact переписан, ContactInfo в CMS-моделях, XSS-ToDo сужен до github.js.
