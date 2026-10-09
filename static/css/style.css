@@ -771,6 +771,12 @@ body:has(#portfolio.show, #stats.show, #contact.show) .hero-timeline {
     pointer-events: none;
 }
 
+/* Секция Опыт уходит, пока раскрыт раздел Проекты: панель и хронология
+   под ней не должны быть на одном экране (правка после feedback на t06) */
+body:has(#portfolio.show) #experience {
+    display: none;
+}
+
 .hero-timeline .tl-line {
     background: #333;
 }

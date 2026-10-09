@@ -145,6 +145,7 @@ class DesignSystemTest(TestCase):
             ' { padding-right: 2rem; }',
             css,
         )
+        self.assertIn('body:has(#portfolio.show) #experience { display: none; }', css)
         js = self.JS_PATH.read_text(encoding='utf-8')
         self.assertNotIn('3600', js)
         self.assertIn('initRailMode', js)
