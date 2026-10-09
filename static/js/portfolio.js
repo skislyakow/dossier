@@ -6,8 +6,16 @@ const ICONS = {
   vk: '<svg height="18" width="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.576-1.496c.588-.19 1.341 1.26 2.14 1.818.605.422 1.064.33 1.064.33l2.137-.03s1.117-.071.587-.964c-.043-.073-.308-.661-1.588-1.87-1.34-1.264-1.16-1.059.453-3.246.983-1.332 1.376-2.145 1.253-2.493-.117-.332-.84-.244-.84-.244l-2.406.015s-.178-.025-.31.056c-.13.079-.213.262-.213.262s-.382 1.03-.892 1.906c-1.074 1.846-1.504 1.943-1.68 1.829-.408-.263-.306-1.057-.306-1.62 0-1.762.264-2.497-.516-2.687-.26-.063-.451-.104-1.115-.112-.854-.009-1.577.003-1.987.206-.273.135-.484.435-.356.452.158.021.515.098.704.36.245.34.236 1.106.236 1.106s.141 2.107-.33 2.368c-.324.179-.769-.186-1.722-1.853-.489-.854-.858-1.802-.858-1.802s-.141-.349-.327-.465c-.24-.15-.577-.098-.577-.098L5.8 11.54s-.758.024-.83.356c-.067.303.28.927.301 1.108.014.106.144.198.144.198.512.904 1.497 2.386 1.497 2.386.748 1.098 1.252 1.029 1.252 1.029.244.006.706-.07.863-.276.153-.2.375-.476.375-.476s1.121-.18 2.383-.49z"/></svg>',
 };
 
-const REDUCE_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MOTION_MQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 const MAGNETIC_RANGE = 6;
+
+function reducedMotion() {
+  return MOTION_MQ.matches;
+}
+
+function projectKey(project) {
+  return (project.repo && project.repo.full_name) || project.title;
+}
 
 function esc(value) {
   return String(value == null ? '' : value).replace(
@@ -26,7 +34,7 @@ function monogram(title) {
 function revealIn(root) {
   const items = root.querySelectorAll('.reveal:not(.is-visible)');
   if (!items.length) return;
-  if (REDUCE_MOTION || typeof IntersectionObserver === 'undefined') {
+  if (reducedMotion() || typeof IntersectionObserver === 'undefined') {
     items.forEach((el) => el.classList.add('is-visible'));
     return;
   }
@@ -95,12 +103,12 @@ function buildPreviewHtml(project) {
             }).join('')}
           </div>
           ${badgesHtml ? `<div class="portfolio-badges reveal" style="--i: 4">${badgesHtml}</div>` : ''}
-          <hr class="portfolio-divider reveal" style="--i: 4">
-          <ul class="portfolio-features reveal" style="--i: 5">
+          <hr class="portfolio-divider reveal" style="--i: 5">
+          <ul class="portfolio-features reveal" style="--i: 6">
             ${(project.features || []).map((f) => `<li>${esc(f)}</li>`).join('')}
           </ul>
-          <hr class="portfolio-divider reveal" style="--i: 5">
-          <div class="portfolio-links reveal" style="--i: 6">${linksHtml}</div>
+          <hr class="portfolio-divider reveal" style="--i: 7">
+          <div class="portfolio-links reveal" style="--i: 8">${linksHtml}</div>
         </div>
         <div class="portfolio-preview-media reveal" style="--i: 3">${renderProjectMedia(project)}</div>
       </div>
@@ -108,23 +116,22 @@ function buildPreviewHtml(project) {
   `;
 }
 
-function initMagnetic(section) {
-  if (REDUCE_MOTION || !section) return;
+function bindMagnetic(card) {
+  if (!card) return;
   if (!window.matchMedia('(pointer: fine)').matches) return;
-  section.addEventListener('pointermove', (e) => {
-    const rect = section.getBoundingClientRect();
+  card.addEventListener('pointermove', (e) => {
+    if (reducedMotion()) return;
+    const rect = card.getBoundingClientRect();
     const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
     const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
-    section.style.setProperty('--mag-x', `${(nx * MAGNETIC_RANGE).toFixed(2)}px`);
-    section.style.setProperty('--mag-y', `${(ny * MAGNETIC_RANGE).toFixed(2)}px`);
+    card.style.setProperty('--mag-x', `${(nx * MAGNETIC_RANGE).toFixed(2)}px`);
+    card.style.setProperty('--mag-y', `${(ny * MAGNETIC_RANGE).toFixed(2)}px`);
   });
-  section.addEventListener('pointerleave', () => {
-    section.style.setProperty('--mag-x', '0px');
-    section.style.setProperty('--mag-y', '0px');
+  card.addEventListener('pointerleave', () => {
+    card.style.setProperty('--mag-x', '0px');
+    card.style.setProperty('--mag-y', '0px');
   });
 }
-
-initMagnetic(portfolioSection);
 
 portfolioBtn.addEventListener('click', async (e) => {
   e.preventDefault();
@@ -145,8 +152,7 @@ portfolioBtn.addEventListener('click', async (e) => {
 
     const previewCache = new Map();
     cards.forEach((project) => {
-      const key = (project.repo && project.repo.full_name) || project.title;
-      previewCache.set(key, buildPreviewHtml(project));
+      previewCache.set(projectKey(project), buildPreviewHtml(project));
     });
 
     const roles = [...new Set(cards.map((p) => p.role).filter(Boolean))];
@@ -160,12 +166,11 @@ portfolioBtn.addEventListener('click', async (e) => {
     const catsHtml = catBtn('', 'All', total, true) +
       roles.map((role) => catBtn(role, role, counts.get(role) || 0, false)).join('');
 
-    const listHtml = cards.map((project, i) => {
-      const key = (project.repo && project.repo.full_name) || project.title;
-      return `<button class="portfolio-list-item${i === 0 ? ' active' : ''} reveal" style="--i: ${i + 1}" data-repo="${esc(key)}" data-role="${esc(project.role || '')}" type="button">${esc(project.title)}</button>`;
-    }).join('');
+    const listHtml = cards.map((project, i) =>
+      `<button class="portfolio-list-item${i === 0 ? ' active' : ''}" data-repo="${esc(projectKey(project))}" data-role="${esc(project.role || '')}" type="button"><span class="reveal" style="--i: ${i + 1}">${esc(project.title)}</span></button>`,
+    ).join('');
 
-    const firstKey = (cards[0].repo && cards[0].repo.full_name) || cards[0].title;
+    const firstKey = projectKey(cards[0]);
     portfolioSection.innerHTML = `
       <div class="portfolio-cats reveal" style="--i: 0">${catsHtml}</div>
       <div class="portfolio-layout">
@@ -176,6 +181,7 @@ portfolioBtn.addEventListener('click', async (e) => {
 
     const preview = portfolioSection.querySelector('.portfolio-preview');
     const listItems = () => portfolioSection.querySelectorAll('.portfolio-list-item');
+    bindMagnetic(preview.querySelector('.portfolio-preview-body'));
 
     listItems().forEach((item) => {
       item.addEventListener('click', () => {
@@ -186,6 +192,7 @@ portfolioBtn.addEventListener('click', async (e) => {
         void preview.offsetWidth;
         preview.innerHTML = previewCache.get(item.dataset.repo);
         preview.classList.add('fade-in');
+        bindMagnetic(preview.querySelector('.portfolio-preview-body'));
         revealIn(preview);
       });
     });

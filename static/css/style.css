@@ -154,7 +154,7 @@ body {
 
 /* Стаггер: сдвиг перехода по порядковому индексу элемента (--i) внутри секции Projects */
 .portfolio .reveal {
-    transition-delay: calc(var(--i, 0) * 70ms);
+    transition-delay: calc(var(--i, 0) * 60ms);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -994,6 +994,12 @@ h1 {
     background: color-mix(in srgb, var(--accent) 8%, transparent);
 }
 
+/* Текст пункта списка — отдельный .reveal-узел: стаггер-задержка не касается
+   hover/active-переходов самого button (transition-delay применялся бы и к ним) */
+.portfolio-list-item .reveal {
+    display: block;
+}
+
 .portfolio-list-item.active {
     color: var(--accent);
     font-size: 1.3rem;
@@ -1723,11 +1729,7 @@ h1 {
 
 [data-theme="light"] .gh-card,
 [data-theme="light"] .tl-details-card,
-[data-theme="light"] .contact-card {
-    background: #ffffff;
-    border-color: var(--border);
-}
-
+[data-theme="light"] .contact-card,
 [data-theme="light"] .portfolio-preview-body {
     background: #ffffff;
     border-color: var(--border);

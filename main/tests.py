@@ -180,8 +180,10 @@ class DesignSystemTest(TestCase):
             self.assertIn(fragment, js)
         self.assertIn('function esc(', js)
         self.assertIn('${esc(', js)
+        for raw in ('${project.title}', '${project.tagline}', '${project.role}', '${b.label}', '${f}'):
+            self.assertNotIn(raw, js)
         self.assertNotIn('portfolio-ghost-skill', js)
-        self.assertNotIn('ghost', js)
+        self.assertNotIn('ghostFloat', js)
 
     def test_enhanced_card_surface_and_motion_guards(self):
         rule = self.css_rule('.portfolio-preview-body')

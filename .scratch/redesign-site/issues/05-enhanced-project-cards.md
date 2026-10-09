@@ -25,3 +25,13 @@
 - **Призраки удалены**: `.portfolio-ghost-skill`, `@keyframes ghostFloat` (блок ушёл из `style.css` целиком, включая light-override). Placeholder теперь — статичная монограмма проекта (первая буква названия) + `owner/repo` на лаймовом градиенте с тонкой сеткой, без анимаций.
 - **Tests**: `test_enhanced_card_format_and_escapes` + `test_enhanced_card_surface_and_motion_guards` (23/23). Контракт `/api/projects/` не менялся — `ApiProjectsEnrichTest` зелёный.
 - **Docs-sync**: AGENTS.md (буллеты Enhanced-карточки + placeholder, убран устаревший «Role-based placeholder themes», ToDo про XSS сужен до timeline/github/contact), README (буллет Портфолио).
+
+### Правки по code-review (2026-10-09)
+
+- **Magnetic → на саму карточку**: `bindMagnetic(.portfolio-preview-body)` вместо слушателя на всей секции (US#21 — hover на карточке); `--mag-x/--mag-y` ставятся на карточке, считается от её rect; биндится при первом рендере и при переключении проекта.
+- **Утечка задержки в hover**: `.portfolio .reveal { transition-delay }` перебивал `transition: all` у `.portfolio-list-item` — hover-переходы тормозили до ~0.7 c. Решение: у кнопки списка свой `transition`, а `.reveal` перенесён на вложенный `<span>` (+ `display: block`), задержка действует только на появление.
+- **Стаггер**: последовательная нумерация `--i` 0…8 без коллизий, шаг 60ms.
+- **`prefers-reduced-motion` в рантайме**: `MOTION_MQ.matches` читается в момент использования (смена настройки учитывается).
+- **`projectKey()`** — убраны тройные дубли `(repo && repo.full_name) || title`.
+- **Тесты**: узкие запреты (`portfolio-ghost-skill`, `ghostFloat`) вместо общего `ghost`; добавлен запрет на сырые интерполяции API-значений.
+- **Статус 04**: чекбокс визуальной проверки отмечен (пользователь подтвердил).

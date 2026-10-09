@@ -159,7 +159,7 @@ Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/d
 ### 1. Full-width layout ✅
 ### 2. Hero на всю ширину ✅
 ### 3. Крупная типографика ✅
-### 4. Карточки портфолио — role-based placeholder themes ✅
+### 4. Карточки портфолио — placeholder-темы под роль ✅ (в редизайне заменены: monogram-плейсхолдер, без анимаций)
 
 ### Что НЕ берём
 - Three.js / 3D сцены — нет сборщика
