@@ -74,7 +74,7 @@ class HomeViewTest(TestCase):
     def test_section_order(self):
         pos_hero = self.html.index('<div class="hero">')
         pos_portfolio = self.html.index('id="portfolio"')
-        pos_experience = self.html.index('id="timeline-details"')
+        pos_experience = self.html.index('id="experience"')
         pos_skills = self.html.index('id="skills"')
         pos_contact = self.html.index('id="contact"')
         self.assertLess(pos_hero, pos_portfolio)
@@ -129,7 +129,7 @@ class DesignSystemTest(TestCase):
         self.assertIn('.hero-timeline.compact', self.css)
         self.assertIn('right: calc(100% + 6px)', self.css_rule('.hero-timeline.compact .tl-label'))
         self.assertIn(
-            '.hero-timeline { display: none; } .tl-details { display: none; }',
+            '.hero-timeline { display: none; }',
             ' '.join(self.css.split()),
         )
 
@@ -141,17 +141,27 @@ class DesignSystemTest(TestCase):
             css,
         )
         self.assertIn(
-            'body:has(#portfolio.show, #stats.show, #contact.show) .tl-details'
-            ' { display: none; }',
-            css,
-        )
-        self.assertIn(
             'body:has(#portfolio.show, #stats.show, #contact.show) .portfolio'
             ' { padding-right: 2rem; }',
             css,
         )
         js = self.JS_PATH.read_text(encoding='utf-8')
         self.assertNotIn('3600', js)
+
+    def test_experience_section_chronology_and_escapes(self):
+        self.assertIn('id="experience"', self.html)
+        self.assertIn('.experience', self.css)
+        self.assertIn('.exp-list', self.css)
+        self.assertIn('.exp-item', self.css)
+        self.assertNotIn('tl-details', self.css)
+        js = self.JS_PATH.read_text(encoding='utf-8')
+        self.assertIn('function tlEsc(', js)
+        self.assertIn('exp-list', js)
+        self.assertIn('prefers-reduced-motion', js)
+        for raw in ('+ d.title +', '+ d.desc +', '+ d.repo +', '+ d.role +'):
+            self.assertNotIn(raw, js)
+        self.assertNotIn('timeline-details', js)
+        self.assertNotIn('tl-details', js)
         self.assertIn('initRailMode', js)
 
     def test_timeline_rail_is_page_chrome(self):

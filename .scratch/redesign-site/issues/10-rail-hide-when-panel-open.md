@@ -22,3 +22,7 @@
 - `static/css/style.css`: два правила `body:has(#portfolio.show, #stats.show, #contact.show)` — `.hero-timeline { opacity: 0; visibility: hidden; pointer-events: none }` (специфика (1,2,1) бьёт `.hero-timeline.show` (0,2,0); fade даёт существующий `transition: all 0.5s`, `visibility` по спецификации держится видимым до конца затухания; при `prefers-reduced-motion` — мгновенно) и `.tl-details { display: none }`. Третье правило внутри `@media (min-width: 1025px)` — `.portfolio { padding-right: 2rem }` (возврат к базовому `padding: 0 2rem`). JS не трогается: классы `.show` секций — источник истины, `:has()` не дублирует состояние.
 - **Tests**: `DesignSystemTest.test_rail_and_timeline_hidden_while_panel_open` — substring-проверки `body:has(...)`-селекторов для рельса, `.tl-details` и жёлоба.
 - **Docs-sync**: AGENTS.md — буллет Timeline/Рельс дополнен правилом скрытия.
+
+### Суперседен тикетом 06 (2026-10-09)
+
+AC «карточка `.tl-details` скрыта при раскрытии панели» отменён последовательно: тикет 06 удалил detail-карточку `.tl-details` совсем (вместо неё секция-хронология `#experience`, которая при панелях НЕ скрывается — решение пользователя). В CSS t10 осталось два правила: скрытие рельса и снятие жёлоба 7rem.

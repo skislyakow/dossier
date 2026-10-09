@@ -743,10 +743,8 @@ h1 {
 }
 
 @media (max-width: 1024px) {
+    /* Рельс — desktop-only: на мобиле Опыт читается в секции #experience */
     .hero-timeline {
-        display: none;
-    }
-    .tl-details {
         display: none;
     }
 }
@@ -755,19 +753,21 @@ h1 {
     .hero-timeline {
         transition: none;
     }
+
+    .experience,
+    .exp-item {
+        transition: none;
+    }
 }
 
-/* Пока раскрыта любая панель (Проекты / Статистика / Контакты), рельс и карточка
-   таймлайна уходят: на одном экране не должно быть трёх объектов поверх панели.
-   Источник истины — класс .show, который секции ставят/снимают сами (без JS-состояния). */
+/* Пока раскрыта любая панель (Проекты / Статистика / Контакты), рельс уходит:
+   на одном экране не должно быть поверх панели. Источник истины — класс .show,
+   который секции ставят/снимают сами (без JS-состояния). Секция Опыт — обычная
+   страница, остаётся на месте (решение тикета 06). */
 body:has(#portfolio.show, #stats.show, #contact.show) .hero-timeline {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
-}
-
-body:has(#portfolio.show, #stats.show, #contact.show) .tl-details {
-    display: none;
 }
 
 .hero-timeline .tl-line {
@@ -820,7 +820,7 @@ body:has(#portfolio.show, #stats.show, #contact.show) .tl-details {
     color: #666;
 }
 
-.tl-details {
+.experience {
     width: 100%;
     max-width: 860px;
     margin: 0 auto;
@@ -1403,85 +1403,126 @@ body:has(#portfolio.show, #stats.show, #contact.show) .tl-details {
     color: var(--accent);
 }
 
-.tl-details {
-    margin-top: 0.25rem;
+/* Секция «Опыт»: хронология вертикальной лентой, точки на линии —
+   зеркальные рельсу (prior / job / проекты / present) */
+.experience {
+    margin-top: 0.5rem;
     min-height: 0;
-    overflow: hidden;
-    transition: all 0.4s cubic-bezier(0.61, 1, 0.88, 1);
 }
 
-.tl-details-card {
-    padding: 1rem 1.5rem;
-    background: var(--bg-card);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-    border: 1px solid var(--border);
-    border-left: 3px solid var(--accent-on-card);
-    border-radius: 12px;
-    text-align: left;
-}
-
-.tl-details-card--job {
-    border-left-color: color-mix(in srgb, var(--accent-on-card) 75%, black);
-}
-
-.tl-details-card--present {
-    border-left-color: var(--accent-on-card);
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.82) 0%, color-mix(in srgb, var(--accent) 6%, white) 100%);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-}
-
-.tl-details-card--prior {
-    border-left-color: var(--text-card-muted);
-}
-
-.tl-details-date {
-    font-size: 0.8rem;
-    color: var(--text-card-muted);
+.exp-label {
     font-family: 'Fira Code', monospace;
-    margin-bottom: 0.35rem;
+    font-size: 1.05rem;
+    color: #a1a1aa;
+    margin-bottom: 1rem;
 }
 
-.tl-details-title {
-    margin: 0 0 0.5rem;
+.exp-brace {
+    color: var(--accent);
+}
+
+.exp-count {
+    color: var(--text-secondary);
+}
+
+.exp-list {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding-left: 1.5rem;
+    border-left: 2px solid var(--border);
+}
+
+.exp-item {
+    position: relative;
+    padding: 0.75rem 1rem;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    transition: background 0.3s cubic-bezier(0.61, 1, 0.88, 1),
+        border-color 0.3s cubic-bezier(0.61, 1, 0.88, 1);
+}
+
+.exp-item::before {
+    content: '';
+    position: absolute;
+    left: calc(-1.5rem - 6px);
+    top: 1.15rem;
+    width: 10px;
+    height: 10px;
+    box-sizing: border-box;
+    border-radius: 50%;
+    background: var(--page-bg);
+    border: 2px solid var(--text-muted);
+}
+
+.exp-item--prior::before {
+    border-style: dashed;
+}
+
+.exp-item--job::before {
+    border-color: var(--accent);
+}
+
+.exp-item--present::before {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.exp-item.active {
+    background: color-mix(in srgb, var(--accent) 7%, transparent);
+    border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.exp-item.active::before {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px var(--accent-ring);
+}
+
+.exp-date {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-family: 'Fira Code', monospace;
+    margin-bottom: 0.3rem;
+}
+
+.exp-item--present .exp-date {
+    color: var(--accent);
+}
+
+.exp-title {
+    margin: 0 0 0.35rem;
     font-size: 1.35rem;
     font-weight: 700;
-    color: var(--text-card);
+    color: var(--text-primary);
 }
 
-.tl-details-job-range {
-    font-size: 0.8rem;
-    color: var(--text-card-muted);
-    font-family: 'Fira Code', monospace;
-    margin-bottom: 0.35rem;
-}
-
-.tl-details-job-role {
+.exp-role {
     font-size: 1rem;
-    color: var(--accent-on-card);
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
 }
 
-.tl-details-desc {
-    margin: 0 0 0.5rem;
+.exp-desc {
+    margin: 0 0 0.4rem;
     font-size: 0.95rem;
-    color: var(--text-card-muted);
+    color: var(--text-secondary);
     line-height: 1.5;
 }
 
-.tl-details-link {
+.exp-link {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
     font-size: 0.85rem;
-    color: var(--accent-on-card);
+    font-family: 'Fira Code', monospace;
+    color: var(--accent);
     text-decoration: none;
     transition: opacity 0.3s cubic-bezier(0.61, 1, 0.88, 1);
 }
 
-.tl-details-link:hover {
+.exp-link:hover {
     opacity: 0.7;
 }
 
@@ -1586,8 +1627,16 @@ body:has(#portfolio.show, #stats.show, #contact.show) .tl-details {
 }
 
 @media (max-width: 640px) {
-    .tl-details-card {
-        padding: 0.75rem 1rem;
+    .exp-item {
+        padding: 0.6rem 0.85rem;
+    }
+
+    .exp-title {
+        font-size: 1.15rem;
+    }
+
+    .exp-label {
+        font-size: 0.95rem;
     }
 }
 
@@ -1746,7 +1795,6 @@ body:has(#portfolio.show, #stats.show, #contact.show) .tl-details {
 }
 
 [data-theme="light"] .gh-card,
-[data-theme="light"] .tl-details-card,
 [data-theme="light"] .contact-card,
 [data-theme="light"] .portfolio-preview-body {
     background: #ffffff;
@@ -1787,19 +1835,6 @@ body:has(#portfolio.show, #stats.show, #contact.show) .tl-details {
     color: #0550ae;
 }
 
-[data-theme="light"] .tl-details-card {
-    border-left-color: var(--accent);
-}
-
-[data-theme="light"] .tl-details-card--present {
-    background: #ffffff;
-    border-left-color: var(--accent);
-}
-
-[data-theme="light"] .tl-details-card--prior {
-    border-left-color: var(--text-card-muted);
-}
-
 [data-theme="light"] .contact-item {
     background: #f6f8fa;
 }
@@ -1826,10 +1861,6 @@ body:has(#portfolio.show, #stats.show, #contact.show) .tl-details {
 
 [data-theme="light"] .tl-dot-present.active {
     box-shadow: 0 0 0 6px var(--accent-ring);
-}
-
-[data-theme="light"] .tl-details-link {
-    color: var(--accent);
 }
 
 [data-theme="light"] .badge-value,

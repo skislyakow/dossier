@@ -1,8 +1,22 @@
+// Экранирование значений из API перед вставкой в HTML (закрыто в тикете 06)
+function tlEsc(value) {
+  return String(value == null ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function prefersReducedMotion() {
+  return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+}
+
 function initTimeline() {
   const dotsEl = document.getElementById("timeline-dots");
-  const detailsEl = document.getElementById("timeline-details");
+  const experienceEl = document.getElementById("experience");
   const progressEl = document.getElementById("timeline-progress");
-  if (!dotsEl) return;
+  if (!dotsEl || !experienceEl) return;
 
   fetch('/api/timeline/').then(function (r) { return r.json(); }).then(function (data) {
     const PRIOR = data.prior;
@@ -27,17 +41,51 @@ function initTimeline() {
       return total > 1 ? (index / (total - 1)) * 100 : 50;
     }
 
-    function scrollToDetails() {
-      setTimeout(function () {
-        const target = document.getElementById("timeline-details");
-        if (target) target.scrollIntoView({ behavior: "smooth", block: "center" });
-      }, 100);
-    }
-
     function labelFor(slot) {
       if (slot.kind === "job") return (JOB.dateRange || "").split(" — ")[0] || JOB.title;
       if (slot.kind === "present") return "сейчас";
       return slot.data.date;
+    }
+
+    // Строка секции «Опыт»: дата (моно) + заголовок + роль/описание/ссылка
+    function itemHtml(slot) {
+      const d = slot.data;
+      const date = slot.kind === "job" ? (d.dateRange || "")
+        : slot.kind === "present" ? "сейчас"
+        : (d.date || "");
+      const role = slot.kind === "job" && d.role
+        ? '<div class="exp-role">' + tlEsc(d.role) + '</div>'
+        : "";
+      const descText = slot.kind === "job" && !d.desc ? "Описание пока не добавлено" : (d.desc || "");
+      const desc = descText ? '<p class="exp-desc">' + tlEsc(descText) + '</p>' : "";
+      let link = "";
+      if (slot.kind === "job" && d.url) {
+        const host = String(d.url).replace(/^https?:\/\//, "").replace(/\/$/, "");
+        link = '<a class="exp-link" href="' + tlEsc(d.url) + '" target="_blank" rel="noopener noreferrer">' + tlEsc(host) + '</a>';
+      } else if (slot.kind === "project" && d.repo) {
+        link = '<a class="exp-link" href="https://github.com/' + tlEsc(d.repo) + '" target="_blank" rel="noopener noreferrer">GitHub</a>';
+      }
+      return '<div class="exp-item exp-item--' + slot.kind + '" id="exp-' + tlEsc(slot.id) + '" data-slot="' + tlEsc(slot.id) + '">' +
+        '<div class="exp-date">' + tlEsc(date) + '</div>' +
+        '<h3 class="exp-title">' + tlEsc(d.title) + '</h3>' +
+        role + desc + link +
+        '</div>';
+    }
+
+    experienceEl.innerHTML =
+      '<div class="exp-label">' +
+      '<span class="exp-brace">{ </span><span class="exp-name">опыт</span>' +
+      '<span class="exp-count">: ' + total + '</span><span class="exp-brace"> }</span>' +
+      '</div>' +
+      '<div class="exp-list">' + slots.map(itemHtml).join("") + '</div>';
+
+    slots.forEach(function (slot) {
+      slot.itemEl = document.getElementById("exp-" + slot.id);
+    });
+
+    function scrollToItem(id) {
+      const target = document.getElementById("exp-" + id);
+      if (target) target.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "center" });
     }
 
     slots.forEach(function (slot, i) {
@@ -59,7 +107,7 @@ function initTimeline() {
 
       dot.addEventListener("click", function () {
         select(slot.id);
-        scrollToDetails();
+        scrollToItem(slot.id);
       });
       dotsEl.appendChild(dot);
       dotsEl.appendChild(label);
@@ -67,51 +115,6 @@ function initTimeline() {
       slot.dot = dot;
       slot.pct = pct;
     });
-
-    function cardFor(slot) {
-      const d = slot.data;
-      if (slot.kind === "prior") {
-        return [
-          '<div class="tl-details-card tl-details-card--prior">',
-          '  <div class="tl-details-date">' + d.date + "</div>",
-          '  <h4 class="tl-details-title">' + d.title + "</h4>",
-          '  <p class="tl-details-desc">' + d.desc + "</p>",
-          "</div>",
-        ].join("\n");
-      }
-      if (slot.kind === "job") {
-        return [
-          '<div class="tl-details-card tl-details-card--job">',
-          '  <div class="tl-details-job-range">' + d.dateRange + "</div>",
-          '  <h4 class="tl-details-title">' + d.title + "</h4>",
-          '  <div class="tl-details-job-role">' + d.role + "</div>",
-          '  <p class="tl-details-desc">' + (d.desc || "Описание пока не добавлено") + "</p>",
-          '  <a href="' + d.url + '" target="_blank" rel="noopener noreferrer" class="tl-details-link">',
-          '    efko.digital',
-          "  </a>",
-          "</div>",
-        ].join("\n");
-      }
-      if (slot.kind === "present") {
-        return [
-          '<div class="tl-details-card tl-details-card--present">',
-          '  <h4 class="tl-details-title">' + d.title + "</h4>",
-          '  <p class="tl-details-desc">' + d.desc + "</p>",
-          "</div>",
-        ].join("\n");
-      }
-      return [
-        '<div class="tl-details-card">',
-        '  <div class="tl-details-date">' + d.date + "</div>",
-        '  <h4 class="tl-details-title">' + d.title + "</h4>",
-        '  <p class="tl-details-desc">' + d.desc + "</p>",
-        '  <a href="https://github.com/' + d.repo + '" target="_blank" rel="noopener noreferrer" class="tl-details-link">',
-        '    <svg height="14" width="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>',
-        "    GitHub",
-        "  </a>",
-        "</div>",
-      ].join("\n");
-    }
 
     function select(id) {
       if (id === active) return;
@@ -122,12 +125,11 @@ function initTimeline() {
         const on = slot.id === id;
         if (on) current = slot;
         slot.dot.classList.toggle("active", on);
+        if (slot.itemEl) slot.itemEl.classList.toggle("active", on);
       });
       if (!current) return;
 
       progressEl.style.height = current.pct + "%";
-      detailsEl.innerHTML = cardFor(current);
-      detailsEl.classList.add("show");
     }
 
     select(slots[slots.length - 1].id);

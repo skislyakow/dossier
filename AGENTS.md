@@ -49,7 +49,8 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - Design tokens in `:root`: монохром + кислотный лайм `#CDFF50` (fallback-акцент — правка одного токена через `color-mix`), типографическая шкала `--type-scale-*`, текст на карточках `--text-card*`
 - Skills: сетка, сгруппированная по Категориям навыка (Backend / Web / DevOps / Bots & Integrations / Tools), пустые категории не показываются; кегль тега — `Skill.size` (xl/lg/md/sm), старое curly-облако `{ skill }` убрано
 - Hero: full-width oversized name (clamp-шкала), приглушённый курсорный градиент, scroll-reveal через IntersectionObserver, строка позиционирования «Python-разработчик: автоматизация, Telegram-боты и веб на Django»
-- Timeline: вертикальный рельс справа `position: fixed` — виден на всём скролле (в hero с подписями дат, вне hero — компактная полоса 48px, подписи по наведению); markup вынесен из `.hero` на уровень `body` (page chrome); ≤1024px скрыт; типы prior/job/project/present, карточка деталей по клику; при раскрытии любой панели (Проекты/Статистика/Контакты) рельс и карточка таймлайна скрываются (`body:has(... .show)`), жёлоб 7rem у секции Projects снимается
+- Timeline: вертикальный рельс справа `position: fixed` — виден на всём скролле (в hero с подписями дат, вне hero — компактная полоса 48px, подписи по наведению); markup вынесен из `.hero` на уровень `body` (page chrome); ≤1024px скрыт; типы prior/job/project/present; клик по точке — скролл к строке секции Опыт + подсветка; при раскрытии любой панели (Проекты/Статистика/Контакты) рельс скрывается (`body:has(... .show)`), жёлоб 7rem у секции Projects снимается
+- Опыт: секция-хронология `#experience` в `.content-body` (между Projects и Skills) — все элементы `/api/timeline/` (prior → job → проекты → present) вертикальной лентой с точками на линии, даты — моно; рендерит `timeline.js` с экранированием `tlEsc()`; на мобиле секция видна (рельс скрыт ≤1024px); старая detail-карточка `.tl-details` удалена (тикеты 06/10)
 - Chrome в едином акценте: соц-ссылки/back-to-top — квадратные рамки `2px`, hover на лайме (`--accent`/`--accent-soft`), подписи uppercase-моно; aria-labels сохранены
 - Marquee-строка технологий между hero и `.content-body` (page chrome, `aria-hidden`): бесшовный цикл `translateX(-50%)` из двух `.marquee-group`, статичный список (Python/Django/…) — декоративный, не CMS; `prefers-reduced-motion` → `animation: none`
 - GitHub stats toggle (stars, repos, languages via GitHub API)
@@ -130,7 +131,7 @@ Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/d
 - [ ] `og:image` / `twitter:image` — нет превью при шаринге
 
 ### Код / доступность
-- [ ] XSS: innerHTML в timeline.js / github.js и в contact-рендере index.html — данные из API вставляются без экранирования (низкий риск — только admin/API); portfolio.js и секция Skills экранируют через `esc()` (закрыто в тикетах 04–05)
+- [ ] XSS: innerHTML в github.js и в contact-рендере index.html — данные из API вставляются без экранирования (низкий риск — только admin/API); portfolio.js, секция Skills и timeline.js экранируют через `esc()`/`tlEsc()` (закрыто в тикетах 04–06)
 - [ ] Тесты на основные view/home page
 - [ ] mypy в CI (зависимости уже ставятся через `uv sync --frozen`)
 
