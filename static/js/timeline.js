@@ -135,6 +135,24 @@ function initTimeline() {
   });
 }
 
+// Рельс fixed во вьюпорте: в hero — полный, вне hero (скролл > 12vh) — компакт
+function initRailMode() {
+  const rail = document.getElementById("hero-timeline");
+  if (!rail) return;
+  let compact = null;
+  function update() {
+    const next = window.scrollY > window.innerHeight * 0.12;
+    if (next !== compact) {
+      compact = next;
+      rail.classList.toggle("compact", compact);
+    }
+  }
+  window.addEventListener("scroll", update, { passive: true });
+  window.addEventListener("resize", update);
+  update();
+}
+
 document.addEventListener("DOMContentLoaded", function () {
   initTimeline();
+  initRailMode();
 });

@@ -1,3 +1,4 @@
+from html.parser import HTMLParser
 from pathlib import Path
 from unittest import mock
 
@@ -6,6 +7,34 @@ from django.urls import reverse
 
 from main import badge_utils
 from main.models import Project
+
+
+class _ElementTree(HTMLParser):
+    """Карта id -> список предков (тег.класс) для проверки разметки."""
+
+    VOID = {'area', 'base', 'br', 'col', 'embed', 'hr', 'img', 'input',
+            'link', 'meta', 'param', 'source', 'track', 'wbr'}
+
+    def __init__(self):
+        super().__init__(convert_charrefs=True)
+        self.stack = []
+        self.ancestors = {}
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag not in self.VOID:
+            self.stack.append(f"{tag}.{attrs.get('class', '')}")
+        if attrs.get('id'):
+            self.ancestors[attrs['id']] = list(self.stack)
+
+    def handle_startendtag(self, tag, attrs):
+        attrs = dict(attrs)
+        if attrs.get('id'):
+            self.ancestors[attrs['id']] = list(self.stack)
+
+    def handle_endtag(self, tag):
+        if tag not in self.VOID and self.stack:
+            self.stack.pop()
 
 
 class HomeViewTest(TestCase):
@@ -94,10 +123,19 @@ class DesignSystemTest(TestCase):
         self.assertIn('prefers-reduced-motion', self.html)
 
     def test_timeline_rail_vertical(self):
-        self.assertIn('position: absolute', self.css_rule('.hero-timeline {'))
+        self.assertIn('position: fixed', self.css_rule('.hero-timeline {'))
         self.assertIn('transition: height', self.css_rule('.tl-progress'))
+        self.assertIn('.hero-timeline.compact', self.css)
         js = self.JS_PATH.read_text(encoding='utf-8')
         self.assertNotIn('3600', js)
+        self.assertIn('initRailMode', js)
+
+    def test_timeline_rail_is_page_chrome(self):
+        parser = _ElementTree()
+        parser.feed(self.html)
+        ancestors = parser.ancestors.get('hero-timeline', [])
+        self.assertTrue(ancestors)
+        self.assertNotIn('div.hero', ancestors)
 
 
 class ApiTimelineTest(TestCase):

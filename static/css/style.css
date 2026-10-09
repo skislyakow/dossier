@@ -665,12 +665,12 @@ h1 {
 }
 
 .hero-timeline {
-    position: absolute;
+    position: fixed;
     top: 14vh;
-    bottom: 12vh;
+    bottom: max(12vh, 6rem);
     right: clamp(1rem, 3vw, 3.5rem);
     width: clamp(140px, 14vw, 190px);
-    z-index: 2;
+    z-index: 50;
     margin: 0;
     padding: 0;
     opacity: 0;
@@ -683,9 +683,34 @@ h1 {
     transform: translateY(0);
 }
 
+/* Вне hero рельс сжимается до полосы точек; подписи — по наведению */
+.hero-timeline.compact {
+    width: 48px;
+}
+
+.hero-timeline.compact .tl-label {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-50%) translateX(6px);
+    transition: opacity 0.25s ease, transform 0.25s ease, color 0.3s ease;
+}
+
+.hero-timeline.compact:hover .tl-label,
+.hero-timeline.compact:focus-within .tl-label {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(-50%);
+}
+
 @media (max-width: 1024px) {
     .hero-timeline {
         display: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-timeline {
+        transition: none;
     }
 }
 
@@ -778,6 +803,13 @@ h1 {
 @media (max-width: 1024px) {
     .portfolio {
         grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
+    }
+}
+
+/* Правый жёлоб под компактную полосу рельса (48px + right-offset ≤ 104px) */
+@media (min-width: 1025px) {
+    .portfolio {
+        padding-right: 7rem;
     }
 }
 
