@@ -4,7 +4,7 @@
 
 **Blocked by:** 02 (Design-система и Signature-момент Hero).
 
-**Status:** ready-for-human
+**Status:** done
 
 - [x] У Skill есть поле `category` с choices по пяти Категориям, отображается в админке
 - [x] Обратимая data-migration распределяет существующие 36 навыков по Категориям (паттерн `0008`)
