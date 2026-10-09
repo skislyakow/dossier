@@ -126,6 +126,11 @@ class DesignSystemTest(TestCase):
         self.assertIn('position: fixed', self.css_rule('.hero-timeline {'))
         self.assertIn('transition: height', self.css_rule('.tl-progress'))
         self.assertIn('.hero-timeline.compact', self.css)
+        self.assertIn('right: calc(100% + 6px)', self.css_rule('.hero-timeline.compact .tl-label'))
+        self.assertIn(
+            '.hero-timeline { display: none; } .tl-details { display: none; }',
+            ' '.join(self.css.split()),
+        )
         js = self.JS_PATH.read_text(encoding='utf-8')
         self.assertNotIn('3600', js)
         self.assertIn('initRailMode', js)
