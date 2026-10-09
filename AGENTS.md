@@ -49,7 +49,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - Design tokens in `:root`: монохром + кислотный лайм `#CDFF50` (fallback-акцент — правка одного токена через `color-mix`), типографическая шкала `--type-scale-*`, текст на карточках `--text-card*`
 - Skills cloud with curly braces `{ Python } { Django }`
 - Hero: full-width oversized name (clamp-шкала), приглушённый курсорный градиент, scroll-reveal через IntersectionObserver, строка позиционирования «Python-разработчик: автоматизация, Telegram-боты и веб на Django»
-- Timeline: вертикальный рельс справа в hero (скрыт ≤1024px), типы prior/job/project/present, карточка деталей по клику
+- Timeline: вертикальный рельс справа `position: fixed` — виден на всём скролле (в hero с подписями дат, вне hero — компактная полоса 48px, подписи по наведению); markup вынесен из `.hero` на уровень `body` (page chrome); ≤1024px скрыт; типы prior/job/project/present, карточка деталей по клику
 - GitHub stats toggle (stars, repos, languages via GitHub API)
 - Portfolio section with project cards (Django CMS, GitHub API + PyPI badges)
 - Dynamic badges from GitHub API, PyPI, PyPistats

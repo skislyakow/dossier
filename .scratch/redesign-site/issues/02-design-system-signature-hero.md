@@ -12,6 +12,7 @@
 - [x] Курсорный градиент приглушён и отключается при prefers-reduced-motion
 - [x] Дефолт тёмная тема; светлая тема работает переключателем
 - [x] Таймлайн: вертикальный рельс справа в hero, точки prior → job → проекты → present, карточки по клику
+- [x] Рельс закреплён (`position: fixed`): виден на всём скролле; в hero — с подписями дат, вне hero — компакт (полоса 48px, подписи по наведению); контент не перекрыт (правый жёлоб у `.portfolio`, `back-to-top` разведён)
 - [x] Тип `prior` в TimelineItem: сеет до-2026 ИТ-запись, локально сеются job/present (рендер сломан без них)
 - [x] Рельс скрыт ≤1024px; задержка `3600ms` убрана; скролл идёт на карточку деталей
 - [x] Существующие автотесты зелёные (новые: API timeline + rail-CSS); визуальная проверка на dev (headless-замеры; глаз-чек — после деплоя)
@@ -102,3 +103,14 @@
 - **Рельс**: `.hero-timeline` — `position: absolute; top: 14vh; bottom: 12vh; right: clamp(1rem, 3vw, 3.5rem); width: clamp(140px, 14vw, 190px)`; линия/точки `left: 15px`, подписи `right: 24px`; слоты `[prior?, job, ...projects, present]` через `style.top` (`pct = i/(n-1)*100`), прогресс — `height`; скролл на `#timeline-details` (`block: 'center'`); `3600` → `initTimeline()` на DOMContentLoaded; ≤1024 `display: none`; горизонтальная ветка `@media 640px` удалена; prior — пунктирная полая точка (`--page-bg`), `.tl-details-card--prior` без ссылки. JS переписан на слоты с защитой от отсутствующих job/present (не падает, а пропускает).
 - **Отклонение от плана (по замерам)**: `--type-scale-hero` `10.5vw → 9.75vw`. При 10.5vw линия и точка рельса пересекали фамилию на 1025–1366px (headless-замеры: name right 891 vs line x 859 на 1025; 1188 vs 1158 на 1366). После правки зазор ≥20px на всех ширинах ≥1025, имя остаётся одной строкой, максимум шкалы (9rem) не изменился.
 - **Верификация**: ruff + 15/15 тестов (новые: `ApiTimelineTest.test_api_timeline_shape`, `DesignSystemTest.test_timeline_rail_vertical`); headless Chrome: 1025/1100/1280/1366/1440/1680/1920 — наложений рельса на текст нет, горизонтального скролла нет; клики по точкам (prior/job/project/present) дают карточки и прогресс 0/20/60/100%; ≤1024 рельс `display: none`; light-тема: prior-точка белая пунктирная = фон hero. Глаз-чек — после деплоя.
+
+### 2026-10-09: рельс закреплён при скролле (follow-up по глаз-чеку)
+
+Запрос: рельс должен динамично оставаться на виду при прокрутке. Решение — `position: fixed` + компакт-режим вне hero (чтобы не перекрывать контент).
+
+- `.hero-timeline` → `position: fixed; top: 14vh; bottom: max(12vh, 6rem)` (низ разведён с `back-to-top`); `z-index: 50` (контент ниже, кнопка наверх 100 — выше). Markup вынесен из `.hero` на уровень `<body>` (page chrome, рядом с `back-to-top`) — не ломается, если hero получит transform.
+- **Компакт-режим**: `initRailMode()` в `timeline.js` — класс `.compact` при `scrollY > 0.12 * innerHeight` (в hero полный рельс; ниже — полоса 48px, подписи `opacity: 0`, при `:hover`/`:focus-within` раскрываются поверх контента транзиентно). Порог выбран по геометрии: hero (100vh) не выходит из зоны рельса (14–88vh) до scrollY = 12vh.
+- **Жёлоб**: `@media (min-width: 1025px) { .portfolio { padding-right: 7rem } }` — full-bleed секция проектов освобождает полосу под компакт-рельс (48px + right-offset ≤ 56px → 104px); centered-блоки (`tl-details`/`skills` 860px, `contact` 400px) в полосу не заходят начиная с 1025px.
+- Reduced-motion: `.hero-timeline { transition: none }`.
+- Тесты: `test_timeline_rail_vertical` → `position: fixed` + `.hero-timeline.compact` + `initRailMode`; новый `test_timeline_rail_is_page_chrome` (парсер HTML — у `#hero-timeline` нет предка `.hero`). Итого 16/16.
+- **Верификация** (headless 1025×768…1920×1080, портфолио+stats раскрыты): `railTop` константен (108/112/126/151) при скролле от 0 до низа; full + подписи в hero (пересечения с именем/кнопками нет); компакт после 50vh; правые края контента 943/1168/1254/1328/1808 ≤ левого края рельса 946/1194/1277/1349/1816; hover → подписи `opacity: 1`; клик по точке снизу → карточка/active/прогресс, детали в кадре; `back-to-top` разведён (1025×600 зазор 20px); ≤1024 `display: none`; light-тема ок; ошибок консоли нет. Призраки (`.portfolio-ghost-skill`) исключены из замера как декоративные (`overflow: hidden`, `opacity ≤ 0.26`, под рельсом).
