@@ -142,6 +142,26 @@ class DesignSystemTest(TestCase):
         self.assertTrue(ancestors)
         self.assertNotIn('div.hero', ancestors)
 
+    def test_page_chrome_marquee(self):
+        self.assertIn('class="marquee"', self.html)
+        self.assertIn('aria-hidden="true"', self.html)
+        pos_marquee = self.html.index('class="marquee"')
+        self.assertLess(self.html.index('<div class="hero">'), pos_marquee)
+        self.assertLess(pos_marquee, self.html.index('<div class="content-body">'))
+        self.assertIn('@keyframes marquee', self.css)
+        self.assertIn('animation: marquee 32s linear infinite', self.css_rule('.marquee-track'))
+        self.assertIn(
+            '.marquee-track { animation: none; }',
+            ' '.join(self.css.split()),
+        )
+
+    def test_page_chrome_uses_single_accent(self):
+        self.assertNotIn('#0088cc', self.css)
+        self.assertIn('aria-label="Back to top"', self.html)
+        self.assertIn('aria-label="Переключить тему"', self.html)
+        self.assertIn('aria-label="GitHub"', self.html)
+        self.assertIn('aria-label="Telegram"', self.html)
+
 
 class ApiTimelineTest(TestCase):
     def test_api_timeline_shape(self):
