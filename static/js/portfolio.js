@@ -6,68 +6,125 @@ const ICONS = {
   vk: '<svg height="18" width="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.576-1.496c.588-.19 1.341 1.26 2.14 1.818.605.422 1.064.33 1.064.33l2.137-.03s1.117-.071.587-.964c-.043-.073-.308-.661-1.588-1.87-1.34-1.264-1.16-1.059.453-3.246.983-1.332 1.376-2.145 1.253-2.493-.117-.332-.84-.244-.84-.244l-2.406.015s-.178-.025-.31.056c-.13.079-.213.262-.213.262s-.382 1.03-.892 1.906c-1.074 1.846-1.504 1.943-1.68 1.829-.408-.263-.306-1.057-.306-1.62 0-1.762.264-2.497-.516-2.687-.26-.063-.451-.104-1.115-.112-.854-.009-1.577.003-1.987.206-.273.135-.484.435-.356.452.158.021.515.098.704.36.245.34.236 1.106.236 1.106s.141 2.107-.33 2.368c-.324.179-.769-.186-1.722-1.853-.489-.854-.858-1.802-.858-1.802s-.141-.349-.327-.465c-.24-.15-.577-.098-.577-.098L5.8 11.54s-.758.024-.83.356c-.067.303.28.927.301 1.108.014.106.144.198.144.198.512.904 1.497 2.386 1.497 2.386.748 1.098 1.252 1.029 1.252 1.029.244.006.706-.07.863-.276.153-.2.375-.476.375-.476s1.121-.18 2.383-.49z"/></svg>',
 };
 
-function renderProjectMedia(project, skills) {
-  if (project.screenshot) {
-    return `<img src="${project.screenshot}" alt="${project.title}" class="portfolio-card-img" loading="lazy">`;
+const REDUCE_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const MAGNETIC_RANGE = 6;
+
+function esc(value) {
+  return String(value == null ? '' : value).replace(
+    /[&<>"']/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]),
+  );
+}
+
+function monogram(title) {
+  const parts = String(title || '').trim().split(/\s+/).filter(Boolean);
+  if (!parts.length) return '?';
+  const letters = parts.length > 1 ? parts[0][0] + parts[1][0] : parts[0].slice(0, 2);
+  return letters.toUpperCase();
+}
+
+function revealIn(root) {
+  const items = root.querySelectorAll('.reveal:not(.is-visible)');
+  if (!items.length) return;
+  if (REDUCE_MOTION || typeof IntersectionObserver === 'undefined') {
+    items.forEach((el) => el.classList.add('is-visible'));
+    return;
   }
-  const ghost = (skills || []).map(skill => {
-    const size = 1.1 + Math.random() * 2.8;
-    return `<span class="material-symbols-outlined portfolio-ghost-skill" style="top: ${(5 + Math.random() * 80).toFixed(1)}%; left: ${(5 + Math.random() * 80).toFixed(1)}%; font-size: ${size.toFixed(1)}rem; animation-duration: ${(12 + Math.random() * 10).toFixed(1)}s; animation-delay: ${(Math.random() * 5).toFixed(1)}s;">${skill.icon || 'code'}</span>`;
-  }).join('');
-  return `<div class="portfolio-card-placeholder">${ghost}</div>`;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  items.forEach((el) => io.observe(el));
+}
+
+function renderProjectMedia(project) {
+  if (project.screenshot) {
+    return `<img src="${esc(project.screenshot)}" alt="${esc(project.title)}" class="portfolio-card-img" loading="lazy">`;
+  }
+  const meta = project.repo && project.repo.full_name ? project.repo.full_name : '';
+  return `
+    <div class="portfolio-card-placeholder" aria-hidden="true">
+      <span class="placeholder-mark">${esc(monogram(project.title))}</span>
+      ${meta ? `<span class="placeholder-meta">${esc(meta)}</span>` : ''}
+    </div>`;
 }
 
 const portfolioBtn = document.getElementById('portfolio-btn');
 const portfolioSection = document.getElementById('portfolio');
 
-function buildPreviewHtml(project, skills) {
-  const langEntries = Object.entries(project.langs);
-  const totalBytes = Object.values(project.langs).reduce((a, b) => a + b, 0);
+function buildPreviewHtml(project) {
+  const langEntries = Object.entries(project.langs || {});
+  const totalBytes = Object.values(project.langs || {}).reduce((a, b) => a + b, 0);
 
-   const badgesHtml = (project.badges || [])
-     .map(b => {
-       if (b.value) {
-         return `<span class="badge"><span class="badge-label">${b.label}</span><span class="badge-value">${b.value}</span></span>`;
-       }
-       return `<span class="badge badge--single">${b.label}</span>`;
-     })
-     .join('');
+  const badgesHtml = (project.badges || [])
+    .map((b) => {
+      if (b.value) {
+        return `<span class="badge"><span class="badge-label">${esc(b.label)}</span><span class="badge-value">${esc(b.value)}</span></span>`;
+      }
+      return `<span class="badge badge--single">${esc(b.label)}</span>`;
+    })
+    .join('');
 
-  let linksHtml = `<a href="${project.repo?.html_url || '#'}" target="_blank" rel="noopener noreferrer" class="portfolio-link-icon" title="GitHub">${ICONS.github}</a>`;
+  const repoUrl = (project.repo && project.repo.html_url) || '#';
+  let linksHtml = `<a href="${esc(repoUrl)}" target="_blank" rel="noopener noreferrer" class="portfolio-link-icon" title="GitHub">${ICONS.github}</a>`;
   for (const [label, url] of Object.entries(project.links || {})) {
-    const icon = ICONS[label] || ICONS.github;
-    linksHtml += `<a href="${url}" target="_blank" rel="noopener noreferrer" class="portfolio-link-icon" title="${label}">${icon}</a>`;
+    const icon = Object.prototype.hasOwnProperty.call(ICONS, label) ? ICONS[label] : ICONS.github;
+    linksHtml += `<a href="${esc(url)}" target="_blank" rel="noopener noreferrer" class="portfolio-link-icon" title="${esc(label)}">${icon}</a>`;
   }
+
+  const stars = project.repo && project.repo.stargazers_count != null ? project.repo.stargazers_count : '';
 
   return `
     <div class="portfolio-preview-body">
       <div class="portfolio-preview-content">
         <div class="portfolio-preview-info">
-          <div class="portfolio-card-header">
-            <div class="portfolio-card-title-wrap"><h3>${project.title}</h3></div>
-            <span class="portfolio-stars"><svg height="14" width="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> ${project.repo?.stargazers_count ?? ''}</span>
+          <div class="portfolio-card-header reveal" style="--i: 0">
+            <div class="portfolio-card-title-wrap"><h3>${esc(project.title)}</h3></div>
+            <span class="portfolio-stars"><svg height="14" width="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> ${esc(stars)}</span>
           </div>
-          <p class="portfolio-tagline">${project.tagline}</p>
-          ${project.role ? `<span class="badge badge-role">role: ${project.role}</span>` : ''}
-          <div class="portfolio-tags">
+          <p class="portfolio-tagline reveal" style="--i: 1">${esc(project.tagline)}</p>
+          ${project.role ? `<span class="badge badge-role reveal" style="--i: 2">role: ${esc(project.role)}</span>` : ''}
+          <div class="portfolio-tags reveal" style="--i: 3">
             ${langEntries.map(([lang, bytes]) => {
               const pct = totalBytes ? Math.round((bytes / totalBytes) * 100) : 0;
-              return `<span class="portfolio-tag">${lang} ${pct}%</span>`;
+              return `<span class="portfolio-tag">${esc(lang)} ${pct}%</span>`;
             }).join('')}
           </div>
-          ${badgesHtml ? `<div class="portfolio-badges">${badgesHtml}</div>` : ''}
-          <hr class="portfolio-divider">
-          <ul class="portfolio-features">
-            ${(project.features || []).map(f => `<li>${f}</li>`).join('')}
+          ${badgesHtml ? `<div class="portfolio-badges reveal" style="--i: 4">${badgesHtml}</div>` : ''}
+          <hr class="portfolio-divider reveal" style="--i: 4">
+          <ul class="portfolio-features reveal" style="--i: 5">
+            ${(project.features || []).map((f) => `<li>${esc(f)}</li>`).join('')}
           </ul>
-          <hr class="portfolio-divider">
-          <div class="portfolio-links">${linksHtml}</div>
+          <hr class="portfolio-divider reveal" style="--i: 5">
+          <div class="portfolio-links reveal" style="--i: 6">${linksHtml}</div>
         </div>
-        <div class="portfolio-preview-media">${renderProjectMedia(project, skills)}</div>
+        <div class="portfolio-preview-media reveal" style="--i: 3">${renderProjectMedia(project)}</div>
       </div>
     </div>
   `;
 }
+
+function initMagnetic(section) {
+  if (REDUCE_MOTION || !section) return;
+  if (!window.matchMedia('(pointer: fine)').matches) return;
+  section.addEventListener('pointermove', (e) => {
+    const rect = section.getBoundingClientRect();
+    const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
+    const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;
+    section.style.setProperty('--mag-x', `${(nx * MAGNETIC_RANGE).toFixed(2)}px`);
+    section.style.setProperty('--mag-y', `${(ny * MAGNETIC_RANGE).toFixed(2)}px`);
+  });
+  section.addEventListener('pointerleave', () => {
+    section.style.setProperty('--mag-x', '0px');
+    section.style.setProperty('--mag-y', '0px');
+  });
+}
+
+initMagnetic(portfolioSection);
 
 portfolioBtn.addEventListener('click', async (e) => {
   e.preventDefault();
@@ -83,37 +140,34 @@ portfolioBtn.addEventListener('click', async (e) => {
   portfolioSection.classList.add('show');
 
   try {
-    const [projects, skills] = await Promise.all([
-      fetch('/api/projects/').then(r => r.json()),
-      window.getSkills(),
-    ]);
+    const projects = await fetch('/api/projects/').then((r) => r.json());
     const cards = projects;
 
     const previewCache = new Map();
-    cards.forEach(project => {
-      const key = project.repo.full_name || project.title;
-      previewCache.set(key, buildPreviewHtml(project, skills));
+    cards.forEach((project) => {
+      const key = (project.repo && project.repo.full_name) || project.title;
+      previewCache.set(key, buildPreviewHtml(project));
     });
 
-    const roles = [...new Set(cards.map(p => p.role).filter(Boolean))];
+    const roles = [...new Set(cards.map((p) => p.role).filter(Boolean))];
     const counts = new Map();
-    cards.forEach(p => counts.set(p.role || '', (counts.get(p.role || '') || 0) + 1));
+    cards.forEach((p) => counts.set(p.role || '', (counts.get(p.role || '') || 0) + 1));
     const total = cards.length;
 
     const catBtn = (role, label, count, active) =>
-      `<button class="portfolio-cat${active ? ' active' : ''}" data-role="${role}" type="button"><span class="cat-brace">{ </span><span class="cat-name">${label}</span><span class="cat-count">: ${count}</span><span class="cat-brace"> }</span></button>`;
+      `<button class="portfolio-cat${active ? ' active' : ''}" data-role="${esc(role)}" type="button"><span class="cat-brace">{ </span><span class="cat-name">${esc(label)}</span><span class="cat-count">: ${esc(count)}</span><span class="cat-brace"> }</span></button>`;
 
     const catsHtml = catBtn('', 'All', total, true) +
-      roles.map(role => catBtn(role, role, counts.get(role) || 0, false)).join('');
+      roles.map((role) => catBtn(role, role, counts.get(role) || 0, false)).join('');
 
     const listHtml = cards.map((project, i) => {
-      const key = project.repo.full_name || project.title;
-      return `<button class="portfolio-list-item${i === 0 ? ' active' : ''}" data-repo="${key}" data-role="${project.role || ''}" type="button">${project.title}</button>`;
+      const key = (project.repo && project.repo.full_name) || project.title;
+      return `<button class="portfolio-list-item${i === 0 ? ' active' : ''} reveal" style="--i: ${i + 1}" data-repo="${esc(key)}" data-role="${esc(project.role || '')}" type="button">${esc(project.title)}</button>`;
     }).join('');
 
-    const firstKey = cards[0].repo.full_name || cards[0].title;
+    const firstKey = (cards[0].repo && cards[0].repo.full_name) || cards[0].title;
     portfolioSection.innerHTML = `
-      <div class="portfolio-cats">${catsHtml}</div>
+      <div class="portfolio-cats reveal" style="--i: 0">${catsHtml}</div>
       <div class="portfolio-layout">
         <div class="portfolio-list">${listHtml}</div>
         <div class="portfolio-preview">${previewCache.get(firstKey)}</div>
@@ -126,24 +180,25 @@ portfolioBtn.addEventListener('click', async (e) => {
     listItems().forEach((item) => {
       item.addEventListener('click', () => {
         if (item.classList.contains('active')) return;
-        listItems().forEach(el => el.classList.remove('active'));
+        listItems().forEach((el) => el.classList.remove('active'));
         item.classList.add('active');
         preview.classList.remove('fade-in');
         void preview.offsetWidth;
         preview.innerHTML = previewCache.get(item.dataset.repo);
         preview.classList.add('fade-in');
+        revealIn(preview);
       });
     });
 
     portfolioSection.querySelector('.portfolio-cats').addEventListener('click', (e) => {
       const btn = e.target.closest('.portfolio-cat');
       if (!btn || btn.classList.contains('active')) return;
-      portfolioSection.querySelectorAll('.portfolio-cat').forEach(b => b.classList.remove('active'));
+      portfolioSection.querySelectorAll('.portfolio-cat').forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
 
       const role = btn.dataset.role;
       let firstVisible = null;
-      listItems().forEach(item => {
+      listItems().forEach((item) => {
         const show = !role || item.dataset.role === role;
         item.style.display = show ? '' : 'none';
         if (show && !firstVisible) firstVisible = item;
@@ -154,6 +209,8 @@ portfolioBtn.addEventListener('click', async (e) => {
         firstVisible.click();
       }
     });
+
+    revealIn(portfolioSection);
 
     setTimeout(() => portfolioSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
   } catch (err) {

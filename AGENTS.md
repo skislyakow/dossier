@@ -54,8 +54,9 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - Marquee-строка технологий между hero и `.content-body` (page chrome, `aria-hidden`): бесшовный цикл `translateX(-50%)` из двух `.marquee-group`, статичный список (Python/Django/…) — декоративный, не CMS; `prefers-reduced-motion` → `animation: none`
 - GitHub stats toggle (stars, repos, languages via GitHub API)
 - Portfolio section with project cards (Django CMS, GitHub API + PyPI badges)
+- Усиленная карточка проекта: таглайн + буллеты + бейджи + ссылки на светлой карточке (`--bg-card` поверхность, текст `--text-card*`); стаггер-reveal по `--i` при появлении/переключении, magnetic-hover на `--mag-x/--mag-y` (≤6px, `pointer: fine`, off при `prefers-reduced-motion`); все значения из API вставляются через `esc()`
+- Placeholder медиа карточки (нет скриншота) — статичная монограмма проекта на лаймовом градиенте с сеткой (без анимаций, без призраков)
 - Dynamic badges from GitHub API, PyPI, PyPistats
-- Role-based placeholder themes for card media (SVG gradients)
 - Light/dark theme toggle (dark default; light — `data-theme="light"` + localStorage)
 - Contact section with email + Telegram
 - Back to top button
@@ -129,7 +130,7 @@ Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/d
 - [ ] `og:image` / `twitter:image` — нет превью при шаринге
 
 ### Код / доступность
-- [ ] XSS: innerHTML в portfolio.js / timeline.js / github.js — данные из API вставляются без экранирования (низкий риск — только admin/API)
+- [ ] XSS: innerHTML в timeline.js / github.js и в contact-рендере index.html — данные из API вставляются без экранирования (низкий риск — только admin/API); portfolio.js и секция Skills экранируют через `esc()` (закрыто в тикетах 04–05)
 - [ ] Тесты на основные view/home page
 - [ ] mypy в CI (зависимости уже ставятся через `uv sync --frozen`)
 
