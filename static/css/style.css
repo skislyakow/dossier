@@ -757,6 +757,8 @@ h1 {
     .experience,
     .exp-item,
     .exp-link,
+    .contact,
+    .contact.hidden,
     .contact-item,
     .contact-item svg {
         transition: none;

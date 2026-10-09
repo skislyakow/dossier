@@ -4,7 +4,7 @@
 
 **Blocked by:** 02 (Design-система и Signature-момент Hero).
 
-**Status:** ready-for-agent
+**Status:** ready-for-human
 
 - [x] Тип `github` добавлен в ContactInfo (миграция), доступен в админке
 - [x] Секция Contact показывает три канала крупно, ссылки кликабельны
@@ -22,3 +22,9 @@
 - **Компонент метки секции**: `.exp-label/.exp-brace/.exp-count` переименованы в `.sec-label/.sec-brace/.sec-count` (метка теперь общая для Опыта и Контактов, без дублирования CSS).
 - **Tests**: `ApiContactTest` (контракт type/label/value, валидные choices, github-seed `skislyakow`) + `test_contact_section_three_channels_and_escapes` (разметка/стили, запрет сырых конкатенаций, запрет старых хардкодов). 27/27, ruff чисто, `makemigrations --check` — No changes detected.
 - **Docs-sync**: AGENTS.md — буллет Contact переписан, ContactInfo в CMS-моделях, XSS-ToDo сужен до github.js.
+
+### Правки по code-review (2026-10-09)
+
+Отчёты: `reviews/07-standards.md`, `reviews/07-spec.md` (фикс-поинт `907c27a`, ревью коммита `5b01842`).
+- **Исправлено:** README docs-sync (добавлен буллет «Контакты»); `Status` → `ready-for-human`; дедупликация `esc()` — обе локальные копии в index.html удалены, используется глобальный `esc` из `portfolio.js` (гарантированно исполняется раньше обоих IIFE); Repeated Switches — единая таблица `channels[type] = {label, icon, href(v), external}` вместо `kinds`/`icons`/`hrefFor`/тернарника; `.contact`/`.contact.hidden` в reduced-motion (expand-анимация панели); хрупкие негативные ассерты в тесте заменены на позитивные `esc(...)`; валидация: ruff, 27/27, `makemigrations --check` чисто.
+- **Сознательно отложено:** общая сборка метки `{ название: N }` (нужен util-модуль ради шаблона из 5 спанов — CSS уже общий `.sec-*`); перевод Contact в постоянный поток страницы (панельный паттерн — утверждённая архитектура, вне скоупа).

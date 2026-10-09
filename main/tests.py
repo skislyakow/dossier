@@ -171,8 +171,8 @@ class DesignSystemTest(TestCase):
         self.assertIn('contact-kind', self.html)
         self.assertIn('contact-value', self.html)
         self.assertIn("https://github.com/' + v.replace(/^@/, '')", self.html)
-        for raw in ('+ item.label +', '+ item.value +'):
-            self.assertNotIn(raw, self.html)
+        self.assertIn('esc(item.label)', self.html)
+        self.assertIn('esc(href)', self.html)
         self.assertIn('.contact-grid', self.css)
         self.assertIn('.contact-item', self.css)
         self.assertIn('.sec-label', self.css)
