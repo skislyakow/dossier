@@ -22,3 +22,14 @@
 - **`static/css/style.css`**: блок стилей `.tl-details*` (карточка + светлые оверрайды + мобилка) заменён на `.experience/.exp-*`: лента `border-left: 2px`, точки `::before` на линии с вариантами (prior — пунктир, job — акцент, present — залитая, active — ring через `--accent-ring`), строка — прозрачная карточка с hover-less подсветкой `active` (`color-mix` 7% акцента). Мобилка ≤1024px: `.hero-timeline { display: none }` остался один — секция видна. Из t10-правил удалён `body:has(...) .tl-details { display: none }` (см. комментарий в тикете 10), остаётся скрытие рельса + жёлоб.
 - **Tests**: `test_section_order` → `id="experience"`; `test_timeline_rail_vertical` — мобилка прячет только рельс; `test_rail_and_timeline_hidden_while_panel_open` — без `.tl-details`; новый `test_experience_section_chronology_and_escapes` (контейнер, стили, `tlEsc`, запрет сырых конкатенаций `+ d.* +` и любых `tl-details`-ссылок). 25/25, ruff чисто.
 - **Docs-sync**: AGENTS.md — буллет Timeline переписан, добавлен буллет «Опыт», ToDo про XSS сужен (timeline.js закрыт в этом тикете).
+
+### Правки по code-review (2026-10-09)
+
+Отчёты: `reviews/06-standards.md`, `reviews/06-spec.md`.
+
+- **HARD docs-sync**: README не был синхронизирован — буллет «Career timeline … клик по точке открывает карточку» переписан как «Опыт» (устранён и drift от GLOSSARY «Avoid: таймлайн»), в буллете админки «таймлайн» → «опыт».
+- **HARD tracker**: в тикете 10 AC про `.tl-details` помечен зачёркиванием + «отменён тикетом 06» (чекбокс больше не противоречит коду).
+- **Контраст light**: `.exp-label` — `color: var(--text-secondary)` вместо хардкода `#a1a1aa` (на светлом `#f5f0eb` было ~2.1:1).
+- **Reduced-motion**: `.exp-link` добавлен в media-query блок (transition opacity гасился не всем).
+- **Мелочи**: `scrollToItem(slot)` через кэшированный `slot.itemEl` (без повторного `getElementById`); удалён мёртвый `data-slot`; `assertIn('initRailMode', js)` перенесён из experience-теста в rail-тест.
+- **Принято (документировано в отчётах)**: дрейф дат `labelFor`/`itemHtml` намеренный (компактная подпись vs полный диапазон); source-substring тесты = задокументированный seam репозитория (repo overrides спеку «JS/CSS автотестов нет»); `rel="noopener noreferrer"` — security-fix старой разметки; длительность проектов частично — в данных нет конечных дат, контракт заморожен.

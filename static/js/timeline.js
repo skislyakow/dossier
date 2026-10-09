@@ -65,7 +65,7 @@ function initTimeline() {
       } else if (slot.kind === "project" && d.repo) {
         link = '<a class="exp-link" href="https://github.com/' + tlEsc(d.repo) + '" target="_blank" rel="noopener noreferrer">GitHub</a>';
       }
-      return '<div class="exp-item exp-item--' + slot.kind + '" id="exp-' + tlEsc(slot.id) + '" data-slot="' + tlEsc(slot.id) + '">' +
+      return '<div class="exp-item exp-item--' + slot.kind + '" id="exp-' + tlEsc(slot.id) + '">' +
         '<div class="exp-date">' + tlEsc(date) + '</div>' +
         '<h3 class="exp-title">' + tlEsc(d.title) + '</h3>' +
         role + desc + link +
@@ -83,9 +83,8 @@ function initTimeline() {
       slot.itemEl = document.getElementById("exp-" + slot.id);
     });
 
-    function scrollToItem(id) {
-      const target = document.getElementById("exp-" + id);
-      if (target) target.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "center" });
+    function scrollToItem(slot) {
+      if (slot.itemEl) slot.itemEl.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "center" });
     }
 
     slots.forEach(function (slot, i) {
@@ -107,7 +106,7 @@ function initTimeline() {
 
       dot.addEventListener("click", function () {
         select(slot.id);
-        scrollToItem(slot.id);
+        scrollToItem(slot);
       });
       dotsEl.appendChild(dot);
       dotsEl.appendChild(label);

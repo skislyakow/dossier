@@ -755,7 +755,8 @@ h1 {
     }
 
     .experience,
-    .exp-item {
+    .exp-item,
+    .exp-link {
         transition: none;
     }
 }
@@ -1413,7 +1414,7 @@ body:has(#portfolio.show, #stats.show, #contact.show) .hero-timeline {
 .exp-label {
     font-family: 'Fira Code', monospace;
     font-size: 1.05rem;
-    color: #a1a1aa;
+    color: var(--text-secondary);
     margin-bottom: 1rem;
 }
 

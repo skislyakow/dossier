@@ -147,6 +147,7 @@ class DesignSystemTest(TestCase):
         )
         js = self.JS_PATH.read_text(encoding='utf-8')
         self.assertNotIn('3600', js)
+        self.assertIn('initRailMode', js)
 
     def test_experience_section_chronology_and_escapes(self):
         self.assertIn('id="experience"', self.html)
@@ -162,7 +163,6 @@ class DesignSystemTest(TestCase):
             self.assertNotIn(raw, js)
         self.assertNotIn('timeline-details', js)
         self.assertNotIn('tl-details', js)
-        self.assertIn('initRailMode', js)
 
     def test_timeline_rail_is_page_chrome(self):
         parser = _ElementTree()
