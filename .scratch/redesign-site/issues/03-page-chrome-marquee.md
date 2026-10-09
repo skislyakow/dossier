@@ -32,3 +32,20 @@
 - Открытый вопрос для глаз-чека: справа текст marquee уходит под fixed-рельс таймлайна (full-bleed, как в других marquee). Если мешает — добавить правый жёлоб на `min-width: 1025px`.
 
 **Тесты:** `test_page_chrome_marquee` (наличие/позиция разметки, keyframes, пауза reduced-motion), `test_page_chrome_uses_single_accent` (нет `#0088cc`, aria-labels).
+
+### 2026-10-09: code-review (`c270294...HEAD`)
+
+Отчёты: `reviews/03-standards.md`, `reviews/03-spec.md`.
+
+**Исправлено:**
+- HARD (standards): `Status: done` не значился в словаре трекера → задокументирован как терминальный статус в `docs/agents/issue-tracker.md`.
+- scope creep (spec): `.social-label` вернул `font-size: 0.85rem` (было ужато до 0.75 — не просилось; uppercase + letter-spacing остаются).
+- spec #22 (весь текст на русском): `aria-label="Back to top"` → `"Наверх"` (+ тест).
+- хрупкость тестов: `animation: marquee` без пиннинга длительности; `aria-hidden` заскоуплен на `.marquee`.
+
+**Принято как есть:**
+- Позиция marquee — Hero→`.content-body` (секции тумблятся, это единственный всегда видимый шов); отмечено на глаз-чек.
+- Статичный список технологий в marquee (декоративный chrome, не CMS).
+- Дублирование accent-hover-правил — селекторы равной специфичности завязаны на порядок; консолидация вслепую рискованна (прецедент t02 с дублем reduced-motion guard).
+- `.gh-card:hover #fafafa` и синий `--accent` в light — by design (карточка белая в обеих темах; лайм-пересмотр light в секционных тикетах).
+- AC2: контракт `/api/github/` уже под тестом `ApiGithubTest`.
