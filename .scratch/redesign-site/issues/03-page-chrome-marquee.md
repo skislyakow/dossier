@@ -4,7 +4,7 @@
 
 **Blocked by:** 02 (Design-система и Signature-момент Hero).
 
-**Status:** ready-for-human
+**Status:** done
 
 - [x] Переключатель темы, back-to-top, соц-ссылки отрисованы в новом стиле, aria-labels сохранены
 - [x] GitHub stats toggle работает без изменений контракта `/api/github/` и выглядит в новом стиле
