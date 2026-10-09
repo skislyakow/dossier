@@ -47,7 +47,7 @@ Required GitHub secrets: `VPS_HOST`, `VPS_SSH_KEY`
 ## Project overview
 Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack Developer).
 - Design tokens in `:root`: монохром + кислотный лайм `#CDFF50` (fallback-акцент — правка одного токена через `color-mix`), типографическая шкала `--type-scale-*`, текст на карточках `--text-card*`
-- Skills cloud with curly braces `{ Python } { Django }`
+- Skills: сетка, сгруппированная по Категориям навыка (Backend / Web / DevOps / Bots & Integrations / Tools), пустые категории не показываются; кегль тега — `Skill.size` (xl/lg/md/sm), старое curly-облако `{ skill }` убрано
 - Hero: full-width oversized name (clamp-шкала), приглушённый курсорный градиент, scroll-reveal через IntersectionObserver, строка позиционирования «Python-разработчик: автоматизация, Telegram-боты и веб на Django»
 - Timeline: вертикальный рельс справа `position: fixed` — виден на всём скролле (в hero с подписями дат, вне hero — компактная полоса 48px, подписи по наведению); markup вынесен из `.hero` на уровень `body` (page chrome); ≤1024px скрыт; типы prior/job/project/present, карточка деталей по клику
 - Chrome в едином акценте: соц-ссылки/back-to-top — квадратные рамки `2px`, hover на лайме (`--accent`/`--accent-soft`), подписи uppercase-моно; aria-labels сохранены
@@ -63,7 +63,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - Responsive: breakpoints at 1024px, 768px, 640px
 - All content managed via Django admin (Skills, Projects, TimelineItems, ContactInfo)
 - Drag-and-drop reordering in admin (unfold `ordering_field` + AJAX save)
-- Начальный контент (проекты/навыки/таймлайн) сеется через **data-migrations** в `main/migrations/` (см. `0005_add_devman_monitor_data.py`, `0007_add_support_bot_data.py`, `0008_add_quiz_bot_data.py`). Каждая миграция — `RunPython(forwards, backwards)` с `get_or_create` по `repo`/`name` и сдвигом `sort_order` существующих таймлайн-записей. Редактирование наполнения — через admin, массовое добавление новых проектов — через миграцию (чтобы попало на прод при пуше).
+- Начальный контент (проекты/навыки/таймлайн) сеется через **data-migrations** в `main/migrations/` (см. `0005_add_devman_monitor_data.py`, `0007_add_support_bot_data.py`, `0008_add_quiz_bot_data.py`, `0010_skill_category.py`). Каждая миграция — `RunPython(forwards, backwards)` с `get_or_create` по `repo`/`name` и сдвигом `sort_order` существующих таймлайн-записей. Редактирование наполнения — через admin, массовое добавление новых проектов — через миграцию (чтобы попало на прод при пуше).
 
 ## Current CMS content
 ### Projects (role = "Bot Development")
@@ -75,7 +75,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 `systemd`, `python-dotenv`, `Telegram Bot API`, `Dialogflow`, `aiogram`, `vk_api`, `Redis`, `vkbottle`, `VK API`, `pymorphy3`, `mypy`
 
 ## CMS models
-- **Skill** — name, size (xl/lg/md/sm), icon (Material Symbol name), sort_order
+- **Skill** — name, category (backend/web/devops/bots/tools), size (xl/lg/md/sm), icon (Material Symbol name), sort_order
 - **Project** — title, repo, pypi, role, tagline, features (JSON), links (JSON), badges_config (JSON), screenshot (URL), sort_order, is_published
 - **TimelineItem** — item_type (prior/job/project/present), date_label, title, description, repo, url, role, date_range, sort_order
 - **ContactInfo** — contact_type (email/telegram), label, value, sort_order
@@ -91,7 +91,7 @@ Admin: Main → Projects → Add. Fill:
 
 Drag-and-drop the `drag_indicator` handle in the list view to reorder. Changes save automatically via AJAX.
 
-Чтобы новый проект/навык попал на прод при пуше — оформляйте массовое добавление через **data-migration** (паттерн `0008_add_quiz_bot_data.py`): `RunPython` + `get_or_create` по `repo`/`name`, со сдвигом `sort_order` таймлайн-записей в `backwards`. Летающие «призраки» (`ghost.js`), облако навыков и placeholder-карточки портфолио (`portfolio.js`) читают `/api/skills/` динамически — добавление `Skill` само обновляет эти места, правка JS не нужна.
+Чтобы новый проект/навык попал на прод при пуше — оформляйте массовое добавление через **data-migration** (паттерн `0008_add_quiz_bot_data.py`): `RunPython` + `get_or_create` по `repo`/`name`, со сдвигом `sort_order` таймлайн-записей в `backwards`. Секция Skills, облако навыков и placeholder-карточки портфолио (`portfolio.js`) читают `/api/skills/` (включая `category`) динамически — добавление `Skill` само обновляет эти места, правка JS не нужна.
 
 ### Dynamic badge sources
 | Source | Data | Requires |

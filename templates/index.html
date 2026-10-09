@@ -205,10 +205,25 @@
         (function() {
             var container = document.getElementById('skills');
             if (!container) return;
+            var categories = [
+                ['backend', 'Backend'],
+                ['web', 'Web'],
+                ['devops', 'DevOps'],
+                ['bots', 'Bots & Integrations'],
+                ['tools', 'Tools'],
+            ];
             window.getSkills().then(function(skills) {
-                container.innerHTML = skills.map(function(s) {
-                    return '<span class="tag tag-' + s.size + '">' + s.name + '</span>';
-                }).join('');
+                var html = '';
+                categories.forEach(function(pair) {
+                    var items = skills.filter(function(s) { return s.category === pair[0]; });
+                    if (!items.length) return;
+                    html += '<div class="skill-group"><h3 class="skill-group-title">' + pair[1] + '</h3><div class="skill-group-items">';
+                    html += items.map(function(s) {
+                        return '<span class="tag tag-' + s.size + '">' + s.name + '</span>';
+                    }).join('');
+                    html += '</div></div>';
+                });
+                container.innerHTML = html;
             }).catch(function() {});
         })();
     </script>

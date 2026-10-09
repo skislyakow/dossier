@@ -6,7 +6,7 @@ from django.test import TestCase
 from django.urls import reverse
 
 from main import badge_utils
-from main.models import Project
+from main.models import Project, Skill
 
 
 class _ElementTree(HTMLParser):
@@ -161,6 +161,17 @@ class DesignSystemTest(TestCase):
         self.assertIn('aria-label="GitHub"', self.html)
         self.assertIn('aria-label="Telegram"', self.html)
 
+    def test_skills_section_grouped_by_category(self):
+        self.assertIn('skill-group', self.html)
+        self.assertIn("['backend', 'Backend']", self.html)
+        self.assertIn("['bots', 'Bots & Integrations']", self.html)
+        self.assertIn('s.category === pair[0]', self.html)
+
+    def test_skills_curly_cloud_removed(self):
+        self.assertNotIn('content: "{ "', self.css)
+        self.assertNotIn('content: " }"', self.css)
+        self.assertIn('.skill-group-title', self.css)
+
 
 class ApiTimelineTest(TestCase):
     def test_api_timeline_shape(self):
@@ -172,6 +183,25 @@ class ApiTimelineTest(TestCase):
         self.assertGreaterEqual(len(data['timeline']), 3)
         for key in ('date', 'title', 'desc'):
             self.assertIn(key, data['prior'])
+
+
+class ApiSkillsTest(TestCase):
+    def setUp(self):
+        Skill.objects.update(category='tools')
+        Skill.objects.create(name='TestBackend', category='backend', size='md')
+        Skill.objects.create(name='TestWeb', category='web', size='sm')
+
+    def test_api_skills_returns_category(self):
+        response = self.client.get('/api/skills/')
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        valid = {'backend', 'web', 'devops', 'bots', 'tools'}
+        for skill in data:
+            self.assertIn('category', skill)
+            self.assertIn(skill['category'], valid)
+        by_name = {s['name']: s for s in data}
+        self.assertEqual(by_name['TestBackend']['category'], 'backend')
+        self.assertEqual(by_name['TestWeb']['category'], 'web')
 
 
 class ApiProjectsEnrichTest(TestCase):

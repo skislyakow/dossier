@@ -8,7 +8,15 @@ class Skill(models.Model):
         ('md', 'Medium'),
         ('sm', 'Small'),
     ]
+    CATEGORY_CHOICES = [
+        ('backend', 'Backend'),
+        ('web', 'Web'),
+        ('devops', 'DevOps'),
+        ('bots', 'Bots & Integrations'),
+        ('tools', 'Tools'),
+    ]
     name = models.CharField('Название', max_length=50, unique=True)
+    category = models.CharField('Категория', max_length=10, choices=CATEGORY_CHOICES, default='tools')
     size = models.CharField('Размер', max_length=2, choices=SIZE_CHOICES, default='sm')
     icon = models.CharField('Иконка', max_length=50, blank=True, help_text='Название Material Symbols иконки')
     sort_order = models.PositiveSmallIntegerField('Порядок', default=0)
