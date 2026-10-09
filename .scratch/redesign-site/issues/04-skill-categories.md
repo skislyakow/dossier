@@ -24,5 +24,5 @@
 - **UI**: `templates/index.html` (inline script) — группировка по пяти категориям в фиксированном порядке, пустые группы пропускаются; разметка `.skill-group` / `.skill-group-title` / `.skill-group-items`.
 - **CSS**: `static/css/style.css` — `.skills-cloud` стал grid (`repeat(auto-fit, minmax(220px, 1fr))`), добавлены `.skill-group*`; `.tag::before/::after` (curly), `.hero .tag` и их hover/light-правила удалены.
 - **Tests**: `ApiSkillsTest` (контракт `category` + валидные choices) + `test_skills_section_grouped_by_category` + `test_skills_curly_cloud_removed`.
-- **Follow-up**: прод-навыки, имен которых нет в `CATEGORY_BY_NAME`, после деплоя попадут в Tools — нужно просмотреть `/api/skills/` в проде и либо поправить имена, либо распределить вручную в админке.
+- **Follow-up (закрыт):** в проде 32 навыка, а не 36 (в тикете прикидка) — и все имена покрыты `CATEGORY_BY_NAME`, дефолтный `tools` не сработал ни разу. Распределение после деплоя: backend 9, bots 7, devops 7, web 5, tools 4 (проверено по `https://kislyakov.pro/api/skills/`).
 - **Conflict note**: тикет 09 (облако тегов Проектов) опирался на переиспользование curly-компонента `.tag` — тикет 04 убрал curly из `.tag`, поэтому у 09 свой класс/разметка.
