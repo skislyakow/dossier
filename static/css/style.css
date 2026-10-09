@@ -757,6 +757,19 @@ h1 {
     }
 }
 
+/* Пока раскрыта любая панель (Проекты / Статистика / Контакты), рельс и карточка
+   таймлайна уходят: на одном экране не должно быть трёх объектов поверх панели.
+   Источник истины — класс .show, который секции ставят/снимают сами (без JS-состояния). */
+body:has(#portfolio.show, #stats.show, #contact.show) .hero-timeline {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+body:has(#portfolio.show, #stats.show, #contact.show) .tl-details {
+    display: none;
+}
+
 .hero-timeline .tl-line {
     background: #333;
 }
@@ -853,6 +866,11 @@ h1 {
 @media (min-width: 1025px) {
     .portfolio {
         padding-right: 7rem;
+    }
+
+    /* Жёлоб не нужен, пока рельс скрыт раскрытой панелью */
+    body:has(#portfolio.show, #stats.show, #contact.show) .portfolio {
+        padding-right: 2rem;
     }
 }
 

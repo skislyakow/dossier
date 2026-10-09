@@ -132,6 +132,24 @@ class DesignSystemTest(TestCase):
             '.hero-timeline { display: none; } .tl-details { display: none; }',
             ' '.join(self.css.split()),
         )
+
+    def test_rail_and_timeline_hidden_while_panel_open(self):
+        css = ' '.join(self.css.split())
+        self.assertIn(
+            'body:has(#portfolio.show, #stats.show, #contact.show) .hero-timeline'
+            ' { opacity: 0; visibility: hidden; pointer-events: none; }',
+            css,
+        )
+        self.assertIn(
+            'body:has(#portfolio.show, #stats.show, #contact.show) .tl-details'
+            ' { display: none; }',
+            css,
+        )
+        self.assertIn(
+            'body:has(#portfolio.show, #stats.show, #contact.show) .portfolio'
+            ' { padding-right: 2rem; }',
+            css,
+        )
         js = self.JS_PATH.read_text(encoding='utf-8')
         self.assertNotIn('3600', js)
         self.assertIn('initRailMode', js)
