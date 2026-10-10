@@ -6,8 +6,12 @@ from unittest import mock
 from django.test import TestCase
 from django.urls import reverse
 
+from main import views
 from main import badge_utils
 from main.models import ContactInfo, Project, Skill
+
+
+skill_size = views.skill_size
 
 
 class _ElementTree(HTMLParser):
@@ -334,9 +338,9 @@ class ApiContactTest(TestCase):
 class ApiSkillsTest(TestCase):
     def setUp(self):
         Skill.objects.update(category='tools')
-        Skill.objects.create(name='TestBackend', category='backend', size='md')
-        Skill.objects.create(name='TestWeb', category='web', size='sm')
-        Skill.objects.create(name='TestBots', category='bots', size='md', filter_tag='Telegram')
+        Skill.objects.create(name='TestBackend', category='backend')
+        Skill.objects.create(name='TestWeb', category='web')
+        Skill.objects.create(name='TestBots', category='bots', filter_tag='Telegram')
 
     def test_api_skills_returns_category(self):
         response = self.client.get('/api/skills/')
@@ -352,6 +356,30 @@ class ApiSkillsTest(TestCase):
         self.assertEqual(by_name['TestWeb']['category'], 'web')
         self.assertEqual(by_name['TestBackend']['filter_tag'], '')
         self.assertEqual(by_name['TestBots']['filter_tag'], 'Telegram')
+
+    def test_api_skills_computes_size_from_project_tags(self):
+        response = self.client.get('/api/skills/')
+        by_name = {s['name']: s for s in response.json()}
+        self.assertEqual(by_name['TestBots']['size'], 'lg')
+        self.assertEqual(by_name['TestBackend']['size'], 'sm')
+        self.assertEqual(by_name['TestWeb']['size'], 'sm')
+
+    def test_api_skills_ignores_unpublished_projects(self):
+        for i in range(4):
+            Project.objects.create(title=f'P{i}', repo=f'owner/p{i}', tags=['TestBackend'])
+        Project.objects.create(title='Hidden', repo='owner/h', tags=['TestBackend'], is_published=False)
+        response = self.client.get('/api/skills/')
+        by_name = {s['name']: s for s in response.json()}
+        self.assertEqual(by_name['TestBackend']['size'], 'lg')
+
+    def test_skill_size_buckets(self):
+        self.assertEqual(skill_size(0), 'sm')
+        self.assertEqual(skill_size(1), 'md')
+        self.assertEqual(skill_size(2), 'md')
+        self.assertEqual(skill_size(3), 'lg')
+        self.assertEqual(skill_size(4), 'lg')
+        self.assertEqual(skill_size(5), 'xl')
+        self.assertEqual(skill_size(99), 'xl')
 
 
 class ApiProjectsEnrichTest(TestCase):

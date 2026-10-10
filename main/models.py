@@ -2,12 +2,6 @@ from django.db import models
 
 
 class Skill(models.Model):
-    SIZE_CHOICES = [
-        ('xl', 'XL'),
-        ('lg', 'Large'),
-        ('md', 'Medium'),
-        ('sm', 'Small'),
-    ]
     CATEGORY_CHOICES = [
         ('backend', 'Backend'),
         ('web', 'Web'),
@@ -17,7 +11,6 @@ class Skill(models.Model):
     ]
     name = models.CharField('Название', max_length=50, unique=True)
     category = models.CharField('Категория', max_length=10, choices=CATEGORY_CHOICES, default='tools')
-    size = models.CharField('Размер', max_length=2, choices=SIZE_CHOICES, default='sm')
     filter_tag = models.CharField('Тег фильтра проектов', max_length=50, blank=True, help_text='Тег проекта, по которому клик по навыку фильтрует список проектов (пусто — по имени навыка)')
     sort_order = models.PositiveSmallIntegerField('Порядок', default=0)
 

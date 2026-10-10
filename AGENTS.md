@@ -50,7 +50,7 @@ Required GitHub secrets: `VPS_HOST`, `VPS_SSH_KEY`
 ## Project overview
 Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack Developer).
 - Design tokens in `:root`: монохром + кислотный лайм `#CDFF50` (fallback-акцент — правка одного токена через `color-mix`), типографическая шкала `--type-scale-*`, текст на карточках `--text-card*`
-- Skills: сетка, сгруппированная по Категориям навыка (Backend / Web / DevOps / Bots & Integrations / Tools), пустые категории не показываются; кегль тега — `Skill.size` (xl/lg/md/sm), старое curly-облако `{ skill }` убрано
+- Skills: сетка, сгруппированная по Категориям навыка (Backend / Web / DevOps / Bots & Integrations / Tools), пустые категории не показываются; кегль тега рассчитывается автоматически по частоте в тегах опубликованных проектов (`api_skills`: ключ — `filter_tag` навыка, пусто → имя; бакеты `skill_size`: 5+→xl / 3–4→lg / 1–2→md / 0→sm, поле `Skill.size` удалено — см. `0021_remove_skill_size`), старое curly-облако `{ skill }` убрано
 - Hero: full-width oversized name (clamp-шкала), приглушённый курсорный градиент, scroll-reveal через IntersectionObserver, строка позиционирования «Python-разработчик: автоматизация, Telegram-боты и веб на Django»
 - Timeline: вертикальный рельс справа `position: fixed` — виден на всём скролле (в hero с подписями дат, вне hero — компактная полоса 48px, подписи по наведению); markup вынесен из `.hero` на уровень `body` (page chrome); ≤1024px скрыт; типы prior/job/project/present; клик по точке — скролл к строке секции Опыт + подсветка; при раскрытии любой панели (Проекты/Статистика/Контакты) рельс скрывается (`body:has(... .show)`), жёлоб 7rem у секции Projects снимается
 - Опыт: секция-хронология `#experience` в `.content-body` (между Projects и Skills) — все элементы `/api/timeline/` (prior → job → проекты → present) вертикальной лентой с точками на линии, даты — моно; рендерит `timeline.js` с экранированием `tlEsc()`; на мобиле секция видна (рельс скрыт ≤1024px); при раскрытии раздела Проекты секция скрывается (`body:has(#portfolio.show) #experience`); старая detail-карточка `.tl-details` удалена (тикеты 06/10)
@@ -82,7 +82,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 `systemd`, `python-dotenv`, `Telegram Bot API`, `Dialogflow`, `aiogram`, `vk_api`, `Redis`, `vkbottle`, `VK API`, `pymorphy3`, `mypy`, `Python`, `pytest`
 
 ## CMS models
-- **Skill** — name, category (backend/web/devops/bots/tools), size (xl/lg/md/sm), filter_tag (тег проекта для клика-фильтра, пусто → имя навыка), sort_order
+- **Skill** — name, category (backend/web/devops/bots/tools), filter_tag (тег проекта для клика-фильтра, пусто → имя навыка), sort_order (размер не хранится — кегль вычисляется в `/api/skills/` по тегам опубликованных проектов)
 - **Project** — title, repo, pypi, role, tagline, features (JSON), tags (JSON, список строк), links (JSON), badges_config (JSON), screenshot (URL), sort_order, is_published
 - **TimelineItem** — item_type (prior/job/project/present), date_label, title, description, repo, url, role, date_range, sort_order
 - **ContactInfo** — contact_type (email/telegram/github), label, value, sort_order

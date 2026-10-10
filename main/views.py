@@ -1,3 +1,5 @@
+from collections import Counter
+
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Skill, Project, TimelineItem, ContactInfo
@@ -8,11 +10,28 @@ def home(request):
     return render(request, 'index.html')
 
 
+def skill_size(count):
+    if count >= 5:
+        return 'xl'
+    if count >= 3:
+        return 'lg'
+    if count >= 1:
+        return 'md'
+    return 'sm'
+
+
 def api_skills(request):
-    skills = Skill.objects.all()
+    tag_counts = Counter()
+    for p in Project.objects.filter(is_published=True):
+        tag_counts.update(p.tags or [])
     return JsonResponse([
-        {'name': s.name, 'category': s.category, 'size': s.size, 'filter_tag': s.filter_tag}
-        for s in skills
+        {
+            'name': s.name,
+            'category': s.category,
+            'size': skill_size(tag_counts.get(s.filter_tag or s.name, 0)),
+            'filter_tag': s.filter_tag,
+        }
+        for s in Skill.objects.all()
     ], safe=False)
 
 

@@ -29,9 +29,9 @@ class SortableAdminMixin:
 
 @admin.register(Skill)
 class SkillAdmin(SortableAdminMixin, ModelAdmin):
-    list_display = ['name', 'category', 'size', 'filter_tag']
+    list_display = ['name', 'category', 'filter_tag']
     search_fields = ['name']
-    list_filter = ['category', 'size']
+    list_filter = ['category']
     ordering_field = 'sort_order'
     hide_ordering_field = True
 
