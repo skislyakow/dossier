@@ -55,6 +55,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - Marquee-строка технологий между hero и `.content-body` (page chrome, `aria-hidden`): бесшовный цикл `translateX(-50%)` из двух `.marquee-group`, статичный список (Python/Django/…) — декоративный, не CMS; `prefers-reduced-motion` → `animation: none`
 - GitHub stats toggle (stars, repos, languages via GitHub API)
 - Portfolio section with project cards (Django CMS, GitHub API + PyPI badges)
+- Облако тегов проектов: `Project.tags` (JSONField, курируемые метки) → объединение тегов опубликованных Проектов в облако `{ тег: N }` (свой класс `.ptag` с curly в `::before`/`::after`, кегль по частоте бакетами `ptag-xl|lg|md|sm`), клик — фильтр списка (одиночный, `All` — сброс), комбинируется с фильтром по роли AND; тег без проектов не показывается; значения из API экранируются (`esc()`)
 - Усиленная карточка проекта: таглайн + буллеты + бейджи + ссылки на светлой карточке (`--bg-card` поверхность, текст `--text-card*`); стаггер-reveal по `--i` при появлении/переключении, magnetic-hover на `--mag-x/--mag-y` (≤6px, `pointer: fine`, off при `prefers-reduced-motion`); все значения из API вставляются через `esc()`
 - Placeholder медиа карточки (нет скриншота) — статичная монограмма проекта на лаймовом градиенте с сеткой (без анимаций, без призраков)
 - Dynamic badges from GitHub API, PyPI, PyPistats
@@ -65,20 +66,20 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - Responsive: breakpoints at 1024px, 768px, 640px
 - All content managed via Django admin (Skills, Projects, TimelineItems, ContactInfo)
 - Drag-and-drop reordering in admin (unfold `ordering_field` + AJAX save)
-- Начальный контент (проекты/навыки/таймлайн) сеется через **data-migrations** в `main/migrations/` (см. `0005_add_devman_monitor_data.py`, `0007_add_support_bot_data.py`, `0008_add_quiz_bot_data.py`): `RunPython(forwards, backwards)` с `get_or_create` по `repo`/`name` и сдвигом `sort_order` существующих таймлайн-записей. `0010_skill_category.py` — schema + data миграция нового поля: `AddField` + `RunPython` с распределением по имени (`CATEGORY_BY_NAME`), в `backwards` — сброс на дефолт. Редактирование наполнения — через admin, массовое добавление новых проектов — через миграцию (чтобы попало на прод при пуше).
+- Начальный контент (проекты/навыки/таймлайн) сеется через **data-migrations** в `main/migrations/` (см. `0005_add_devman_monitor_data.py`, `0007_add_support_bot_data.py`, `0008_add_quiz_bot_data.py`): `RunPython(forwards, backwards)` с `get_or_create` по `repo`/`name` и сдвигом `sort_order` существующих таймлайн-записей. `0010_skill_category.py` — schema + data миграция нового поля: `AddField` + `RunPython` с распределением по имени (`CATEGORY_BY_NAME`), в `backwards` — сброс на дефолт. `0012_project_tags.py` — schema + data сида тегов: `AddField` + `RunPython` c `filter`-first по `repo`. Редактирование наполнения — через admin, массовое добавление новых проектов — через миграцию (чтобы попало на прод при пуше).
 
 ## Current CMS content
 ### Projects (role = "Bot Development")
-- **Devman Monitor** — `skislyakow/Devman-monitor` — монитор systemd-сервиса с уведомлениями в Telegram
-- **Support Bot** — `skislyakow/support-bot` — поддержка в TG/VK на Dialogflow (aiogram + vk_api)
-- **Quiz Bot** — `skislyakow/quiz-bot` — викторина в TG/VK на ~300k вопросов: aiogram + vkbottle, состояние в Redis, нормализация через pymorphy3 (НЕ на PyPI → только github-бейджи)
+- **Devman Monitor** — `skislyakow/Devman-monitor` — монитор systemd-сервиса с уведомлениями в Telegram (теги: Python, systemd, Telegram)
+- **Support Bot** — `skislyakow/support-bot` — поддержка в TG/VK на Dialogflow (aiogram + vk_api) (теги: Python, aiogram, Dialogflow, Telegram, VK)
+- **Quiz Bot** — `skislyakow/quiz-bot` — викторина в TG/VK на ~300k вопросов: aiogram + vkbottle, состояние в Redis, нормализация через pymorphy3 (НЕ на PyPI → только github-бейджи) (теги: Python, aiogram, vkbottle, Redis, Telegram, VK)
 
 ### Skills
 `systemd`, `python-dotenv`, `Telegram Bot API`, `Dialogflow`, `aiogram`, `vk_api`, `Redis`, `vkbottle`, `VK API`, `pymorphy3`, `mypy`
 
 ## CMS models
 - **Skill** — name, category (backend/web/devops/bots/tools), size (xl/lg/md/sm), icon (Material Symbol name), sort_order
-- **Project** — title, repo, pypi, role, tagline, features (JSON), links (JSON), badges_config (JSON), screenshot (URL), sort_order, is_published
+- **Project** — title, repo, pypi, role, tagline, features (JSON), tags (JSON, список строк), links (JSON), badges_config (JSON), screenshot (URL), sort_order, is_published
 - **TimelineItem** — item_type (prior/job/project/present), date_label, title, description, repo, url, role, date_range, sort_order
 - **ContactInfo** — contact_type (email/telegram/github), label, value, sort_order
 
@@ -88,6 +89,7 @@ Admin: Main → Projects → Add. Fill:
 - PyPI: package name (optional, enables PyPI + PyPistats badges)
 - Role: e.g. "Python SDK Development" (maps to placeholder theme)
 - Features: JSON list of strings
+- Tags: JSON list of short stack labels, e.g. `["Django", "aiogram"]` (попадают в облако тегов секции Projects)
 - Badges: JSON array `[{"label": "pypi", "source": "pypi_version"}]`
 - Links: JSON dict `{"pypi": "https://...", "www": "https://..."}`
 

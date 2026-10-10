@@ -213,9 +213,20 @@ class DesignSystemTest(TestCase):
         self.assertIn('if (!items.length) return;', self.html)
 
     def test_skills_curly_cloud_removed(self):
-        self.assertNotIn('content: "{ "', self.css)
-        self.assertNotIn('content: " }"', self.css)
+        self.assertNotIn('.tag::before', self.css)
+        self.assertNotIn('.tag::after', self.css)
         self.assertIn('.skill-group-title', self.css)
+
+    def test_project_tag_cloud(self):
+        self.assertIn('.ptag::before', self.css)
+        self.assertIn('content: "{ "', self.css_rule('.ptag::before'))
+        for size in ('ptag-xl', 'ptag-lg', 'ptag-md', 'ptag-sm'):
+            self.assertIn(f'.{size}', self.css)
+        js = self.PORTFOLIO_JS_PATH.read_text(encoding='utf-8')
+        self.assertIn('portfolio-ptags', js)
+        self.assertIn('data-tag', js)
+        self.assertIn('applyFilters', js)
+        self.assertIn("${esc(tag)}", js)
 
     def test_enhanced_card_format_and_escapes(self):
         js = self.PORTFOLIO_JS_PATH.read_text(encoding='utf-8')
@@ -296,6 +307,7 @@ class ApiProjectsEnrichTest(TestCase):
             title='Test Project',
             repo='owner/repo',
             pypi='pkg',
+            tags=['python', 'redis'],
             badges_config=[
                 {'label': 'stars', 'source': 'github_stars'},
                 {'label': 'ver', 'source': 'pypi_version'},
@@ -336,11 +348,18 @@ class ApiProjectsEnrichTest(TestCase):
         p = next(x for x in data if x['title'] == 'Test Project')
         self.assertEqual(p['stars'], 42)
         self.assertEqual(p['langs'], {'Python': 100})
+        self.assertEqual(p['tags'], ['python', 'redis'])
         self.assertEqual(p['repo']['html_url'], 'https://github.com/owner/repo')
         by_label = {b['label']: b.get('value') for b in p['badges']}
         self.assertEqual(by_label['stars'], '42')
         self.assertEqual(by_label['ver'], 'v1.2.3')
         self.assertEqual(by_label['note'], 'static')
+
+
+class ProjectTagsDefaultTest(TestCase):
+    def test_tags_default_empty(self):
+        project = Project.objects.create(title='No Tags', repo='owner/none')
+        self.assertEqual(project.tags, [])
 
 
 class ApiGithubTest(TestCase):

@@ -31,6 +31,13 @@ function monogram(title) {
   return letters.toUpperCase();
 }
 
+function tagSize(count) {
+  if (count >= 4) return 'xl';
+  if (count === 3) return 'lg';
+  if (count === 2) return 'md';
+  return 'sm';
+}
+
 function revealIn(root) {
   const items = root.querySelectorAll('.reveal:not(.is-visible)');
   if (!items.length) return;
@@ -166,13 +173,29 @@ portfolioBtn.addEventListener('click', async (e) => {
     const catsHtml = catBtn('', 'All', total, true) +
       roles.map((role) => catBtn(role, role, counts.get(role) || 0, false)).join('');
 
+    const tagCounts = new Map();
+    cards.forEach((p) => (p.tags || []).forEach((tag) => tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1)));
+    const tagEntries = [...tagCounts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+
+    const ptagBtn = (tag, count) =>
+      `<button class="ptag ptag-${tagSize(count)}" data-tag="${esc(tag)}" type="button"><span class="ptag-name">${esc(tag)}</span><span class="ptag-count">: ${esc(count)}</span></button>`;
+
+    const ptagsHtml = tagEntries.length
+      ? '<button class="ptag ptag-md active" data-tag="" type="button">All</button>' +
+        tagEntries.map(([tag, count]) => ptagBtn(tag, count)).join('')
+      : '';
+
     const listHtml = cards.map((project, i) =>
       `<button class="portfolio-list-item${i === 0 ? ' active' : ''}" data-repo="${esc(projectKey(project))}" data-role="${esc(project.role || '')}" type="button"><span class="reveal" style="--i: ${i + 1}">${esc(project.title)}</span></button>`,
     ).join('');
 
+    const meta = new Map();
+    cards.forEach((p) => meta.set(projectKey(p), { role: p.role || '', tags: Array.isArray(p.tags) ? p.tags : [] }));
+
     const firstKey = projectKey(cards[0]);
     portfolioSection.innerHTML = `
       <div class="portfolio-cats reveal" style="--i: 0">${catsHtml}</div>
+      ${ptagsHtml ? `<div class="portfolio-ptags reveal" style="--i: 1">${ptagsHtml}</div>` : ''}
       <div class="portfolio-layout">
         <div class="portfolio-list">${listHtml}</div>
         <div class="portfolio-preview">${previewCache.get(firstKey)}</div>
@@ -182,6 +205,23 @@ portfolioBtn.addEventListener('click', async (e) => {
     const preview = portfolioSection.querySelector('.portfolio-preview');
     const listItems = () => portfolioSection.querySelectorAll('.portfolio-list-item');
     bindMagnetic(preview.querySelector('.portfolio-preview-body'));
+
+    let activeRole = '';
+    let activeTag = '';
+
+    function applyFilters() {
+      let firstVisible = null;
+      listItems().forEach((item) => {
+        const m = meta.get(item.dataset.repo) || { role: '', tags: [] };
+        const show = (!activeRole || m.role === activeRole) && (!activeTag || m.tags.includes(activeTag));
+        item.style.display = show ? '' : 'none';
+        if (show && !firstVisible) firstVisible = item;
+      });
+      const active = portfolioSection.querySelector('.portfolio-list-item.active');
+      if (active && active.style.display === 'none' && firstVisible) {
+        firstVisible.click();
+      }
+    }
 
     listItems().forEach((item) => {
       item.addEventListener('click', () => {
@@ -202,20 +242,21 @@ portfolioBtn.addEventListener('click', async (e) => {
       if (!btn || btn.classList.contains('active')) return;
       portfolioSection.querySelectorAll('.portfolio-cat').forEach((b) => b.classList.remove('active'));
       btn.classList.add('active');
-
-      const role = btn.dataset.role;
-      let firstVisible = null;
-      listItems().forEach((item) => {
-        const show = !role || item.dataset.role === role;
-        item.style.display = show ? '' : 'none';
-        if (show && !firstVisible) firstVisible = item;
-      });
-
-      const active = portfolioSection.querySelector('.portfolio-list-item.active');
-      if (active && active.style.display === 'none' && firstVisible) {
-        firstVisible.click();
-      }
+      activeRole = btn.dataset.role;
+      applyFilters();
     });
+
+    const ptagsEl = portfolioSection.querySelector('.portfolio-ptags');
+    if (ptagsEl) {
+      ptagsEl.addEventListener('click', (e) => {
+        const btn = e.target.closest('.ptag');
+        if (!btn || btn.classList.contains('active')) return;
+        ptagsEl.querySelectorAll('.ptag').forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        activeTag = btn.dataset.tag || '';
+        applyFilters();
+      });
+    }
 
     revealIn(portfolioSection);
 

@@ -37,6 +37,7 @@ class Project(models.Model):
     role = models.CharField('Роль', max_length=100, blank=True, help_text='например: Fullstack Development')
     tagline = models.TextField('Слоган', blank=True)
     features = models.JSONField('Особенности', default=list, blank=True, help_text='Список характеристик')
+    tags = models.JSONField('Теги', default=list, blank=True, help_text='Курируемые метки стека, например ["Django", "Redis"]')
     links = models.JSONField('Ссылки', default=dict, blank=True, help_text='{"pypi": "https://...", "www": "https://..."}')
     badges_config = models.JSONField('Бейджи', default=list, blank=True, help_text='[{"label": "pypi", "source": "pypi_version"}]')
     screenshot = models.URLField('Скриншот', blank=True, help_text='URL изображения для карточки проекта')

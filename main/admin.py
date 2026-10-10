@@ -65,7 +65,7 @@ class ProjectAdmin(SortableAdminMixin, ModelAdmin):
             'fields': ['title', 'tagline', 'role', 'repo', 'pypi'],
         }),
         ('Content', {
-            'fields': ['features', 'badges_config'],
+            'fields': ['features', 'tags', 'badges_config'],
         }),
         ('Links', {
             'fields': ['links'],

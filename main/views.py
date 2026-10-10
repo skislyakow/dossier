@@ -28,6 +28,7 @@ def api_projects(request):
             'role': p.role or None,
             'tagline': p.tagline,
             'features': p.features,
+            'tags': p.tags or [],
             'links': p.links,
             'badges': enriched['badges'],
             'screenshot': p.screenshot or None,

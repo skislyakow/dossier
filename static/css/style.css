@@ -921,6 +921,18 @@ body:has(#portfolio.show) #experience {
         flex-shrink: 0;
     }
 
+    .portfolio-ptags {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding-bottom: 0.75rem;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .ptag {
+        flex-shrink: 0;
+    }
+
     .portfolio-preview-content {
         grid-template-columns: 1fr;
         gap: 1.25rem;
@@ -988,6 +1000,70 @@ body:has(#portfolio.show) #experience {
 .portfolio-cat.active {
     color: var(--accent);
     font-weight: 700;
+}
+
+.portfolio-ptags {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.25rem 0.9rem;
+    padding-bottom: 1rem;
+    min-width: 0;
+}
+
+.ptag {
+    font-family: 'Fira Code', monospace;
+    font-weight: 400;
+    line-height: 1.3;
+    padding: 0.1rem 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: #a1a1aa;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.25s cubic-bezier(0.61, 1, 0.88, 1);
+}
+
+.ptag::before {
+    content: "{ ";
+    color: var(--accent);
+}
+
+.ptag::after {
+    content: " }";
+    color: var(--accent);
+}
+
+.ptag-count {
+    color: var(--text-secondary);
+}
+
+.ptag:hover {
+    color: var(--accent);
+}
+
+.ptag.active {
+    color: var(--accent);
+    font-weight: 700;
+}
+
+.ptag-xl {
+    font-size: 1.5rem;
+}
+
+.ptag-lg {
+    font-size: 1.35rem;
+}
+
+.ptag-md {
+    font-size: 1.2rem;
+}
+
+.ptag-sm {
+    font-size: 1rem;
 }
 
 .portfolio-list {
@@ -1675,6 +1751,10 @@ body:has(#portfolio.show) #experience {
     .tag-lg { font-size: 1.2rem; }
     .tag-md { font-size: 1.1rem; }
     .tag-sm { font-size: 0.9rem; }
+    .ptag-xl { font-size: 1.3rem; }
+    .ptag-lg { font-size: 1.2rem; }
+    .ptag-md { font-size: 1.1rem; }
+    .ptag-sm { font-size: 0.9rem; }
 }
 
 @media (max-width: 768px) {
@@ -1688,6 +1768,10 @@ body:has(#portfolio.show) #experience {
     .tag-lg { font-size: 1rem; }
     .tag-md { font-size: 0.9rem; }
     .tag-sm { font-size: 0.8rem; }
+    .ptag-xl { font-size: 1.1rem; }
+    .ptag-lg { font-size: 1rem; }
+    .ptag-md { font-size: 0.9rem; }
+    .ptag-sm { font-size: 0.8rem; }
     .social-links {
         flex-wrap: wrap;
         gap: 0.25rem;
@@ -1836,6 +1920,19 @@ body:has(#portfolio.show) #experience {
 
 [data-theme="light"] .portfolio-cat {
     color: #57606a;
+}
+
+[data-theme="light"] .ptag {
+    color: #57606a;
+}
+
+[data-theme="light"] .ptag-count {
+    color: #8b949e;
+}
+
+[data-theme="light"] .ptag:hover,
+[data-theme="light"] .ptag.active {
+    color: var(--accent);
 }
 
 [data-theme="light"] .cat-brace {
