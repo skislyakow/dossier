@@ -4,7 +4,7 @@
 
 **Blocked by:** 09 (Облако тегов), 10 (Баг невидимого списка — общий каркас `applyFilters`).
 
-**Status:** dev-done (пуш пользователем + проверка проде)
+**Status:** done
 
 - [x] Модель: `Skill.filter_tag` (CharField 50, blank) — тег проекта для клика-фильтра; пусто → имя навыка. API `/api/skills/` возвращает `filter_tag` для всех навыков
 - [x] Миграция `0013_skill_filter_tag.py`: `AddField` + `RunPython(seed, rollback)`; `FILTER_TAG_BY_NAME` (алиасы: Telegram Bot API→Telegram, vk_api→VK, VK API→VK); `TAGS_BY_REPO` — теги 5 таглесс-проектов (opencode-py, ferma, devman-bot, dossier, online_library), выведены из README на GitHub, update-only по `repo` (пропуск отсутствующих → локально no-op)
@@ -16,6 +16,6 @@
 - [x] Полный гейт зелёный: 33/33 теста + ruff + node --check + makemigrations --check
 - [x] Docs-синк: AGENTS.md (overview — кликабельные навыки, Skill-model `filter_tag`, миграция 0013, `/api/skills/` включает `filter_tag`); GLOSSARY.md — «Тег фильтра навыка»
 
-- [ ] Проверка на проде после пуша: клик по навыку открывает Projects с отфильтрованным списком; навык без совпадений → empty-state; сброс при закрытии; на проде у 5 новых проектов появились теги в облаке
+- [x] Проверка на проде после пуша: клик по навыку открывает Projects с отфильтрованным списком; навык без совпадений → empty-state; сброс при закрытии; на проде у 5 новых проектов появились теги в облаке
 
 Коммит: `023b2ce t10+t11: баг-фикс reveal списка + кликабельные навыки — фильтр проектов`

@@ -134,6 +134,7 @@ Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/d
 - [ ] `og:image` / `twitter:image` — нет превью при шаринге
 
 ### Код / доступность
+- [ ] Светлая тема (`data-theme="light"`) ни разу не проверялась визуально — глаз-чек отложен в самый конец (после всех основных изменений)
 - [ ] XSS: innerHTML в github.js — данные из API вставляются без экранирования (низкий риск — только admin/API); portfolio.js, секция Skills, timeline.js и contact-рендер экранируют через `esc()`/`tlEsc()` (закрыто в тикетах 04–07)
 - [ ] Тесты на основные view/home page
 - [ ] mypy в CI (зависимости уже ставятся через `uv sync --frozen`)
