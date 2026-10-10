@@ -252,6 +252,15 @@ class DesignSystemTest(TestCase):
         self.assertIn('prefers-reduced-motion', js)
         self.assertIn('IntersectionObserver', js)
 
+    def test_reduced_motion_disables_all_animations(self):
+        css = ' '.join(self.css.split())
+        self.assertIn('.reveal { opacity: 1; transform: none; transition: none; }', css)
+        self.assertIn('.marquee-track { animation: none; }', css)
+        self.assertIn('.portfolio-preview-body { transform: none; transition: none; }', css)
+        self.assertIn('.hero-text h1 { background-image: none;', css)
+        self.assertIn('.hero-blur { backdrop-filter: none;', css)
+        self.assertIn('.hero-timeline { transition: none; }', css)
+
 
 class ApiTimelineTest(TestCase):
     def test_api_timeline_shape(self):
