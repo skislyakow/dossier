@@ -17,6 +17,7 @@
 - `static/fonts/` — Material Symbols font (локальный **subset** `MaterialSymbolsOutlined.woff2` ~3 КБ, сгенерирован через `fonttools` только из используемых лигатур: `uvx --from fonttools fonttools subset` по codepoint'ам из `MaterialIconsOutlined-Regular.codepoints` (сама утилита в venv не входит); в `style.css` `@font-face` локальный файл — **первый**, полный Google Fonts woff2 — fallback для офлайна). В subset входят иконки навыков + UI-иконки админки. Каталог `IconPickerWidget` (COMMON_ICONS) в subset **не** входит — при добавлении новой иконки через админку она не отрисуется, пока subset не перегенерирован.
 - `static/css/fonts.css` — **самохост** текстовых шрифтов (Inter 400/600/700 + Fira Code 400/700, подмножества latin + cyrillic, скачаны с Google Fonts css2 как woff2 в `static/fonts/`). В `<head>` внешний Google Fonts `<link>` убран — подключается только локальный `fonts.css` (без внешних запросов, `font-display: swap`). При добавлении нового веса/семейства — докачать woff2 и дописать `@font-face` в `fonts.css`.
 - `static/favicon.svg`
+- `static/og/og-image.png` — превью при шаринге (1200×630, `og:image`/`twitter:image`, `summary_large_image`); перегенерировать из шаблона при правке дизайна
 - `pyproject.toml` + `uv.lock` — Python dependencies (uv; dev-зависимости в `[dependency-groups] dev`)
 
 ## Dev workflow
@@ -131,7 +132,7 @@ Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/d
 ## To-do
 
 ### SEO / видимость
-- [ ] `og:image` / `twitter:image` — нет превью при шаринге
+- [x] `og:image` / `twitter:image` (1200×630, `static/og/og-image.png`, `summary_large_image`) — превью при шаринге (сгенерировано Chrome headless из шаблона; при правке дизайна перегенерировать и обновить `<meta og:image>` в `<head>`
 
 ### Код / доступность
 - [ ] Светлая тема (`data-theme="light"`) ни разу не проверялась визуально — глаз-чек отложен в самый конец (после всех основных изменений)

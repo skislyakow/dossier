@@ -273,6 +273,13 @@ class DesignSystemTest(TestCase):
         self.assertIn('${esc(lang)}', js)
         self.assertIn('${esc(percent)}', js)
 
+    def test_og_image_meta_and_file(self):
+        self.assertIn('property="og:image" content="https://kislyakov.pro/static/og/og-image.png"', self.html)
+        self.assertIn('name="twitter:card" content="summary_large_image"', self.html)
+        self.assertIn('name="twitter:image" content="https://kislyakov.pro/static/og/og-image.png"', self.html)
+        og_path = Path(__file__).resolve().parent.parent / 'static' / 'og' / 'og-image.png'
+        self.assertTrue(og_path.is_file(), 'static/og/og-image.png missing')
+
     def test_skills_are_clickable_filter_buttons(self):
         self.assertIn('<button type="button" class="tag tag-', self.html)
         self.assertIn('data-skill="', self.html)
