@@ -132,7 +132,7 @@ Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/d
 ## To-do
 
 ### SEO / видимость
-- [x] `og:image` / `twitter:image` (1200×630, `static/og/og-image.png`, `summary_large_image`) — превью при шаринге (сгенерировано Chrome headless из шаблона; при правке дизайна перегенерировать и обновить `<meta og:image>` в `<head>`
+- [x] `og:image` / `twitter:image` (1200×630, `static/og/og-image.png`, `summary_large_image`) — превью при шаринге (сгенерировано Chrome headless из шаблона; при правке дизайна перегенерировать и обновить `<meta og:image>` в `<head>`)
 
 ### Код / доступность
 - [ ] Светлая тема (`data-theme="light"`) ни разу не проверялась визуально — глаз-чек отложен в самый конец (после всех основных изменений)
