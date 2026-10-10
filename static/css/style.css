@@ -963,7 +963,7 @@ body:has(#portfolio.show) #experience {
     }
 
     .portfolio-preview-media {
-        min-height: 14rem;
+        display: none;
     }
 }
 

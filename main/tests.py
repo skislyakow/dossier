@@ -258,6 +258,10 @@ class DesignSystemTest(TestCase):
         self.assertNotIn('function revealIn(', js)
         self.assertNotIn('IntersectionObserver', js)
 
+    def test_mobile_hides_preview_media(self):
+        css = ' '.join(self.css.split())
+        self.assertIn('.portfolio-preview-media { display: none; }', css)
+
     def test_skills_are_clickable_filter_buttons(self):
         self.assertIn('<button type="button" class="tag tag-', self.html)
         self.assertIn('data-skill="', self.html)
