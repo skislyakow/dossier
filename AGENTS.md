@@ -25,9 +25,10 @@
 2. Lint: `uv run ruff check .` (правила в `ruff.toml`; Ruff в dev-группе)
 3. Type check: `uv run mypy main/` (mypy + django-stubs в dev-группе; plugin `mypy_django_plugin`, настройки в `[tool.mypy]`/`[tool.django-stubs]` в pyproject.toml)
 4. Tests: `uv run manage.py test`
-5. Run server: `uv run manage.py runserver`
-6. Visit `http://127.0.0.1:8000/`
-7. Синхронизация доков: если изменено поведение сайта или команды запуска — обновить README и AGENTS.md в рамках того же изменения. README держать тонким (что это, бейджи, запуск, деплой, контакты); инвентаризация фич живёт в `## Project overview` ниже
+5. Audit контента: `uv run manage.py audit_content` — теги проектов ↔ навыки (кнопки Skills). E100 (тег без навыка) — выход 1; W101 (навык без совпадающего тега) — предупреждение. Против прода: выполнить на проде или через `manage.py` с живой БД
+6. Run server: `uv run manage.py runserver`
+7. Visit `http://127.0.0.1:8000/`
+8. Синхронизация доков: если изменено поведение сайта или команды запуска — обновить README и AGENTS.md в рамках того же изменения. README держать тонким (что это, бейджи, запуск, деплой, контакты); инвентаризация фич живёт в `## Project overview` ниже
 
 ## Production
 - Domain: `kislyakov.pro` (reg.ru)
@@ -40,7 +41,7 @@
 - Auto-deploy: GitHub Actions on push to `main`
 
 ## Auto-deploy
-On push to `main` GitHub Actions сначала гоняет чек-гейт (`uv run ruff check .` + `uv run mypy main/` + `uv run manage.py test`) на Ubuntu; при его успехе — SSH into VPS and runs:
+On push to `main` GitHub Actions сначала гоняет чек-гейт (`uv run ruff check .` + `uv run mypy main/` + `uv run manage.py test` + `makemigrations --check` + `node --check static/js/*.js`) на Ubuntu; при его успехе — SSH into VPS and runs:
 ```
 git pull → установка uv (если нет) → uv sync --frozen --no-dev → migrate → createcachetable → collectstatic → restart gunicorn
 ```
@@ -69,7 +70,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - Responsive: breakpoints at 1024px, 768px, 640px
 - All content managed via Django admin (Skills, Projects, TimelineItems, ContactInfo)
 - Drag-and-drop reordering in admin (unfold `ordering_field` + AJAX save)
-- Начальный контент (проекты/навыки/таймлайн) сеется через **data-migrations** в `main/migrations/` (см. `0005_add_devman_monitor_data.py`, `0007_add_support_bot_data.py`, `0008_add_quiz_bot_data.py`): `RunPython(forwards, backwards)` с `get_or_create` по `repo`/`name` и сдвигом `sort_order` существующих таймлайн-записей. `0010_skill_category.py` — schema + data миграция нового поля: `AddField` + `RunPython` с распределением по имени (`CATEGORY_BY_NAME`), в `backwards` — сброс на дефолт. `0012_project_tags.py` — schema + data сида тегов: `AddField` + `RunPython` c `filter`-first по `repo`. `0013_skill_filter_tag.py` — schema + data: `AddField` + `RunPython` сида `filter_tag` навыков (`FILTER_TAG_BY_NAME`) и тегов таглесс-проектов (`TAGS_BY_REPO`, update-only по `repo`, на проде 5 проектов). Редактирование наполнения — через admin, массовое добавление новых проектов — через миграцию (чтобы попало на прод при пуше).
+- Начальный контент (проекты/навыки/таймлайн) сеется через **data-migrations** в `main/migrations/` (см. `0005_add_devman_monitor_data.py`, `0007_add_support_bot_data.py`, `0008_add_quiz_bot_data.py`): `RunPython(forwards, backwards)` с `get_or_create` по `repo`/`name` и сдвигом `sort_order` существующих таймлайн-записей. `0010_skill_category.py` — schema + data миграция нового поля: `AddField` + `RunPython` с распределением по имени (`CATEGORY_BY_NAME`), в `backwards` — сброс на дефолт. `0012_project_tags.py` — schema + data сида тегов: `AddField` + `RunPython` c `filter`-first по `repo`. `0013_skill_filter_tag.py` — schema + data: `AddField` + `RunPython` сида `filter_tag` навыков (`FILTER_TAG_BY_NAME`) и тегов таглесс-проектов (`TAGS_BY_REPO`, update-only по `repo`, на проде 5 проектов). `0014_update_dossier_features.py` / `0015_dossier_html_tags.py` — контентные правки карточки Dossier (update-only по `repo`). `0016_add_skills_fastapi_github_pages.py` — `get_or_create` недостающих навыков с `sort_order = max + 1`. Редактирование наполнения — через admin, массовое добавление новых проектов — через миграцию (чтобы попало на прод при пуше). Согласованность тегов ↔ навыков проверяется `uv run manage.py audit_content` (см. Dev workflow).
 
 ## Current CMS content
 ### Projects (role = "Bot Development")
