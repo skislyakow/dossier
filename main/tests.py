@@ -472,6 +472,10 @@ class MigrationSkillFilterTagSeedTest(TestCase):
 
 
 class DataConsistencyAuditTest(TestCase):
+    def setUp(self):
+        Skill.objects.all().delete()
+        Project.objects.all().delete()
+
     def _audit(self):
         from main.audit import audit_content
         return audit_content()
