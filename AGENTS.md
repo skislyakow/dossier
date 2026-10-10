@@ -136,7 +136,7 @@ Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/d
 - [x] `og:image` / `twitter:image` (1200×630, `static/og/og-image.png`, `summary_large_image`) — превью при шаринге (сгенерировано Chrome headless из шаблона; при правке дизайна перегенерировать и обновить `<meta og:image>` в `<head>`)
 
 ### Код / доступность
-- [ ] Светлая тема (`data-theme="light"`) ни разу не проверялась визуально — глаз-чек отложен в самый конец (после всех основных изменений)
+- [x] Светлая тема (`data-theme="light"`) — глаз-чек пройден пользователем (моб. верстка скрыта `portfolio-preview-media`, см. тикет 12)
 - [x] XSS: github.js экранирует данные GitHub API через глобальный `esc()` (закрыто в тикете 13); portfolio.js, секция Skills, timeline.js и contact-рендер экранируют через `esc()`/`tlEsc()`
 - [x] Тесты на основные view/home page (HomeViewTest + ApiTimeline/ApiContact/ApiSkills/ApiProjects/ApiGithub — закрыто в тикете 15)
 - [x] mypy в CI (mypy + django-stubs в dev-группе, `[tool.mypy]` + `[tool.django-stubs]`; чек-гейт в deploy.yml: step `mypy main/`; локально — `uv run mypy main/`; закрыто в тикете 15)
