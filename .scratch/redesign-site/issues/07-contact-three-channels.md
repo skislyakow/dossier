@@ -4,7 +4,7 @@
 
 **Blocked by:** 02 (Design-система и Signature-момент Hero).
 
-**Status:** ready-for-human
+**Status:** done
 
 - [x] Тип `github` добавлен в ContactInfo (миграция), доступен в админке
 - [x] Секция Contact показывает три канала крупно, ссылки кликабельны
