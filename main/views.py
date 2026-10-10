@@ -11,7 +11,7 @@ def home(request):
 def api_skills(request):
     skills = Skill.objects.all()
     return JsonResponse([
-        {'name': s.name, 'category': s.category, 'size': s.size, 'icon': s.icon, 'filter_tag': s.filter_tag}
+        {'name': s.name, 'category': s.category, 'size': s.size, 'filter_tag': s.filter_tag}
         for s in skills
     ], safe=False)
 

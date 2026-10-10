@@ -1,10 +1,9 @@
 from django.contrib import admin
 from django.urls import path
-from django.utils.html import format_html
 from django import forms
 from unfold.admin import ModelAdmin
 from .models import Skill, Project, TimelineItem, ContactInfo
-from .widgets import IconPickerWidget, BadgePickerWidget
+from .widgets import BadgePickerWidget
 from .admin_views import admin_reorder
 
 
@@ -30,26 +29,11 @@ class SortableAdminMixin:
 
 @admin.register(Skill)
 class SkillAdmin(SortableAdminMixin, ModelAdmin):
-    list_display = ['icon_display', 'name', 'category', 'size', 'filter_tag']
+    list_display = ['name', 'category', 'size', 'filter_tag']
     search_fields = ['name']
     list_filter = ['category', 'size']
     ordering_field = 'sort_order'
     hide_ordering_field = True
-
-    def get_form(self, request, obj=None, **kwargs):
-        form = super().get_form(request, obj, **kwargs)
-        if 'icon' in form.base_fields:
-            form.base_fields['icon'].widget = IconPickerWidget()
-        return form
-
-    @admin.display(description='')
-    def icon_display(self, obj):
-        if obj.icon:
-            return format_html(
-                '<span class="material-symbols-outlined" style="font-size:20px;vertical-align:middle">{}</span>',
-                obj.icon
-            )
-        return ''
 
 
 @admin.register(Project)

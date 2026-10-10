@@ -19,7 +19,6 @@ class Skill(models.Model):
     category = models.CharField('Категория', max_length=10, choices=CATEGORY_CHOICES, default='tools')
     size = models.CharField('Размер', max_length=2, choices=SIZE_CHOICES, default='sm')
     filter_tag = models.CharField('Тег фильтра проектов', max_length=50, blank=True, help_text='Тег проекта, по которому клик по навыку фильтрует список проектов (пусто — по имени навыка)')
-    icon = models.CharField('Иконка', max_length=50, blank=True, help_text='Название Material Symbols иконки')
     sort_order = models.PositiveSmallIntegerField('Порядок', default=0)
 
     class Meta:
