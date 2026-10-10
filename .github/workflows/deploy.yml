@@ -17,7 +17,7 @@ jobs:
       - name: mypy
         run: uv run mypy main/
       - name: Tests
-        run: uv run manage.py test
+        run: uv run pytest
       - name: No pending migrations
         run: uv run manage.py makemigrations --check --dry-run
       - name: JS syntax check

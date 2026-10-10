@@ -36,7 +36,7 @@
 
 ## Качество кода
 
-- **42 автотеста** (Django `TestCase`) — `uv run manage.py test`
+- **42 автотеста** (Django `TestCase` через `pytest`) — `uv run pytest`
 - Типизация `mypy` (django-stubs), линтинг `ruff`
 - **Аудит контента**: `uv run manage.py audit_content` — согласованность тегов проектов ↔ навыков (кликабельность секции Skills)
 - **CI-гейт** (GitHub Actions): ruff + mypy + тесты + `makemigrations --check` + `node --check` — каждый пуш в `main`
