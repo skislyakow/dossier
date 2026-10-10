@@ -957,11 +957,6 @@ body:has(#portfolio.show) #experience {
         flex-shrink: 0;
     }
 
-    .portfolio-preview-content {
-        grid-template-columns: 1fr;
-        gap: 1.25rem;
-    }
-
     .portfolio-preview-media {
         display: none;
     }
@@ -1247,6 +1242,13 @@ body:has(#portfolio.show) #experience {
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
     gap: 1.5rem;
     align-items: stretch;
+}
+
+@media (max-width: 768px) {
+    .portfolio-preview-content {
+        grid-template-columns: 1fr;
+        gap: 1.25rem;
+    }
 }
 
 .portfolio-card-header {
