@@ -15,6 +15,11 @@
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white&labelColor=2088FF)
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=flat-square&logo=ubuntu&logoColor=white&labelColor=E95420)
 
+![Tests](https://img.shields.io/badge/42_tests_passed-2ea44f?style=flat-square&logo=checkmarx&logoColor=white&labelColor=2ea44f)
+![Ruff](https://img.shields.io/badge/Ruff-D7FF64?style=flat-square&logo=ruff&logoColor=black&labelColor=D7FF64)
+![mypy](https://img.shields.io/badge/mypy-18BACB?style=flat-square&logoColor=white&labelColor=18BACB)
+![audit_content](https://img.shields.io/badge/audit_content-ok-2ea44f?style=flat-square&logoColor=white&labelColor=2ea44f)
+
 ## Возможности
 
 - **Портфолио** — Усиленные карточки проектов: таглайн, буллеты результата, бейджи (GitHub API, PyPI, PyPistats) и ссылки на светлой карточке; каскадное появление без скролл-обсервера, список названий виден сразу, умеренный magnetic-hover (отключается при `prefers-reduced-motion`); фильтры списка: по роли (curly `{ роль: N }`), облако тегов `{ тег: N }` с кеглем по частоте и кликабельные навыки — клик по технологии открывает портфолио и фильтрует по тегу
@@ -26,7 +31,15 @@
 - **Соцсети с hover-лейблами** — иконка съезжает влево, появляется название (квадратные рамки, акцент на hover)
 - **Django admin (unfold)** — управление контентом: навыки, проекты, опыт, контакты; drag-and-drop сортировка записей
 - **Production-стек**: Django + Gunicorn + Nginx на Ubuntu VPS
-- **CI/CD** через GitHub Actions (автодеплой при пуше в main)
+- **CI/CD**: GitHub Actions (чек-гейт: ruff + mypy + 42 теста + `makemigrations --check` + `node --check`; автодеплой при пуше в main)
+- **Аудит контента** — `uv run manage.py audit_content`: сверяет теги проектов с навыками, чтобы у каждой технологии была кликабельная кнопка (выход 1 при ошибке)
+
+## Качество кода
+
+- **42 автотеста** (Django `TestCase`) — `uv run manage.py test`
+- Типизация `mypy` (django-stubs), линтинг `ruff`
+- **Аудит контента**: `uv run manage.py audit_content` — согласованность тегов проектов ↔ навыков (кликабельность секции Skills)
+- **CI-гейт** (GitHub Actions): ruff + mypy + тесты + `makemigrations --check` + `node --check` — каждый пуш в `main`
 
 ## Сайт
 
