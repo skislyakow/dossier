@@ -263,6 +263,16 @@ class DesignSystemTest(TestCase):
         self.assertIn('.portfolio-preview-media { display: none; }', css)
         self.assertIn('.portfolio-preview-content { grid-template-columns: 1fr;', css)
 
+    def test_github_stats_escapes(self):
+        js_path = Path(__file__).resolve().parent.parent / 'static' / 'js' / 'github.js'
+        js = js_path.read_text(encoding='utf-8')
+        for raw in ('${user.html_url', '${user.avatar_url', '${user.name', '@${user.login',
+                    '${user.bio}</span>', '${lang}', '${percent}'):
+            self.assertNotIn(raw, js)
+        self.assertIn('${esc(user.', js)
+        self.assertIn('${esc(lang)}', js)
+        self.assertIn('${esc(percent)}', js)
+
     def test_skills_are_clickable_filter_buttons(self):
         self.assertIn('<button type="button" class="tag tag-', self.html)
         self.assertIn('data-skill="', self.html)

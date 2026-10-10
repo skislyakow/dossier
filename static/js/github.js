@@ -21,14 +21,14 @@ link.addEventListener('click', async (e) => {
         const user = data.user || {};
 
         let html = `
-            <a href="${user.html_url || '#'}" target="_blank" rel="noopener noreferrer" class="gh-card">
+            <a href="${esc(user.html_url || '#')}" target="_blank" rel="noopener noreferrer" class="gh-card">
                 <div class="gh-card-avatar">
-                    <img src="${user.avatar_url || ''}" alt="${user.login || ''}" />
+                    <img src="${esc(user.avatar_url || '')}" alt="${esc(user.login || '')}" />
                 </div>
                 <div class="gh-card-info">
-                    <span class="gh-card-name">${user.name || user.login || ''}</span>
-                    <span class="gh-card-login">@${user.login || ''}</span>
-                    ${user.bio ? `<span class="gh-card-bio">${user.bio}</span>` : ''}
+                    <span class="gh-card-name">${esc(user.name || user.login || '')}</span>
+                    <span class="gh-card-login">@${esc(user.login || '')}</span>
+                    ${user.bio ? `<span class="gh-card-bio">${esc(user.bio)}</span>` : ''}
                 </div>
             </a>
         `;
@@ -37,9 +37,9 @@ link.addEventListener('click', async (e) => {
         (data.langs || []).forEach(({ lang, percent }) => {
             html += `
                 <div class="lang-row">
-                    <span class="lang-name">${lang}</span>
+                    <span class="lang-name">${esc(lang)}</span>
                     <div class="lang-bar"><div class="lang-fill" style="width: 0%"></div></div>
-                    <span class="lang-percent">${percent}%</span>
+                    <span class="lang-percent">${esc(percent)}%</span>
                 </div>
             `;
         });
