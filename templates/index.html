@@ -221,12 +221,17 @@
                     html += '<div class="skill-group"><h3 class="skill-group-title">' + esc(pair[1]) + '</h3><div class="skill-group-items">';
                     html += items.map(function(s) {
                         var size = sizes[s.size] ? s.size : 'sm';
-                        return '<span class="tag tag-' + size + '">' + esc(s.name) + '</span>';
+                        return '<button type="button" class="tag tag-' + size + '" data-skill="' + esc(s.name) + '" data-filter-tag="' + esc(s.filter_tag || '') + '">' + esc(s.name) + '</button>';
                     }).join('');
                     html += '</div></div>';
                 });
                 container.innerHTML = html;
             }).catch(function() {});
+            container.addEventListener('click', function(e) {
+                var btn = e.target.closest('.tag[data-skill]');
+                if (!btn || typeof window.__applyPortfolioTag !== 'function') return;
+                window.__applyPortfolioTag(btn.getAttribute('data-filter-tag') || btn.getAttribute('data-skill'));
+            });
         })();
     </script>
     <script>

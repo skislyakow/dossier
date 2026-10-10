@@ -1,4 +1,5 @@
 from html.parser import HTMLParser
+from importlib import import_module
 from pathlib import Path
 from unittest import mock
 
@@ -250,7 +251,24 @@ class DesignSystemTest(TestCase):
         self.assertNotIn('ghostFloat', self.css)
         js = self.PORTFOLIO_JS_PATH.read_text(encoding='utf-8')
         self.assertIn('prefers-reduced-motion', js)
-        self.assertIn('IntersectionObserver', js)
+
+    def test_portfolio_eager_reveal_without_observer(self):
+        js = self.PORTFOLIO_JS_PATH.read_text(encoding='utf-8')
+        self.assertIn('function revealNow(', js)
+        self.assertNotIn('function revealIn(', js)
+        self.assertNotIn('IntersectionObserver', js)
+
+    def test_skills_are_clickable_filter_buttons(self):
+        self.assertIn('<button type="button" class="tag tag-', self.html)
+        self.assertIn('data-skill="', self.html)
+        self.assertIn('data-filter-tag="', self.html)
+        self.assertIn('window.__applyPortfolioTag', self.html)
+        self.assertIn('.skills-cloud .tag {', self.css)
+        self.assertIn('cursor: pointer', self.css_rule('.skills-cloud .tag'))
+        js = self.PORTFOLIO_JS_PATH.read_text(encoding='utf-8')
+        self.assertIn('window.__applyPortfolioTag', js)
+        self.assertIn('data-filter-tag', self.html)
+        self.assertIn('.portfolio-empty', self.css)
 
     def test_reduced_motion_disables_all_animations(self):
         css = ' '.join(self.css.split())
@@ -296,6 +314,7 @@ class ApiSkillsTest(TestCase):
         Skill.objects.update(category='tools')
         Skill.objects.create(name='TestBackend', category='backend', size='md')
         Skill.objects.create(name='TestWeb', category='web', size='sm')
+        Skill.objects.create(name='TestBots', category='bots', size='md', filter_tag='Telegram')
 
     def test_api_skills_returns_category(self):
         response = self.client.get('/api/skills/')
@@ -304,10 +323,13 @@ class ApiSkillsTest(TestCase):
         valid = {code for code, _label in Skill.CATEGORY_CHOICES}
         for skill in data:
             self.assertIn('category', skill)
+            self.assertIn('filter_tag', skill)
             self.assertIn(skill['category'], valid)
         by_name = {s['name']: s for s in data}
         self.assertEqual(by_name['TestBackend']['category'], 'backend')
         self.assertEqual(by_name['TestWeb']['category'], 'web')
+        self.assertEqual(by_name['TestBackend']['filter_tag'], '')
+        self.assertEqual(by_name['TestBots']['filter_tag'], 'Telegram')
 
 
 class ApiProjectsEnrichTest(TestCase):
@@ -399,4 +421,30 @@ class ApiGithubTest(TestCase):
         by_lang = {lang['lang']: lang['percent'] for lang in data['langs']}
         self.assertEqual(by_lang['Python'], 67)
         self.assertEqual(by_lang['JavaScript'], 33)
+
+
+class MigrationSkillFilterTagSeedTest(TestCase):
+    TAGS_BY_REPO = {
+        'skislyakow/opencode-py': ['Python', 'httpx', 'Pydantic', 'PyPI', 'opencode-py'],
+        'skislyakow/ferma': ['Python', 'FastAPI', 'SQLite', 'VK API', 'requests'],
+        'skislyakow/devman-bot': ['Python', 'Telegram', 'requests', 'python-dotenv'],
+        'skislyakow/dossier': ['Python', 'Django', 'Nginx', 'Gunicorn', 'GitHub Actions'],
+        'skislyakow/online_library': ['Python', 'Jinja2', 'Bootstrap', 'GitHub Pages'],
+    }
+
+    def test_seed_0013_filter_tags_and_tags_by_repo(self):
+        from django.apps import apps
+        module = import_module('main.migrations.0013_skill_filter_tag')
+        module.seed(apps, None)
+        module.seed(apps, None)
+        self.assertEqual(Skill.objects.get(name='Telegram Bot API').filter_tag, 'Telegram')
+        self.assertEqual(Skill.objects.get(name='vk_api').filter_tag, 'VK')
+        self.assertEqual(Skill.objects.get(name='VK API').filter_tag, 'VK')
+        self.assertEqual(Skill.objects.get(name='systemd').filter_tag, '')
+        for repo, tags in self.TAGS_BY_REPO.items():
+            project = Project.objects.create(title=repo, repo=repo)
+            self.assertEqual(project.tags, [])
+        module.seed(apps, None)
+        for repo, tags in self.TAGS_BY_REPO.items():
+            self.assertEqual(Project.objects.get(repo=repo).tags, tags)
 

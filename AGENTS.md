@@ -56,7 +56,8 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - GitHub stats toggle (stars, repos, languages via GitHub API)
 - Portfolio section with project cards (Django CMS, GitHub API + PyPI badges)
 - Облако тегов проектов: `Project.tags` (JSONField, курируемые метки) → объединение тегов опубликованных Проектов в облако `{ тег: N }` (свой класс `.ptag` с curly в `::before`/`::after`, кегль по частоте бакетами `ptag-xl|lg|md|sm`), клик — фильтр списка (одиночный, `All` — сброс), комбинируется с фильтром по роли AND; тег без проектов не показывается; значения из API экранируются (`esc()`)
-- Усиленная карточка проекта: таглайн + буллеты + бейджи + ссылки на светлой карточке (`--bg-card` поверхность, текст `--text-card*`); стаггер-reveal по `--i` при появлении/переключении, magnetic-hover на `--mag-x/--mag-y` (≤6px, `pointer: fine`, off при `prefers-reduced-motion`); все значения из API вставляются через `esc()`
+- Навыки — кликабельные кнопки (`window.__applyPortfolioTag`): клик по навыку открывает секцию Projects и фильтрует список по тегу `Skill.filter_tag` (пусто → по имени навыка); нет совпадений — явный empty-state `.portfolio-empty`, навык без совпадений получает `active`-состояние; фильтр сбрасывается при закрытии панели
+- Усиленная карточка проекта: таглайн + буллеты + бейджи + ссылки на светлой карточке (`--bg-card` поверхность, текст `--text-card*`); стаггер-reveal по `--i` при появлении/переключении — **eager-синхронный** (`revealNow`, без IntersectionObserver; названия пунктов списка вообще без `.reveal`), magnetic-hover на `--mag-x/--mag-y` (≤6px, `pointer: fine`, off при `prefers-reduced-motion`); все значения из API вставляются через `esc()`
 - Placeholder медиа карточки (нет скриншота) — статичная монограмма проекта на лаймовом градиенте с сеткой (без анимаций, без призраков)
 - Dynamic badges from GitHub API, PyPI, PyPistats
 - Light/dark theme toggle (dark default; light — `data-theme="light"` + localStorage)
@@ -66,7 +67,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - Responsive: breakpoints at 1024px, 768px, 640px
 - All content managed via Django admin (Skills, Projects, TimelineItems, ContactInfo)
 - Drag-and-drop reordering in admin (unfold `ordering_field` + AJAX save)
-- Начальный контент (проекты/навыки/таймлайн) сеется через **data-migrations** в `main/migrations/` (см. `0005_add_devman_monitor_data.py`, `0007_add_support_bot_data.py`, `0008_add_quiz_bot_data.py`): `RunPython(forwards, backwards)` с `get_or_create` по `repo`/`name` и сдвигом `sort_order` существующих таймлайн-записей. `0010_skill_category.py` — schema + data миграция нового поля: `AddField` + `RunPython` с распределением по имени (`CATEGORY_BY_NAME`), в `backwards` — сброс на дефолт. `0012_project_tags.py` — schema + data сида тегов: `AddField` + `RunPython` c `filter`-first по `repo`. Редактирование наполнения — через admin, массовое добавление новых проектов — через миграцию (чтобы попало на прод при пуше).
+- Начальный контент (проекты/навыки/таймлайн) сеется через **data-migrations** в `main/migrations/` (см. `0005_add_devman_monitor_data.py`, `0007_add_support_bot_data.py`, `0008_add_quiz_bot_data.py`): `RunPython(forwards, backwards)` с `get_or_create` по `repo`/`name` и сдвигом `sort_order` существующих таймлайн-записей. `0010_skill_category.py` — schema + data миграция нового поля: `AddField` + `RunPython` с распределением по имени (`CATEGORY_BY_NAME`), в `backwards` — сброс на дефолт. `0012_project_tags.py` — schema + data сида тегов: `AddField` + `RunPython` c `filter`-first по `repo`. `0013_skill_filter_tag.py` — schema + data: `AddField` + `RunPython` сида `filter_tag` навыков (`FILTER_TAG_BY_NAME`) и тегов таглесс-проектов (`TAGS_BY_REPO`, update-only по `repo`, на проде 5 проектов). Редактирование наполнения — через admin, массовое добавление новых проектов — через миграцию (чтобы попало на прод при пуше).
 
 ## Current CMS content
 ### Projects (role = "Bot Development")
@@ -78,7 +79,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 `systemd`, `python-dotenv`, `Telegram Bot API`, `Dialogflow`, `aiogram`, `vk_api`, `Redis`, `vkbottle`, `VK API`, `pymorphy3`, `mypy`
 
 ## CMS models
-- **Skill** — name, category (backend/web/devops/bots/tools), size (xl/lg/md/sm), icon (Material Symbol name), sort_order
+- **Skill** — name, category (backend/web/devops/bots/tools), size (xl/lg/md/sm), icon (Material Symbol name), filter_tag (тег проекта для клика-фильтра, пусто → имя навыка), sort_order
 - **Project** — title, repo, pypi, role, tagline, features (JSON), tags (JSON, список строк), links (JSON), badges_config (JSON), screenshot (URL), sort_order, is_published
 - **TimelineItem** — item_type (prior/job/project/present), date_label, title, description, repo, url, role, date_range, sort_order
 - **ContactInfo** — contact_type (email/telegram/github), label, value, sort_order
@@ -95,7 +96,7 @@ Admin: Main → Projects → Add. Fill:
 
 Drag-and-drop the `drag_indicator` handle in the list view to reorder. Changes save automatically via AJAX.
 
-Чтобы новый проект/навык попал на прод при пуше — оформляйте массовое добавление через **data-migration** (паттерн `0008_add_quiz_bot_data.py`): `RunPython` + `get_or_create` по `repo`/`name`, со сдвигом `sort_order` таймлайн-записей в `backwards`. Секция Skills, облако навыков и placeholder-карточки портфолио (`portfolio.js`) читают `/api/skills/` (включая `category`) динамически — добавление `Skill` само обновляет эти места, правка JS не нужна.
+Чтобы новый проект/навык попал на прод при пуше — оформляйте массовое добавление через **data-migration** (паттерн `0008_add_quiz_bot_data.py`): `RunPython` + `get_or_create` по `repo`/`name`, со сдвигом `sort_order` таймлайн-записей в `backwards`. Секция Skills, облако навыков и placeholder-карточки портфолио (`portfolio.js`) читают `/api/skills/` (включая `category` и `filter_tag`) динамически — добавление `Skill` само обновляет эти места, правка JS не нужна.
 
 ### Dynamic badge sources
 | Source | Data | Requires |
