@@ -1,0 +1,120 @@
+/* ============================================================
+   Dossier admin theme — поверх unfold.
+   Палитра задаётся в config/settings.py UNFOLD["COLORS"]
+   (--color-base-*, --color-primary-*): монохром + кислотный лайм #CDFF50.
+   Здесь: self-host шрифты сайта + точечные правки в вайбе сайта.
+   ВАЖНО: unfold грузит свои styles ДО наших STYLES, поэтому утилит
+   Tailwind перебиваем селекторами выше по специфичности и !important.
+   ============================================================ */
+
+@import url('/static/css/fonts.css');
+
+body,
+body.font-sans {
+    font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif !important;
+}
+
+code,
+pre,
+.font-mono,
+textarea,
+tt,
+kbd,
+samp {
+    font-family: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important;
+}
+
+::selection {
+    background: rgba(205, 255, 80, 0.32);
+    color: inherit;
+}
+
+/* --- Заголовки секций сайдбара: uppercase-моно, как метки на сайте --- */
+#nav-sidebar-apps h2 {
+    font-family: 'Fira Code', monospace !important;
+    font-size: 10.5px !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-base-500) !important;
+}
+
+html.dark #nav-sidebar-apps h2 {
+    color: var(--color-base-400) !important;
+}
+
+/* --- Активный пункт сайдбара: лаймовая плашка слева (2px, как рамки сайта) --- */
+#nav-sidebar-apps .active {
+    box-shadow: inset 2px 0 0 var(--color-primary-500);
+}
+
+/* --- Налет акцента на интерактиве шапки --- */
+#header a:hover,
+#header button:hover {
+    color: var(--color-primary-500);
+}
+
+/* --- Кнопки сохранения/добавления: лайм + тёмный текст + uppercase-моно --- */
+button[type='submit'],
+input[type='submit'],
+input[type='button'].button,
+.object-tools a,
+.submit-row a.deletelink {
+    border: 2px solid var(--color-primary-500) !important;
+    background: var(--color-primary-500) !important;
+    color: #0a0a0a !important;
+    border-radius: 2px !important;
+    font-family: 'Fira Code', monospace !important;
+    font-size: 11px !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+button[type='submit']:hover,
+input[type='submit']:hover,
+input[type='button'].button:hover,
+.object-tools a:hover,
+.submit-row a.deletelink:hover {
+    background: var(--color-primary-400) !important;
+    border-color: var(--color-primary-400) !important;
+    color: #0a0a0a !important;
+}
+
+/* --- Таблицы changelist: заголовки uppercase-моно --- */
+#changelist thead th,
+.module thead th,
+table thead th {
+    font-family: 'Fira Code', monospace !important;
+    font-size: 10.5px !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--color-base-500) !important;
+}
+
+html.dark #changelist thead th,
+html.dark .module thead th,
+html.dark table thead th {
+    color: var(--color-base-400) !important;
+}
+
+/* --- Активные хоover-состояния форм и чекбоксов в акценте --- */
+.form-row input[type='checkbox']:checked,
+.aligned input[type='checkbox']:checked,
+.form-row input[type='radio']:checked,
+.aligned input[type='radio']:checked {
+    accent-color: var(--color-primary-500);
+}
+
+/* Input: фокус-кольцо в акценте (хвост unfold рисует focus-rings primary) */
+input:focus,
+textarea:focus,
+select:focus {
+    outline-color: var(--color-primary-500) !important;
+}
+
+/* --- Login: подпись под формой --- */
+.login #content-main {
+    max-width: 26rem;
+}
