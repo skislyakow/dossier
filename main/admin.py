@@ -42,6 +42,7 @@ class SkillAdmin(SortableAdminMixin, ModelAdmin):
             form.base_fields['icon'].widget = IconPickerWidget()
         return form
 
+    @admin.display(description='')
     def icon_display(self, obj):
         if obj.icon:
             return format_html(
@@ -49,7 +50,6 @@ class SkillAdmin(SortableAdminMixin, ModelAdmin):
                 obj.icon
             )
         return ''
-    icon_display.short_description = ''
 
 
 @admin.register(Project)

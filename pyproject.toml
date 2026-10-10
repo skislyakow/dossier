@@ -16,5 +16,16 @@ dev = [
     "ruff==0.15.20",
 ]
 
+[tool.mypy]
+python_version = "3.12"
+plugins = ["mypy_django_plugin"]
+warn_unused_ignores = true
+no_implicit_optional = true
+check_untyped_defs = true
+show_error_codes = true
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
+
 [tool.uv]
 package = false

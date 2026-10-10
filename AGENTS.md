@@ -23,10 +23,11 @@
 ## Dev workflow
 1. Install/update deps: `uv sync --frozen`
 2. Lint: `uv run ruff check .` (правила в `ruff.toml`; Ruff в dev-группе)
-3. Tests: `uv run manage.py test`
-4. Run server: `uv run manage.py runserver`
-5. Visit `http://127.0.0.1:8000/`
-6. Синхронизация доков: если изменено поведение сайта или команды запуска — обновить README и AGENTS.md в рамках того же изменения. README держать тонким (что это, бейджи, запуск, деплой, контакты); инвентаризация фич живёт в `## Project overview` ниже
+3. Type check: `uv run mypy main/` (mypy + django-stubs в dev-группе; plugin `mypy_django_plugin`, настройки в `[tool.mypy]`/`[tool.django-stubs]` в pyproject.toml)
+4. Tests: `uv run manage.py test`
+5. Run server: `uv run manage.py runserver`
+6. Visit `http://127.0.0.1:8000/`
+7. Синхронизация доков: если изменено поведение сайта или команды запуска — обновить README и AGENTS.md в рамках того же изменения. README держать тонким (что это, бейджи, запуск, деплой, контакты); инвентаризация фич живёт в `## Project overview` ниже
 
 ## Production
 - Domain: `kislyakov.pro` (reg.ru)
@@ -39,7 +40,7 @@
 - Auto-deploy: GitHub Actions on push to `main`
 
 ## Auto-deploy
-On push to `main` GitHub Actions сначала гоняет чек-гейт (`uv run ruff check .` + `uv run manage.py test`) на Ubuntu; при его успехе — SSH into VPS and runs:
+On push to `main` GitHub Actions сначала гоняет чек-гейт (`uv run ruff check .` + `uv run mypy main/` + `uv run manage.py test`) на Ubuntu; при его успехе — SSH into VPS and runs:
 ```
 git pull → установка uv (если нет) → uv sync --frozen --no-dev → migrate → createcachetable → collectstatic → restart gunicorn
 ```
@@ -137,8 +138,8 @@ Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/d
 ### Код / доступность
 - [ ] Светлая тема (`data-theme="light"`) ни разу не проверялась визуально — глаз-чек отложен в самый конец (после всех основных изменений)
 - [x] XSS: github.js экранирует данные GitHub API через глобальный `esc()` (закрыто в тикете 13); portfolio.js, секция Skills, timeline.js и contact-рендер экранируют через `esc()`/`tlEsc()`
-- [ ] Тесты на основные view/home page
-- [ ] mypy в CI (зависимости уже ставятся через `uv sync --frozen`)
+- [x] Тесты на основные view/home page (HomeViewTest + ApiTimeline/ApiContact/ApiSkills/ApiProjects/ApiGithub — закрыто в тикете 15)
+- [x] mypy в CI (mypy + django-stubs в dev-группе, `[tool.mypy]` + `[tool.django-stubs]`; чек-гейт в deploy.yml: step `mypy main/`; локально — `uv run mypy main/`; закрыто в тикете 15)
 
 ---
 

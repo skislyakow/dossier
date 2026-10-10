@@ -14,6 +14,8 @@ jobs:
         run: uv sync --frozen
       - name: Ruff lint
         run: uv run ruff check .
+      - name: mypy
+        run: uv run mypy main/
       - name: Tests
         run: uv run manage.py test
 
