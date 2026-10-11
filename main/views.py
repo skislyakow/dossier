@@ -4,7 +4,8 @@ from django.shortcuts import render
 from django.http import JsonResponse, FileResponse, Http404
 from .models import Skill, Project, TimelineItem, ContactInfo
 from .taxonomy import resolve_tag, skill_size, tag_cloud, tag_counts
-from .badge_utils import enrich_project, fetch_github_stats
+from .badge_utils import enrich_project
+from .fetch import fetch_github_stats
 
 
 def home(request):

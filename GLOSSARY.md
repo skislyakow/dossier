@@ -43,3 +43,7 @@ _Avoid_: CV, резухе, файл резюме
 **Авто-резюме**:
 Механизм перегенерации PDF-резюме при изменении контента: сигналы `post_save`/`post_delete` на 5 моделях (гейт `settings.RESUME_AUTOGEN`, в тестах выключен) плюс `manage.py generate_resume` в деплое перед `collectstatic`. Решение — `docs/adr/0003-resume-generated-from-cms.md`.
 _Avoid_: авто-CV, resume-pipeline
+
+**Fetch-адаптер**:
+Единый кэшированный порт для внешних API (`main/fetch.py`): `fetch(url)` — одна политика TTL (успех 6ч / сбой 5мин), транспорт инжектится (`UrllibTransport` в проде, `MemoryTransport` в тестах). Агрегаторы `fetch_repo_data`/`fetch_pypi_data`/`fetch_github_stats` прячут fan-out по нескольким URL, `aggregate_languages` — чистая трансформация. Решение — `docs/adr/0004-fetch-adapter.md`.
+_Avoid_: fetcher, http-client, загрузчик

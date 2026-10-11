@@ -1,76 +1,7 @@
-import os
 import re
-import json
 import datetime
 
-import urllib.request
-import urllib.error
-
-from django.core.cache import cache
-
-GITHUB_TOKEN = os.getenv("GITHUB_TOKEN")
-HTTP_TIMEOUT = 8
-
-CACHE_OK = 21600       # 6 hours
-CACHE_FAIL = 300       # 5 minutes on upstream failure
-
-
-def _get_json(url, headers=None, timeout=HTTP_TIMEOUT):
-    req_headers = {"User-Agent": "dossier/1.0"}
-    if headers:
-        req_headers.update(headers)
-    try:
-        req = urllib.request.Request(url, headers=req_headers)
-        with urllib.request.urlopen(req, timeout=timeout) as resp:
-            return json.loads(resp.read().decode("utf-8"))
-    except Exception:
-        return None
-
-
-def _github_headers():
-    headers = {"User-Agent": "dossier/1.0", "Accept": "application/vnd.github+json"}
-    if GITHUB_TOKEN:
-        headers["Authorization"] = f"Bearer {GITHUB_TOKEN}"
-    return headers
-
-
-def fetch_repo_data(repo):
-    if not repo or "/" not in repo:
-        return {"repo": {}, "langs": {}}
-    key = f"github:repo:{repo}"
-    cached = cache.get(key)
-    if cached is not None:
-        return cached
-
-    hdrs = _github_headers()
-    repo_json = _get_json(f"https://api.github.com/repos/{repo}", hdrs)
-    langs = _get_json(f"https://api.github.com/repos/{repo}/languages", hdrs)
-
-    if repo_json is None and langs is None:
-        cache.set(key, {"repo": {}, "langs": {}}, CACHE_FAIL)
-        return {"repo": {}, "langs": {}}
-
-    result = {"repo": repo_json or {}, "langs": langs or {}}
-    cache.set(key, result, CACHE_OK)
-    return result
-
-
-def fetch_pypi_data(pypi):
-    key = f"pypi:{pypi}"
-    cached = cache.get(key)
-    if cached is not None:
-        return cached
-
-    pypi_json = _get_json(f"https://pypi.org/pypi/{pypi}/json", {"User-Agent": "dossier/1.0"})
-    stats = _get_json(f"https://pypistats.org/api/packages/{pypi}/recent", {"User-Agent": "dossier/1.0"})
-
-    if pypi_json is None and stats is None:
-        cache.set(key, {"pypi": None, "stats": None}, CACHE_FAIL)
-        return {"pypi": None, "stats": None}
-
-    result = {"pypi": pypi_json, "stats": stats}
-    cache.set(key, result, CACHE_OK)
-    return result
+from .fetch import fetch_pypi_data, fetch_repo_data
 
 
 def _parse_python_versions(requires_python):
@@ -233,40 +164,3 @@ def enrich_project(project):
     badges = resolve_badges(project.badges_config, ctx)
     stars = repo_obj.get("stargazers_count") or 0
     return {"repo": repo_obj, "langs": langs, "stars": stars, "badges": badges}
-
-
-def fetch_github_stats(username="skislyakow"):
-    key = f"github:stats:{username}"
-    cached = cache.get(key)
-    if cached is not None:
-        return cached
-
-    hdrs = _github_headers()
-    user = _get_json(f"https://api.github.com/users/{username}", hdrs)
-    repos = _get_json(
-        f"https://api.github.com/users/{username}/repos?sort=stars&per_page=6", hdrs
-    ) or []
-
-    lang_count = {}
-    for repo in repos:
-        name = repo.get("name")
-        if not name:
-            continue
-        langs = fetch_repo_data(f"{username}/{name}")["langs"] or {}
-        for lang, bytes_ in langs.items():
-            lang_count[lang] = lang_count.get(lang, 0) + bytes_
-
-    total = sum(lang_count.values())
-    sorted_langs = sorted(lang_count.items(), key=lambda kv: kv[1], reverse=True)[:5]
-    langs_out = []
-    if total:
-        for lang, bytes_ in sorted_langs:
-            langs_out.append({"lang": lang, "percent": round(bytes_ / total * 100)})
-
-    if user is None and not repos:
-        cache.set(key, {"user": None, "langs": []}, CACHE_FAIL)
-        return {"user": None, "langs": []}
-
-    result = {"user": user or {}, "langs": langs_out}
-    cache.set(key, result, CACHE_OK)
-    return result

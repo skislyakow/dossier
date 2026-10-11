@@ -3,8 +3,9 @@ from unittest import mock
 from django.test import TestCase
 from django.urls import reverse
 
-from main import badge_utils
+from main import fetch
 from main import taxonomy
+from main.fetch import MemoryTransport
 from main.models import ContactInfo, Project, Skill
 
 
@@ -193,32 +194,24 @@ class ApiProjectsEnrichTest(TestCase):
             is_published=True,
         )
 
-    @mock.patch.object(badge_utils, '_get_json')
-    def test_enriched_without_network(self, mock_get):
-        def fake(url, headers=None, timeout=None):
-            if 'languages' in url:
-                return {'Python': 100}
-            if 'api.github.com/repos/owner/repo' in url:
-                return {
-                    'stargazers_count': 42,
-                    'forks_count': 3,
-                    'full_name': 'owner/repo',
-                    'html_url': 'https://github.com/owner/repo',
-                    'language': 'Python',
-                    'open_issues_count': 1,
-                    'size': 2048,
-                    'created_at': '2020-01-01T00:00:00Z',
-                    'pushed_at': '2021-01-01T00:00:00Z',
-                    'license': {'spdx_id': 'MIT'},
-                }
-            if 'pypi.org' in url:
-                return {'info': {'version': '1.2.3', 'requires_python': '>=3.8', 'license': 'MIT'}}
-            if 'pypistats' in url:
-                return {'data': {'last_month': 500, 'total': 6000}}
-            return None
-
-        mock_get.side_effect = fake
-
+    @mock.patch.object(fetch, 'transport', MemoryTransport({
+        'https://api.github.com/repos/owner/repo': {
+            'stargazers_count': 42,
+            'forks_count': 3,
+            'full_name': 'owner/repo',
+            'html_url': 'https://github.com/owner/repo',
+            'language': 'Python',
+            'open_issues_count': 1,
+            'size': 2048,
+            'created_at': '2020-01-01T00:00:00Z',
+            'pushed_at': '2021-01-01T00:00:00Z',
+            'license': {'spdx_id': 'MIT'},
+        },
+        'https://api.github.com/repos/owner/repo/languages': {'Python': 100},
+        'https://pypi.org/pypi/pkg/json': {'info': {'version': '1.2.3', 'requires_python': '>=3.8', 'license': 'MIT'}},
+        'https://pypistats.org/api/packages/pkg/recent': {'data': {'last_month': 500, 'total': 6000}},
+    }))
+    def test_enriched_without_network(self):
         response = self.client.get('/api/projects/')
         self.assertEqual(response.status_code, 200)
         data = response.json()
@@ -240,25 +233,23 @@ class ProjectTagsDefaultTest(TestCase):
 
 
 class ApiGithubTest(TestCase):
-    @mock.patch.object(badge_utils, '_get_json')
-    def test_github_stats_without_network(self, mock_get):
-        def fake(url, headers=None, timeout=None):
-            if url.endswith('/users/skislyakow'):
-                return {
-                    'login': 'skislyakow',
-                    'name': 'Sergey',
-                    'avatar_url': 'http://x/a.png',
-                    'html_url': 'https://github.com/skislyakow',
-                    'bio': 'dev',
-                }
-            if 'repos?sort=stars' in url:
-                return [{'name': 'repo1'}, {'name': 'repo2'}]
-            if url.endswith('/languages'):
-                return {'Python': 100, 'JavaScript': 50}
-            return None
-
-        mock_get.side_effect = fake
-
+    @mock.patch.object(fetch, 'transport', MemoryTransport({
+        'https://api.github.com/users/skislyakow': {
+            'login': 'skislyakow',
+            'name': 'Sergey',
+            'avatar_url': 'http://x/a.png',
+            'html_url': 'https://github.com/skislyakow',
+            'bio': 'dev',
+        },
+        'https://api.github.com/users/skislyakow/repos?sort=stars&per_page=6': [
+            {'name': 'repo1'}, {'name': 'repo2'},
+        ],
+        'https://api.github.com/repos/skislyakow/repo1': {'name': 'repo1'},
+        'https://api.github.com/repos/skislyakow/repo1/languages': {'Python': 100},
+        'https://api.github.com/repos/skislyakow/repo2': {'name': 'repo2'},
+        'https://api.github.com/repos/skislyakow/repo2/languages': {'JavaScript': 50},
+    }))
+    def test_github_stats_without_network(self):
         response = self.client.get('/api/github/')
         self.assertEqual(response.status_code, 200)
         data = response.json()
