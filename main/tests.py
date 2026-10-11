@@ -159,8 +159,13 @@ class DesignSystemTest(TestCase):
     def test_shared_esc_defined_once_and_loaded_first(self):
         util = self.UTIL_JS_PATH.read_text(encoding='utf-8')
         self.assertIn('function esc(', util)
+        self.assertIn('function prefersReducedMotion(', util)
+        self.assertIn('prefers-reduced-motion', util)
         for path in (self.PORTFOLIO_JS_PATH, self.JS_PATH):
-            self.assertNotIn('function esc(', path.read_text(encoding='utf-8'))
+            source = path.read_text(encoding='utf-8')
+            self.assertNotIn('function esc(', source)
+            self.assertNotIn('function prefersReducedMotion(', source)
+            self.assertIn('prefersReducedMotion()', source)
         self.assertNotIn('tlEsc', self.JS_PATH.read_text(encoding='utf-8'))
         util_pos = self.html.index('js/util.js')
         github_pos = self.html.index('js/github.js')
@@ -176,7 +181,7 @@ class DesignSystemTest(TestCase):
         self.assertIn('esc(', js)
         self.assertNotIn('tlEsc', js)
         self.assertIn('exp-list', js)
-        self.assertIn('prefers-reduced-motion', js)
+        self.assertIn('prefersReducedMotion()', js)
         for raw in ('+ d.title +', '+ d.desc +', '+ d.repo +', '+ d.role +'):
             self.assertNotIn(raw, js)
         self.assertNotIn('timeline-details', js)
@@ -266,7 +271,7 @@ class DesignSystemTest(TestCase):
         )
         self.assertNotIn('ghostFloat', self.css)
         js = self.PORTFOLIO_JS_PATH.read_text(encoding='utf-8')
-        self.assertIn('prefers-reduced-motion', js)
+        self.assertIn('prefersReducedMotion()', js)
 
     def test_portfolio_eager_reveal_without_observer(self):
         js = self.PORTFOLIO_JS_PATH.read_text(encoding='utf-8')

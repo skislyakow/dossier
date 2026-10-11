@@ -13,7 +13,7 @@
 - `main/badge_utils.py` — серверный резолв бейджей и данных GitHub+PyPI (звёзды, форки, лицензия, язык, размер, даты, PyPI-версия/python/лицензия, PyPistats). Ходит в сеть через stdlib `urllib` (без зависимостей), кэширует в БД (`DatabaseCache`, `TIMEOUT` 6ч; при сбое внешнего API — короткий кэш 5мин, чтобы не долбить). Опц. `GITHUB_TOKEN` из env поднимает лимит 60→5000/ч. Браузер внешние API **не** дёргает — только `/api/projects/` (обогащённые `repo/langs/stars/badges`) и `/api/github/` (GitHub-stats toggle: профиль владельца + топ-5 языков, `fetch_github_stats()`), которые сами ходят в сеть и кэшируют.
 - `templates/` — HTML templates
 - `static/css/` — Styles
-- `static/js/` — Scripts (`util.js` — общий `esc()` для XSS-экранирования; github.js, portfolio.js, timeline.js + инлайн-скрипты index.html грузят его первым и переиспользуют)
+- `static/js/` — Scripts (`util.js` — общие `esc()` (XSS-экранирование) и `prefersReducedMotion()`; github.js, portfolio.js, timeline.js + инлайн-скрипты index.html грузят его первым и переиспользуют)
 - `static/fonts/` — самoxost текстовых шрифтов (см. ниже `fonts.css`). Иконки навыков: **удалены** (см. `0020_remove_skill_icon`) — сайт рендерит навыки текст-тегами, админка использует бандл unfold (Material Symbols), свой subset и `IconPickerWidget` больше нет.
 - `static/css/fonts.css` — **самохост** текстовых шрифтов (Inter 400/600/700 + Fira Code 400/700, подмножества latin + cyrillic, скачаны с Google Fonts css2 как woff2 в `static/fonts/`). В `<head>` внешний Google Fonts `<link>` убран — подключается только локальный `fonts.css` (без внешних запросов, `font-display: swap`). При добавлении нового веса/семейства — докачать woff2 и дописать `@font-face` в `fonts.css`.
 - `static/favicon.svg`

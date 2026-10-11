@@ -6,12 +6,7 @@ const ICONS = {
   vk: '<svg height="18" width="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.785 16.241s.288-.032.436-.194c.136-.148.132-.427.132-.427s-.02-1.304.576-1.496c.588-.19 1.341 1.26 2.14 1.818.605.422 1.064.33 1.064.33l2.137-.03s1.117-.071.587-.964c-.043-.073-.308-.661-1.588-1.87-1.34-1.264-1.16-1.059.453-3.246.983-1.332 1.376-2.145 1.253-2.493-.117-.332-.84-.244-.84-.244l-2.406.015s-.178-.025-.31.056c-.13.079-.213.262-.213.262s-.382 1.03-.892 1.906c-1.074 1.846-1.504 1.943-1.68 1.829-.408-.263-.306-1.057-.306-1.62 0-1.762.264-2.497-.516-2.687-.26-.063-.451-.104-1.115-.112-.854-.009-1.577.003-1.987.206-.273.135-.484.435-.356.452.158.021.515.098.704.36.245.34.236 1.106.236 1.106s.141 2.107-.33 2.368c-.324.179-.769-.186-1.722-1.853-.489-.854-.858-1.802-.858-1.802s-.141-.349-.327-.465c-.24-.15-.577-.098-.577-.098L5.8 11.54s-.758.024-.83.356c-.067.303.28.927.301 1.108.014.106.144.198.144.198.512.904 1.497 2.386 1.497 2.386.748 1.098 1.252 1.029 1.252 1.029.244.006.706-.07.863-.276.153-.2.375-.476.375-.476s1.121-.18 2.383-.49z"/></svg>',
 };
 
-const MOTION_MQ = window.matchMedia('(prefers-reduced-motion: reduce)');
 const MAGNETIC_RANGE = 6;
-
-function reducedMotion() {
-  return MOTION_MQ.matches;
-}
 
 function projectKey(project) {
   return (project.repo && project.repo.full_name) || project.title;
@@ -111,7 +106,7 @@ function bindMagnetic(card) {
   if (!card) return;
   if (!window.matchMedia('(pointer: fine)').matches) return;
   card.addEventListener('pointermove', (e) => {
-    if (reducedMotion()) return;
+    if (prefersReducedMotion()) return;
     const rect = card.getBoundingClientRect();
     const nx = ((e.clientX - rect.left) / rect.width - 0.5) * 2;
     const ny = ((e.clientY - rect.top) / rect.height - 0.5) * 2;

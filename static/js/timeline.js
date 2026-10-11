@@ -1,7 +1,3 @@
-function prefersReducedMotion() {
-  return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-}
-
 function initTimeline() {
   const dotsEl = document.getElementById("timeline-dots");
   const experienceEl = document.getElementById("experience");
