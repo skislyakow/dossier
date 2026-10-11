@@ -115,10 +115,14 @@ BADGE_SOURCES = {
 
 
 def catalog():
-    """Каталог бейджей для админки по группам: {'github': [...], 'pypi': [...]}."""
-    out = {"github": [], "pypi": []}
+    """Каталог бейджей для админки по группам: {group: [{label, source, icon}, ...]}."""
+    out = {}
     for source, meta in BADGE_SOURCES.items():
-        out[meta["group"]].append({"label": meta["label"], "source": source, "icon": meta["icon"]})
+        out.setdefault(meta["group"], []).append({
+            "label": meta["label"],
+            "source": source,
+            "icon": meta["icon"],
+        })
     return out
 
 

@@ -40,8 +40,10 @@ def context():
 def pdf_path():
     root = settings.STATIC_ROOT
     if os.access(root, os.W_OK):
-        return os.path.join(root, 'resume', 'resume.pdf')
-    return os.path.join(str(Path(settings.STATICFILES_DIRS[0]) / 'resume'), 'resume.pdf')
+        base = Path(root)
+    else:
+        base = Path(settings.STATICFILES_DIRS[0])
+    return str(base / 'resume' / 'resume.pdf')
 
 
 def build_pdf():
