@@ -7,7 +7,9 @@
 - [x] Получены актуальные features из `/api/projects/` на проде (8 проектов)
 - [x] `main/migrations/0014_update_dossier_features.py` — RunPython(seed, rollback), update-only по `skislyakow/dossier`, в rollback — guard по равенству features
 - [x] `makemigrations --check` пуст; `migrate` применяется; 36/36 тестов; ruff/mypy/node-check зелёные
-- [ ] Пуш пользователя → data-миграция применится на проде (локально в сидах нет dossier — на прод попадёт только после пуша)
+- [x] Пуш пользователя → data-миграция применится на проде (локально в сидах нет dossier — на прод попадёт только после пуша) — применено (0014 на проде, карточка актуальна; `/api/projects/` — 8 проектов)
+
+Закрыто 2026-10-11: прод подтверждён (тикет Dossier в `/api/projects/`, data-миграция 0014 применилась).
 
 ## Сопутствующее (не код)
 - GitHub About пользователь поправил сам (description/homepage/topics + telegram)

@@ -10,7 +10,7 @@
 
 **Blocked by:** None.
 
-**Status:** ready-for-agent
+**Status:** done (закрыто 2026-10-11: все AC выполнены и проверены на проде, uv в AGENTS/CI/VPS)
 
 - [x] `pyproject.toml`: `[project]` с django==6.0.4, gunicorn==23.0.0, django-unfold==0.100.0, `requires-python = ">=3.12"`; `[dependency-groups] dev` с django-stubs==5.1.3, mypy==1.15.0, ruff==0.15.20
 - [x] `.python-version` (3.12) и `uv.lock` созданы и закоммичены
