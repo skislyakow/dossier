@@ -1,5 +1,6 @@
 from unittest import mock
 
+from django.conf import settings
 from django.test import TestCase
 from django.urls import reverse
 
@@ -53,6 +54,31 @@ class HomeViewTest(TestCase):
         self.assertLess(pos_portfolio, pos_experience)
         self.assertLess(pos_experience, pos_skills)
         self.assertLess(pos_skills, pos_contact)
+
+
+class RobotsTxtTest(TestCase):
+    def test_robots_txt_disallows_admin_and_api(self):
+        response = self.client.get('/robots.txt')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'text/plain')
+        body = response.content.decode()
+        self.assertIn('User-agent: *', body)
+        self.assertIn('Disallow: /admin/', body)
+        self.assertIn('Disallow: /api/', body)
+        self.assertIn(f'Sitemap: {settings.SITE_URL}/sitemap.xml', body)
+
+
+class SitemapXmlTest(TestCase):
+    def test_sitemap_is_valid_xml_with_canonical_urls(self):
+        import xml.etree.ElementTree as ET
+
+        response = self.client.get('/sitemap.xml')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response['Content-Type'], 'application/xml')
+        root = ET.fromstring(response.content.decode())
+        ns = {'sm': 'http://www.sitemaps.org/schemas/sitemap/0.9'}
+        locs = [loc.text for loc in root.findall('sm:url/sm:loc', ns)]
+        self.assertEqual(locs, [f'{settings.SITE_URL}/', f'{settings.SITE_URL}/resume/'])
 
 
 class ApiTimelineTest(TestCase):

@@ -16,10 +16,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from main.views import home, api_skills, api_projects, api_timeline, api_contact, api_github, api_tags, resume, resume_pdf
+from main.views import (
+    home, api_skills, api_projects, api_timeline, api_contact, api_github,
+    api_tags, resume, resume_pdf, robots_txt, sitemap_xml,
+)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('robots.txt', robots_txt, name='robots_txt'),
+    path('sitemap.xml', sitemap_xml, name='sitemap_xml'),
     path('api/skills/', api_skills, name='api_skills'),
     path('api/projects/', api_projects, name='api_projects'),
     path('api/tags/', api_tags, name='api_tags'),

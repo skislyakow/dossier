@@ -1,7 +1,8 @@
 import os
 
+from django.conf import settings
 from django.shortcuts import render
-from django.http import JsonResponse, FileResponse, Http404
+from django.http import HttpResponse, JsonResponse, FileResponse, Http404
 from .models import Skill, Project, TimelineItem, ContactInfo
 from .taxonomy import resolve_tag, skill_size, tag_cloud, tag_counts
 from .badge_utils import enrich_project
@@ -10,6 +11,32 @@ from .fetch import fetch_github_stats
 
 def home(request):
     return render(request, 'index.html')
+
+
+def robots_txt(request):
+    lines = [
+        'User-agent: *',
+        'Disallow: /admin/',
+        'Disallow: /api/',
+        '',
+        f'Sitemap: {settings.SITE_URL}/sitemap.xml',
+        '',
+    ]
+    return HttpResponse('\n'.join(lines), content_type='text/plain')
+
+
+def sitemap_xml(request):
+    pages = ['', 'resume/']
+    urls = '\n'.join(
+        f'  <url><loc>{settings.SITE_URL}/{page}</loc></url>' for page in pages
+    )
+    body = (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f'{urls}\n'
+        '</urlset>\n'
+    )
+    return HttpResponse(body, content_type='application/xml')
 
 
 def resume(request):

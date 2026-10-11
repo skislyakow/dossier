@@ -49,6 +49,16 @@ else
     fail "/resume/pdf/ (на проде нужен сгенерированный файл)"
 fi
 
+# --- SEO ---
+ROBOTS="$(get 'robots.txt')" || { fail "GET /robots.txt"; ROBOTS=""; }
+if [ -n "$ROBOTS" ]; then
+    if printf '%s' "$ROBOTS" | grep -q 'Sitemap:'; then pass "/robots.txt указывает Sitemap"; else fail "/robots.txt без Sitemap:"; fi
+fi
+SITEMAP="$(get 'sitemap.xml')" || { fail "GET /sitemap.xml"; SITEMAP=""; }
+if [ -n "$SITEMAP" ]; then
+    if printf '%s' "$SITEMAP" | grep -q '/resume/'; then pass "/sitemap.xml содержит /resume/"; else fail "/sitemap.xml без /resume/"; fi
+fi
+
 # --- JSON-контракты API ---
 SKILLS="$(get 'api/skills/')" || { fail "GET /api/skills/"; SKILLS=""; }
 PROJECTS="$(get 'api/projects/')" || { fail "GET /api/projects/"; PROJECTS=""; }
