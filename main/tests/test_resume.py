@@ -76,3 +76,63 @@ class ResumeGenerationTest(TestCase):
     def test_signal_disabled_under_pytest(self):
         from main import signals
         self.assertFalse(signals._autogen_enabled())
+
+    def test_signal_env_zero_disables_autogen(self):
+        import os
+        from main import signals
+
+        os.environ['RESUME_AUTOGEN'] = '0'
+        try:
+            self.assertFalse(signals._autogen_enabled())
+        finally:
+            del os.environ['RESUME_AUTOGEN']
+
+    def test_signal_env_one_still_enables_autogen(self):
+        import os
+        from main import signals
+
+        os.environ['RESUME_AUTOGEN'] = '1'
+        try:
+            self.assertTrue(signals._autogen_enabled())
+        finally:
+            del os.environ['RESUME_AUTOGEN']
+
+
+class ResumeOrderingTest(TestCase):
+    def test_experience_newest_first_then_undated_by_sort_order(self):
+        from datetime import date
+
+        from main.models import TimelineItem
+        from main import resume
+
+        TimelineItem.objects.create(
+            item_type='job', title='older', date_label='x',
+            start_date=date(2020, 1, 1), sort_order=1,
+        )
+        TimelineItem.objects.create(
+            item_type='job', title='newer', date_label='x',
+            start_date=date(2024, 1, 1), sort_order=2,
+        )
+        TimelineItem.objects.create(
+            item_type='present', title='undated-2', date_label='x', sort_order=30,
+        )
+        TimelineItem.objects.create(
+            item_type='present', title='undated-1', date_label='x', sort_order=10,
+        )
+
+        titles = [i.title for i in resume.context()['experience']]
+        self.assertLess(titles.index('newer'), titles.index('older'))
+        self.assertLess(titles.index('older'), titles.index('undated-1'))
+        self.assertLess(titles.index('undated-1'), titles.index('undated-2'))
+
+    def test_key_tiebreak_falls_back_to_ascending_sort_order(self):
+        from datetime import date
+
+        from main.models import TimelineItem
+        from main.resume import _resume_sort_key
+
+        a = TimelineItem(item_type='job', title='a', date_label='x',
+                         start_date=date(2023, 1, 1), sort_order=7)
+        b = TimelineItem(item_type='job', title='b', date_label='x',
+                         start_date=date(2023, 1, 1), sort_order=2)
+        self.assertLess(_resume_sort_key(b), _resume_sort_key(a))

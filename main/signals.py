@@ -7,8 +7,9 @@ from .models import ContactInfo, Project, ResumeProfile, Skill, TimelineItem
 
 
 def _autogen_enabled():
-    if os.environ.get('RESUME_AUTOGEN', ''):
-        return True
+    value = os.environ.get('RESUME_AUTOGEN')
+    if value is not None:
+        return value.lower() not in ('0', 'false', 'no', '')
     if os.environ.get('PYTEST_CURRENT_TEST'):
         return False
     return getattr(settings, 'RESUME_AUTOGEN', True)

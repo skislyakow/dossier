@@ -9,8 +9,8 @@ from .models import ContactInfo, Project, ResumeProfile, Skill, TimelineItem
 
 def _resume_sort_key(item):
     if item.start_date:
-        return (1, item.start_date.toordinal(), item.sort_order)
-    return (0, 0, item.sort_order)
+        return (-item.start_date.toordinal(), item.sort_order)
+    return (10**9, item.sort_order)
 
 
 def context():
@@ -18,7 +18,6 @@ def context():
     experience = sorted(
         [i for i in TimelineItem.objects.all() if i.item_type != 'project'],
         key=_resume_sort_key,
-        reverse=True,
     )
     projects = list(Project.objects.filter(is_published=True).order_by('sort_order'))
     skills = {code: [] for code, _label in Skill.CATEGORY_CHOICES}
