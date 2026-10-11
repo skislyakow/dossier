@@ -23,6 +23,7 @@ if [ -n "${HTML:-}" ]; then
     if printf '%s' "$HTML" | grep -q 'id="skills"'; then pass "/ содержит #skills"; else fail "/ без #skills"; fi
     if printf '%s' "$HTML" | grep -q 'id="portfolio"'; then pass "/ содержит #portfolio"; else fail "/ без #portfolio"; fi
     if printf '%s' "$HTML" | grep -q 'data-theme'; then pass "/ содержит data-theme"; else fail "/ без data-theme"; fi
+    if printf '%s' "$HTML" | grep -q 'application/ld+json'; then pass "/ содержит JSON-LD"; else fail "/ без JSON-LD"; fi
 fi
 
 # --- Статика ---

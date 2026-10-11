@@ -7,10 +7,11 @@ from .models import Skill, Project, TimelineItem, ContactInfo
 from .taxonomy import resolve_tag, skill_size, tag_cloud, tag_counts
 from .badge_utils import enrich_project
 from .fetch import fetch_github_stats
+from .seo import person_json_ld
 
 
 def home(request):
-    return render(request, 'index.html')
+    return render(request, 'index.html', {'person_ld': person_json_ld()})
 
 
 def robots_txt(request):
