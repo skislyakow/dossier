@@ -113,3 +113,16 @@ class ContactInfo(models.Model):
 
     def __str__(self):
         return f'{self.get_contact_type_display()}: {self.label}'
+
+    def href(self):
+        value = (self.value or '').lstrip('@')
+        if self.contact_type == 'email':
+            return f'mailto:{self.value or ""}'
+        if self.contact_type == 'telegram':
+            return f'https://t.me/{value}'
+        if self.contact_type == 'github':
+            return f'https://github.com/{value}'
+        return ''
+
+    def is_external(self):
+        return self.contact_type != 'email'

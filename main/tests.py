@@ -195,7 +195,10 @@ class DesignSystemTest(TestCase):
         self.assertIn('contact-grid', self.html)
         self.assertIn('contact-kind', self.html)
         self.assertIn('contact-value', self.html)
-        self.assertIn("https://github.com/' + v.replace(/^@/, '')", self.html)
+        self.assertIn('item.href', self.html)
+        self.assertIn('item.external', self.html)
+        self.assertNotIn('channels[item.type]', self.html)
+        self.assertNotIn('href: function(v) { return \'https://github.com/\'', self.html)
         self.assertIn('esc(item.label)', self.html)
         self.assertIn('esc(href)', self.html)
         self.assertIn('.contact-grid', self.css)
@@ -233,9 +236,10 @@ class DesignSystemTest(TestCase):
     def test_skills_section_grouped_by_category(self):
         self.assertIn('class="skill-group"', self.html)
         self.assertIn('class="skill-group-title"', self.html)
-        self.assertIn('Bots & Integrations', self.html)
+        self.assertIn('data.categories', self.html)
+        self.assertIn('esc(cat.label)', self.html)
         self.assertIn('s.category', self.html)
-        self.assertIn('if (!items.length) return;', self.html)
+        self.assertNotIn('var categories = [', self.html)
 
     def test_skills_curly_cloud_removed(self):
         self.assertNotIn('.tag::before', self.css)
@@ -345,13 +349,30 @@ class ApiContactTest(TestCase):
         valid = {code for code, _label in ContactInfo.TYPE_CHOICES}
         types = set()
         for item in data:
-            for key in ('type', 'label', 'value'):
+            for key in ('type', 'type_label', 'label', 'value', 'href', 'external'):
                 self.assertIn(key, item)
             self.assertIn(item['type'], valid)
+            self.assertEqual(item['type_label'], dict(ContactInfo.TYPE_CHOICES)[item['type']])
+            self.assertIsInstance(item['external'], bool)
             types.add(item['type'])
         self.assertIn('github', types)
         github = next(i for i in data if i['type'] == 'github')
         self.assertEqual(github['value'], 'skislyakow')
+        self.assertEqual(github['href'], 'https://github.com/skislyakow')
+        self.assertTrue(github['external'])
+        external_email = [i for i in data if i['type'] != 'email']
+        self.assertTrue(all(i['external'] for i in external_email))
+
+    def test_contact_href_builders(self):
+        from main.models import ContactInfo
+        self.assertEqual(
+            ContactInfo(contact_type='telegram', value='@user').href(), 'https://t.me/user')
+        self.assertEqual(
+            ContactInfo(contact_type='github', value='@user').href(), 'https://github.com/user')
+        self.assertEqual(
+            ContactInfo(contact_type='email', value='a@b.c').href(), 'mailto:a@b.c')
+        self.assertEqual(ContactInfo(contact_type='email', value='a@b.c').is_external(), False)
+        self.assertEqual(ContactInfo(contact_type='telegram', value='x').is_external(), True)
 
 
 class ApiSkillsTest(TestCase):
@@ -361,24 +382,35 @@ class ApiSkillsTest(TestCase):
         Skill.objects.create(name='TestWeb', category='web')
         Skill.objects.create(name='TestBots', category='bots', filter_tag='Telegram')
 
-    def test_api_skills_returns_category(self):
+    def _data(self):
         response = self.client.get('/api/skills/')
         self.assertEqual(response.status_code, 200)
         data = response.json()
-        valid = {code for code, _label in Skill.CATEGORY_CHOICES}
-        for skill in data:
+        self.assertEqual(data['categories'], [
+            {'code': code, 'label': label} for code, label in Skill.CATEGORY_CHOICES
+        ])
+        return data['skills']
+
+    def test_api_skills_returns_category_and_label(self):
+        skills = self._data()
+        codes = {code for code, _label in Skill.CATEGORY_CHOICES}
+        labels = dict(Skill.CATEGORY_CHOICES)
+        for skill in skills:
             self.assertIn('category', skill)
             self.assertIn('tag', skill)
-            self.assertIn(skill['category'], valid)
-        by_name = {s['name']: s for s in data}
+            self.assertIn('category_label', skill)
+            self.assertIn(skill['category'], codes)
+            self.assertEqual(skill['category_label'], labels[skill['category']])
+        by_name = {s['name']: s for s in skills}
         self.assertEqual(by_name['TestBackend']['category'], 'backend')
+        self.assertEqual(by_name['TestBackend']['category_label'], 'Backend')
         self.assertEqual(by_name['TestWeb']['category'], 'web')
         self.assertEqual(by_name['TestBackend']['tag'], 'TestBackend')
         self.assertEqual(by_name['TestBots']['tag'], 'Telegram')
 
     def test_api_skills_computes_size_from_project_tags(self):
-        response = self.client.get('/api/skills/')
-        by_name = {s['name']: s for s in response.json()}
+        skills = self._data()
+        by_name = {s['name']: s for s in skills}
         self.assertEqual(by_name['TestBots']['size'], 'lg')
         self.assertEqual(by_name['TestBackend']['size'], 'sm')
         self.assertEqual(by_name['TestWeb']['size'], 'sm')
@@ -387,8 +419,7 @@ class ApiSkillsTest(TestCase):
         for i in range(4):
             Project.objects.create(title=f'P{i}', repo=f'owner/p{i}', tags=['TestBackend'])
         Project.objects.create(title='Hidden', repo='owner/h', tags=['TestBackend'], is_published=False)
-        response = self.client.get('/api/skills/')
-        by_name = {s['name']: s for s in response.json()}
+        by_name = {s['name']: s for s in self._data()}
         self.assertEqual(by_name['TestBackend']['size'], 'lg')
 
 

@@ -78,13 +78,18 @@ def load(raw, name):
         return None
 
 skills = load(sys.argv[1], "/api/skills/")
-if isinstance(skills, list) and skills:
-    keys = set(skills[0])
-    check({"name", "category", "size", "tag"} <= keys, "/api/skills/: ключи name/category/size/tag")
-    check(all(s["size"] in ("xl", "lg", "md", "sm") for s in skills), "/api/skills/: size только xl/lg/md/sm")
-    check(all(s["category"] in ("backend", "web", "devops", "bots", "tools") for s in skills), "/api/skills/: category из справочника")
+if isinstance(skills, dict) and "skills" in skills:
+    data = skills.get("skills") or []
+    cats = skills.get("categories") or []
+    check(isinstance(cats, list) and cats, "/api/skills/: есть categories")
+    codes = {c.get("code") for c in cats if isinstance(c, dict)}
+    check(bool(codes) and all(c.get("label") for c in cats), "/api/skills/: categories с code+label")
+    check(all(set(s) >= {"name", "category", "category_label", "size", "tag"} for s in data),
+          "/api/skills/: ключи name/category/category_label/size/tag")
+    check(all(s["size"] in ("xl", "lg", "md", "sm") for s in data), "/api/skills/: size только xl/lg/md/sm")
+    check(all(s["category"] in codes for s in data), "/api/skills/: category из categories")
 elif skills is not None:
-    check(False, "/api/skills/: не список")
+    check(False, "/api/skills/: не объект {skills, categories}")
 
 projects = load(sys.argv[2], "/api/projects/")
 if isinstance(projects, list) and projects:
@@ -100,8 +105,9 @@ if isinstance(timeline, dict):
 
 contact = load(sys.argv[4], "/api/contact/")
 if isinstance(contact, list) and contact:
-    check(all({"type", "label", "value"} <= set(c) for c in contact), "/api/contact/: ключи type/label/value")
+    check(all({"type", "type_label", "label", "value", "href", "external"} <= set(c) for c in contact), "/api/contact/: ключи type/type_label/label/value/href/external")
     check(any(c["type"] == "github" for c in contact), "/api/contact/: есть github")
+    check(all(isinstance(c["href"], str) and c["href"] for c in contact), "/api/contact/: href заполнен")
 
 github = load(sys.argv[5], "/api/github/")
 if isinstance(github, dict):

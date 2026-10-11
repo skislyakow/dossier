@@ -30,15 +30,18 @@ def resume_pdf(request):
 
 def api_skills(request):
     counts = tag_counts()
-    return JsonResponse([
+    skills = [
         {
             'name': s.name,
             'category': s.category,
+            'category_label': s.get_category_display(),
             'size': skill_size(counts.get(resolve_tag(s), 0)),
             'tag': resolve_tag(s),
         }
         for s in Skill.objects.all()
-    ], safe=False)
+    ]
+    categories = [{'code': code, 'label': label} for code, label in Skill.CATEGORY_CHOICES]
+    return JsonResponse({'skills': skills, 'categories': categories})
 
 
 def api_tags(request):
@@ -116,8 +119,11 @@ def api_contact(request):
     return JsonResponse([
         {
             'type': c.contact_type,
+            'type_label': c.get_contact_type_display(),
             'label': c.label,
             'value': c.value,
+            'href': c.href(),
+            'external': c.is_external(),
         }
         for c in contacts
     ], safe=False)
