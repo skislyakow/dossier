@@ -43,8 +43,9 @@ PROJECTS="$(get 'api/projects/')" || { fail "GET /api/projects/"; PROJECTS=""; }
 TIMELINE="$(get 'api/timeline/')" || { fail "GET /api/timeline/"; TIMELINE=""; }
 CONTACT="$(get 'api/contact/')" || { fail "GET /api/contact/"; CONTACT=""; }
 GITHUB="$(get 'api/github/')" || { fail "GET /api/github/"; GITHUB=""; }
+TAGS="$(get 'api/tags/')" || { fail "GET /api/tags/"; TAGS=""; }
 
-PYOUT="$(python3 - "$SKILLS" "$PROJECTS" "$TIMELINE" "$CONTACT" "$GITHUB" <<'PY'
+PYOUT="$(python3 - "$SKILLS" "$PROJECTS" "$TIMELINE" "$CONTACT" "$GITHUB" "$TAGS" <<'PY'
 import json, sys
 
 passes = fails = 0
@@ -67,7 +68,7 @@ def load(raw, name):
 skills = load(sys.argv[1], "/api/skills/")
 if isinstance(skills, list) and skills:
     keys = set(skills[0])
-    check({"name", "category", "size", "filter_tag"} <= keys, "/api/skills/: ключи name/category/size/filter_tag")
+    check({"name", "category", "size", "tag"} <= keys, "/api/skills/: ключи name/category/size/tag")
     check(all(s["size"] in ("xl", "lg", "md", "sm") for s in skills), "/api/skills/: size только xl/lg/md/sm")
     check(all(s["category"] in ("backend", "web", "devops", "bots", "tools") for s in skills), "/api/skills/: category из справочника")
 elif skills is not None:
@@ -93,6 +94,13 @@ if isinstance(contact, list) and contact:
 github = load(sys.argv[5], "/api/github/")
 if isinstance(github, dict):
     check({"user", "langs"} <= set(github), "/api/github/: ключи user/langs")
+
+tags = load(sys.argv[6], "/api/tags/")
+if isinstance(tags, list) and tags:
+    check(all({"name", "count", "size"} <= set(t) for t in tags), "/api/tags/: ключи name/count/size")
+    check(all(t["size"] in ("xl", "lg", "md", "sm") for t in tags), "/api/tags/: size только xl/lg/md/sm")
+elif tags is not None:
+    check(False, "/api/tags/: не список")
 
 print(f"# counts: {passes} {fails}")
 PY

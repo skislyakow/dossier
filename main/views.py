@@ -1,8 +1,7 @@
-from collections import Counter
-
 from django.shortcuts import render
 from django.http import JsonResponse
 from .models import Skill, Project, TimelineItem, ContactInfo
+from .taxonomy import resolve_tag, skill_size, tag_cloud, tag_counts
 from .badge_utils import enrich_project, fetch_github_stats
 
 
@@ -10,29 +9,21 @@ def home(request):
     return render(request, 'index.html')
 
 
-def skill_size(count):
-    if count >= 5:
-        return 'xl'
-    if count >= 3:
-        return 'lg'
-    if count >= 1:
-        return 'md'
-    return 'sm'
-
-
 def api_skills(request):
-    tag_counts = Counter()
-    for p in Project.objects.filter(is_published=True):
-        tag_counts.update(p.tags or [])
+    counts = tag_counts()
     return JsonResponse([
         {
             'name': s.name,
             'category': s.category,
-            'size': skill_size(tag_counts.get(s.filter_tag or s.name, 0)),
-            'filter_tag': s.filter_tag,
+            'size': skill_size(counts.get(resolve_tag(s), 0)),
+            'tag': resolve_tag(s),
         }
         for s in Skill.objects.all()
     ], safe=False)
+
+
+def api_tags(request):
+    return JsonResponse(tag_cloud(), safe=False)
 
 
 def api_projects(request):

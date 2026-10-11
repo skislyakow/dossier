@@ -19,13 +19,6 @@ function monogram(title) {
   return letters.toUpperCase();
 }
 
-function tagSize(count) {
-  if (count >= 5) return 'xl';
-  if (count >= 3) return 'lg';
-  if (count >= 1) return 'md';
-  return 'sm';
-}
-
 function revealNow(root) {
   root.querySelectorAll('.reveal:not(.is-visible)').forEach((el) => el.classList.add('is-visible'));
 }
@@ -150,9 +143,8 @@ function applyFilters() {
 }
 
 function syncSkillButtons() {
-  document.querySelectorAll('#skills .tag[data-skill]').forEach((btn) => {
-    const tag = btn.dataset.filterTag || btn.dataset.skill;
-    btn.classList.toggle('active', Boolean(activeTag) && tag === activeTag);
+  document.querySelectorAll('#skills .tag[data-tag]').forEach((btn) => {
+    btn.classList.toggle('active', Boolean(activeTag) && btn.dataset.tag === activeTag);
   });
 }
 
@@ -189,16 +181,15 @@ async function openPortfolio() {
     const catsHtml = catBtn('', 'All', total, true) +
       roles.map((role) => catBtn(role, role, counts.get(role) || 0, false)).join('');
 
-    const tagCounts = new Map();
-    cards.forEach((p) => (p.tags || []).forEach((tag) => tagCounts.set(tag, (tagCounts.get(tag) || 0) + 1)));
-    const tagEntries = [...tagCounts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+    const tagCloud = await fetch('/api/tags/')
+      .then((r) => r.json())
+      .catch(() => []);
 
-    const ptagBtn = (tag, count) =>
-      `<button class="ptag ptag-${tagSize(count)}" data-tag="${esc(tag)}" type="button"><span class="ptag-name">${esc(tag)}</span><span class="ptag-count">: ${esc(count)}</span></button>`;
-
-    const ptagsHtml = tagEntries.length
+    const ptagsHtml = tagCloud.length
       ? '<button class="ptag ptag-md active" data-tag="" type="button">All</button>' +
-        tagEntries.map(([tag, count]) => ptagBtn(tag, count)).join('')
+        tagCloud.map((t) =>
+          `<button class="ptag ptag-${t.size}" data-tag="${esc(t.name)}" type="button"><span class="ptag-name">${esc(t.name)}</span><span class="ptag-count">: ${esc(t.count)}</span></button>`,
+        ).join('')
       : '';
 
     const listHtml = cards.map((project, i) =>

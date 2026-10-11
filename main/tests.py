@@ -6,12 +6,9 @@ from unittest import mock
 from django.test import TestCase
 from django.urls import reverse
 
-from main import views
 from main import badge_utils
+from main import taxonomy
 from main.models import ContactInfo, Project, Skill
-
-
-skill_size = views.skill_size
 
 
 class _ElementTree(HTMLParser):
@@ -254,7 +251,7 @@ class DesignSystemTest(TestCase):
         self.assertIn('portfolio-ptags', js)
         self.assertIn('data-tag', js)
         self.assertIn('applyFilters', js)
-        self.assertIn("${esc(tag)}", js)
+        self.assertIn("${esc(t.name)}", js)
 
     def test_enhanced_card_format_and_escapes(self):
         js = self.PORTFOLIO_JS_PATH.read_text(encoding='utf-8')
@@ -309,14 +306,13 @@ class DesignSystemTest(TestCase):
 
     def test_skills_are_clickable_filter_buttons(self):
         self.assertIn('<button type="button" class="tag tag-', self.html)
-        self.assertIn('data-skill="', self.html)
-        self.assertIn('data-filter-tag="', self.html)
+        self.assertIn('data-tag="', self.html)
         self.assertIn('window.__applyPortfolioTag', self.html)
         self.assertIn('.skills-cloud .tag {', self.css)
         self.assertIn('cursor: pointer', self.css_rule('.skills-cloud .tag'))
         js = self.PORTFOLIO_JS_PATH.read_text(encoding='utf-8')
         self.assertIn('window.__applyPortfolioTag', js)
-        self.assertIn('data-filter-tag', self.html)
+        self.assertIn('data-tag', self.html)
         self.assertIn('.portfolio-empty', self.css)
 
     def test_reduced_motion_disables_all_animations(self):
@@ -372,13 +368,13 @@ class ApiSkillsTest(TestCase):
         valid = {code for code, _label in Skill.CATEGORY_CHOICES}
         for skill in data:
             self.assertIn('category', skill)
-            self.assertIn('filter_tag', skill)
+            self.assertIn('tag', skill)
             self.assertIn(skill['category'], valid)
         by_name = {s['name']: s for s in data}
         self.assertEqual(by_name['TestBackend']['category'], 'backend')
         self.assertEqual(by_name['TestWeb']['category'], 'web')
-        self.assertEqual(by_name['TestBackend']['filter_tag'], '')
-        self.assertEqual(by_name['TestBots']['filter_tag'], 'Telegram')
+        self.assertEqual(by_name['TestBackend']['tag'], 'TestBackend')
+        self.assertEqual(by_name['TestBots']['tag'], 'Telegram')
 
     def test_api_skills_computes_size_from_project_tags(self):
         response = self.client.get('/api/skills/')
@@ -395,14 +391,36 @@ class ApiSkillsTest(TestCase):
         by_name = {s['name']: s for s in response.json()}
         self.assertEqual(by_name['TestBackend']['size'], 'lg')
 
+
+class TaxonomyTest(TestCase):
+    def setUp(self):
+        Project.objects.all().delete()
+
     def test_skill_size_buckets(self):
-        self.assertEqual(skill_size(0), 'sm')
-        self.assertEqual(skill_size(1), 'md')
-        self.assertEqual(skill_size(2), 'md')
-        self.assertEqual(skill_size(3), 'lg')
-        self.assertEqual(skill_size(4), 'lg')
-        self.assertEqual(skill_size(5), 'xl')
-        self.assertEqual(skill_size(99), 'xl')
+        expected = [(0, 'sm'), (1, 'md'), (2, 'md'), (3, 'lg'), (4, 'lg'), (5, 'xl'), (99, 'xl')]
+        for count, size in expected:
+            self.assertEqual(taxonomy.skill_size(count), size)
+
+    def test_resolve_tag_falls_back_to_name(self):
+        self.assertEqual(taxonomy.resolve_tag(Skill(name='Django', filter_tag='')), 'Django')
+        self.assertEqual(taxonomy.resolve_tag(Skill(name='Telegram Bot API', filter_tag='Telegram')), 'Telegram')
+
+    def test_tag_cloud_counts_and_sorts_published(self):
+        Project.objects.create(title='A', repo='u/a', tags=['Python', 'Django'])
+        Project.objects.create(title='B', repo='u/b', tags=['Django'])
+        Project.objects.create(title='H', repo='u/h', tags=['Hidden'], is_published=False)
+        self.assertEqual(taxonomy.tag_cloud(), [
+            {'name': 'Django', 'count': 2, 'size': 'md'},
+            {'name': 'Python', 'count': 1, 'size': 'md'},
+        ])
+
+    def test_api_tags_returns_cloud(self):
+        Project.objects.create(title='A', repo='u/a', tags=['Django', 'Django'])
+        response = self.client.get('/api/tags/')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [
+            {'name': 'Django', 'count': 2, 'size': 'md'},
+        ])
 
 
 class ApiProjectsEnrichTest(TestCase):

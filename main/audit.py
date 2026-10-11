@@ -8,9 +8,10 @@ def audit_content():
       опубликованных проектов — клик даст пустую выдачу.
     """
     from .models import Project, Skill
+    from .taxonomy import resolve_tag
 
-    skills = list(Skill.objects.values_list('name', 'filter_tag'))
-    resolvable = {name for name, _ in skills} | {tag for _, tag in skills if tag}
+    skills = list(Skill.objects.all())
+    resolvable = {s.name for s in skills} | {s.filter_tag for s in skills if s.filter_tag}
 
     used_tags = set()
     for (tags,) in Project.objects.filter(is_published=True).values_list('tags'):
@@ -26,7 +27,7 @@ def audit_content():
         )
 
     warnings = []
-    no_match = {(tag or name) for name, tag in skills} - used_tags
+    no_match = {resolve_tag(s) for s in skills} - used_tags
     if no_match:
         warnings.append(
             'Навыки, чей фильтр не находит ни одного тега проектов: %s. '
