@@ -32,9 +32,9 @@ function monogram(title) {
 }
 
 function tagSize(count) {
-  if (count >= 4) return 'xl';
-  if (count === 3) return 'lg';
-  if (count === 2) return 'md';
+  if (count >= 5) return 'xl';
+  if (count >= 3) return 'lg';
+  if (count >= 1) return 'md';
   return 'sm';
 }
 
