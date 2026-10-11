@@ -28,7 +28,7 @@
 1. Install/update deps: `uv sync --frozen`
 2. Lint: `uv run ruff check .` (правила в `ruff.toml`; Ruff в dev-группе)
 3. Type check: `uv run mypy main/` (mypy + django-stubs в dev-группе; plugin `mypy_django_plugin`, настройки в `[tool.mypy]`/`[tool.django-stubs]` в pyproject.toml)
-4. Tests: `uv run pytest` (pytest + pytest-django; настройки в `[tool.pytest.ini_options]` в pyproject.toml)
+4. Tests: `uv run pytest` (pytest + pytest-django; настройки в `[tool.pytest.ini_options]` в pyproject.toml; `testpaths = ["main/tests"]`). Структура тестов зеркалит модули: `main/tests/` = `test_views.py` (страницы + JSON-API), `test_badges.py` (badge_utils + BadgePickerWidget), `test_audit.py`, `test_admin.py` (admin_reorder), `test_design.py` (CSS/JS-контракты), `test_migrations.py`, `test_resume.py`. Новый тест идёт в файл по модулю, а не в монолит
 5. Audit контента: `uv run manage.py audit_content` — теги проектов ↔ навыки (кнопки Skills). E100 (тег без навыка) — выход 1; W101 (навык без совпадающего тега) — предупреждение. Против прода: выполнить на проде или через `manage.py` с живой БД
 6. Smoke-верификация без браузера: `./tools/smoke.sh` (curl + python3 stdlib, без зависимостей). Проверяет `/`, статику, JSON-контракты `/api/skills/` `/api/projects/` `/api/tags/` `/api/timeline/` `/api/contact/` `/api/github/`, страницы `/resume/` и `/resume/pdf/`; код выхода 0 = всё ок. Локально — против запущенного `uv run manage.py runserver --insecure` (иначе статику не отдаёт: `DEBUG=False`), прод — `./tools/smoke.sh https://kislyakov.pro`
 7. Наблюдение за CI после пуша: `./tools/ci-watch.sh <short-sha>` (токен из git credential store, ограниченный поллинг + видимый прогресс; exit 0 success / 1 failure / 2 timeout)
