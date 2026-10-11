@@ -21,7 +21,7 @@ jobs:
       - name: No pending migrations
         run: uv run manage.py makemigrations --check --dry-run
       - name: JS syntax check
-        run: node --check static/js/*.js
+        run: for f in static/js/*.js; do node --check "$f"; done
 
   deploy:
     needs: check

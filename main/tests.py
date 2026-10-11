@@ -161,11 +161,17 @@ class DesignSystemTest(TestCase):
         self.assertIn('function esc(', util)
         self.assertIn('function prefersReducedMotion(', util)
         self.assertIn('prefers-reduced-motion', util)
-        for path in (self.PORTFOLIO_JS_PATH, self.JS_PATH):
+        for path in sorted(self.UTIL_JS_PATH.parent.glob('*.js')):
+            if path == self.UTIL_JS_PATH:
+                continue
             source = path.read_text(encoding='utf-8')
-            self.assertNotIn('function esc(', source)
-            self.assertNotIn('function prefersReducedMotion(', source)
-            self.assertIn('prefersReducedMotion()', source)
+            self.assertNotIn('function esc(', source, f'{path.name} повторно определяет esc()')
+            self.assertNotIn(
+                'function prefersReducedMotion(', source,
+                f'{path.name} повторно определяет prefersReducedMotion()',
+            )
+        for path in (self.PORTFOLIO_JS_PATH, self.JS_PATH):
+            self.assertIn('prefersReducedMotion()', path.read_text(encoding='utf-8'))
         self.assertNotIn('tlEsc', self.JS_PATH.read_text(encoding='utf-8'))
         util_pos = self.html.index('js/util.js')
         github_pos = self.html.index('js/github.js')
