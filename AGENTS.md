@@ -13,7 +13,7 @@
 - `main/badge_utils.py` — серверный резолв бейджей и данных GitHub+PyPI (звёзды, форки, лицензия, язык, размер, даты, PyPI-версия/python/лицензия, PyPistats). Ходит в сеть через stdlib `urllib` (без зависимостей), кэширует в БД (`DatabaseCache`, `TIMEOUT` 6ч; при сбое внешнего API — короткий кэш 5мин, чтобы не долбить). Опц. `GITHUB_TOKEN` из env поднимает лимит 60→5000/ч. Браузер внешние API **не** дёргает — только `/api/projects/` (обогащённые `repo/langs/stars/badges`) и `/api/github/` (GitHub-stats toggle: профиль владельца + топ-5 языков, `fetch_github_stats()`), которые сами ходят в сеть и кэшируют.
 - `templates/` — HTML templates
 - `static/css/` — Styles
-- `static/js/` — Scripts (github.js, portfolio.js, timeline.js)
+- `static/js/` — Scripts (`util.js` — общий `esc()` для XSS-экранирования; github.js, portfolio.js, timeline.js + инлайн-скрипты index.html грузят его первым и переиспользуют)
 - `static/fonts/` — самoxost текстовых шрифтов (см. ниже `fonts.css`). Иконки навыков: **удалены** (см. `0020_remove_skill_icon`) — сайт рендерит навыки текст-тегами, админка использует бандл unfold (Material Symbols), свой subset и `IconPickerWidget` больше нет.
 - `static/css/fonts.css` — **самохост** текстовых шрифтов (Inter 400/600/700 + Fira Code 400/700, подмножества latin + cyrillic, скачаны с Google Fonts css2 как woff2 в `static/fonts/`). В `<head>` внешний Google Fonts `<link>` убран — подключается только локальный `fonts.css` (без внешних запросов, `font-display: swap`). При добавлении нового веса/семейства — докачать woff2 и дописать `@font-face` в `fonts.css`.
 - `static/favicon.svg`
@@ -54,7 +54,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - Skills: сетка, сгруппированная по Категориям навыка (Backend / Web / DevOps / Bots & Integrations / Tools), пустые категории не показываются; кегль тега рассчитывается автоматически по частоте в тегах опубликованных проектов (`api_skills`: ключ — `filter_tag` навыка, пусто → имя; бакеты `skill_size`: 5+→xl / 3–4→lg / 1–2→md / 0→sm, поле `Skill.size` удалено — см. `0021_remove_skill_size`), старое curly-облако `{ skill }` убрано
 - Hero: full-width oversized name (clamp-шкала), приглушённый курсорный градиент, scroll-reveal через IntersectionObserver, строка позиционирования «Python-разработчик: автоматизация, Telegram-боты и веб на Django»
 - Timeline: вертикальный рельс справа `position: fixed` — виден на всём скролле (в hero с подписями дат, вне hero — компактная полоса 48px, подписи по наведению); markup вынесен из `.hero` на уровень `body` (page chrome); ≤1024px скрыт; типы prior/job/project/present; клик по точке — скролл к строке секции Опыт + подсветка; при раскрытии любой панели (Проекты/Статистика/Контакты) рельс скрывается (`body:has(... .show)`), жёлоб 7rem у секции Projects снимается
-- Опыт: секция-хронология `#experience` в `.content-body` (между Projects и Skills) — все элементы `/api/timeline/` (prior → job → проекты → present) вертикальной лентой с точками на линии, даты — моно; рендерит `timeline.js` с экранированием `tlEsc()`; на мобиле секция видна (рельс скрыт ≤1024px); при раскрытии раздела Проекты секция скрывается (`body:has(#portfolio.show) #experience`); старая detail-карточка `.tl-details` удалена (тикеты 06/10)
+- Опыт: секция-хронология `#experience` в `.content-body` (между Projects и Skills) — все элементы `/api/timeline/` (prior → job → проекты → present) вертикальной лентой с точками на линии, даты — моно; рендерит `timeline.js` с экранированием `esc()`; на мобиле секция видна (рельс скрыт ≤1024px); при раскрытии раздела Проекты секция скрывается (`body:has(#portfolio.show) #experience`); старая detail-карточка `.tl-details` удалена (тикеты 06/10)
 - Chrome в едином акценте: соц-ссылки/back-to-top — квадратные рамки `2px`, hover на лайме (`--accent`/`--accent-soft`), подписи uppercase-моно; aria-labels сохранены
 - Marquee-строка технологий между hero и `.content-body` (page chrome, `aria-hidden`): бесшовный цикл `translateX(-50%)` из двух `.marquee-group`, статичный список (Python/Django/…) — декоративный, не CMS; `prefers-reduced-motion` → `animation: none`
 - GitHub stats toggle (stars, repos, languages via GitHub API)
@@ -139,7 +139,7 @@ Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/d
 
 ### Код / доступность
 - [x] Светлая тема (`data-theme="light"`) — глаз-чек пройден пользователем (моб. верстка скрыта `portfolio-preview-media`, см. тикет 12)
-- [x] XSS: github.js экранирует данные GitHub API через глобальный `esc()` (закрыто в тикете 13); portfolio.js, секция Skills, timeline.js и contact-рендер экранируют через `esc()`/`tlEsc()`
+- [x] XSS: `util.js` определяет единственный `esc()` и грузится первым; им экранируют github.js (данные GitHub API, закрыто в тикете 13), portfolio.js, секция Skills, timeline.js и contact-рендер
 - [x] Тесты на основные view/home page (HomeViewTest + ApiTimeline/ApiContact/ApiSkills/ApiProjects/ApiGithub — закрыто в тикете 15)
 - [x] mypy в CI (mypy + django-stubs в dev-группе, `[tool.mypy]` + `[tool.django-stubs]`; чек-гейт в deploy.yml: step `mypy main/`; локально — `uv run mypy main/`; закрыто в тикете 15)
 

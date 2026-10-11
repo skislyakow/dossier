@@ -92,6 +92,7 @@ class DesignSystemTest(TestCase):
     CSS_PATH = Path(__file__).resolve().parent.parent / 'static' / 'css' / 'style.css'
     JS_PATH = Path(__file__).resolve().parent.parent / 'static' / 'js' / 'timeline.js'
     PORTFOLIO_JS_PATH = Path(__file__).resolve().parent.parent / 'static' / 'js' / 'portfolio.js'
+    UTIL_JS_PATH = Path(__file__).resolve().parent.parent / 'static' / 'js' / 'util.js'
 
     def setUp(self):
         self.response = self.client.get(reverse('home'))
@@ -155,6 +156,16 @@ class DesignSystemTest(TestCase):
         self.assertNotIn('3600', js)
         self.assertIn('initRailMode', js)
 
+    def test_shared_esc_defined_once_and_loaded_first(self):
+        util = self.UTIL_JS_PATH.read_text(encoding='utf-8')
+        self.assertIn('function esc(', util)
+        for path in (self.PORTFOLIO_JS_PATH, self.JS_PATH):
+            self.assertNotIn('function esc(', path.read_text(encoding='utf-8'))
+        self.assertNotIn('tlEsc', self.JS_PATH.read_text(encoding='utf-8'))
+        util_pos = self.html.index('js/util.js')
+        github_pos = self.html.index('js/github.js')
+        self.assertLess(util_pos, github_pos)
+
     def test_experience_section_chronology_and_escapes(self):
         self.assertIn('id="experience"', self.html)
         self.assertIn('.experience', self.css)
@@ -162,7 +173,8 @@ class DesignSystemTest(TestCase):
         self.assertIn('.exp-item', self.css)
         self.assertNotIn('tl-details', self.css)
         js = self.JS_PATH.read_text(encoding='utf-8')
-        self.assertIn('function tlEsc(', js)
+        self.assertIn('esc(', js)
+        self.assertNotIn('tlEsc', js)
         self.assertIn('exp-list', js)
         self.assertIn('prefers-reduced-motion', js)
         for raw in ('+ d.title +', '+ d.desc +', '+ d.repo +', '+ d.role +'):
@@ -237,7 +249,7 @@ class DesignSystemTest(TestCase):
         js = self.PORTFOLIO_JS_PATH.read_text(encoding='utf-8')
         for fragment in ('portfolio-tagline', 'portfolio-features', 'portfolio-badges', 'portfolio-links'):
             self.assertIn(fragment, js)
-        self.assertIn('function esc(', js)
+        self.assertNotIn('function esc(', js)
         self.assertIn('${esc(', js)
         for raw in ('${project.title}', '${project.tagline}', '${project.role}', '${b.label}', '${f}'):
             self.assertNotIn(raw, js)

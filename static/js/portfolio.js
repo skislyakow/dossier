@@ -17,13 +17,6 @@ function projectKey(project) {
   return (project.repo && project.repo.full_name) || project.title;
 }
 
-function esc(value) {
-  return String(value == null ? '' : value).replace(
-    /[&<>"']/g,
-    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]),
-  );
-}
-
 function monogram(title) {
   const parts = String(title || '').trim().split(/\s+/).filter(Boolean);
   if (!parts.length) return '?';

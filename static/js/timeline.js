@@ -1,13 +1,3 @@
-// Экранирование значений из API перед вставкой в HTML (закрыто в тикете 06)
-function tlEsc(value) {
-  return String(value == null ? "" : value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
 function prefersReducedMotion() {
   return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
@@ -54,20 +44,20 @@ function initTimeline() {
         : slot.kind === "present" ? "сейчас"
         : (d.date || "");
       const role = slot.kind === "job" && d.role
-        ? '<div class="exp-role">' + tlEsc(d.role) + '</div>'
+        ? '<div class="exp-role">' + esc(d.role) + '</div>'
         : "";
       const descText = slot.kind === "job" && !d.desc ? "Описание пока не добавлено" : (d.desc || "");
-      const desc = descText ? '<p class="exp-desc">' + tlEsc(descText) + '</p>' : "";
+      const desc = descText ? '<p class="exp-desc">' + esc(descText) + '</p>' : "";
       let link = "";
       if (slot.kind === "job" && d.url) {
         const host = String(d.url).replace(/^https?:\/\//, "").replace(/\/$/, "");
-        link = '<a class="exp-link" href="' + tlEsc(d.url) + '" target="_blank" rel="noopener noreferrer">' + tlEsc(host) + '</a>';
+        link = '<a class="exp-link" href="' + esc(d.url) + '" target="_blank" rel="noopener noreferrer">' + esc(host) + '</a>';
       } else if (slot.kind === "project" && d.repo) {
-        link = '<a class="exp-link" href="https://github.com/' + tlEsc(d.repo) + '" target="_blank" rel="noopener noreferrer">GitHub</a>';
+        link = '<a class="exp-link" href="https://github.com/' + esc(d.repo) + '" target="_blank" rel="noopener noreferrer">GitHub</a>';
       }
-      return '<div class="exp-item exp-item--' + slot.kind + '" id="exp-' + tlEsc(slot.id) + '">' +
-        '<div class="exp-date">' + tlEsc(date) + '</div>' +
-        '<h3 class="exp-title">' + tlEsc(d.title) + '</h3>' +
+      return '<div class="exp-item exp-item--' + slot.kind + '" id="exp-' + esc(slot.id) + '">' +
+        '<div class="exp-date">' + esc(date) + '</div>' +
+        '<h3 class="exp-title">' + esc(d.title) + '</h3>' +
         role + desc + link +
         '</div>';
     }
