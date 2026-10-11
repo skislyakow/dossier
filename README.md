@@ -33,8 +33,8 @@
 - **Соцсети с hover-лейблами** — иконка съезжает влево, появляется название (квадратные рамки, акцент на hover)
 - **Django admin (unfold)** — управление контентом: навыки, проекты, опыт, контакты; drag-and-drop сортировка записей
 - **Production-стек**: Django + Gunicorn + Nginx на Ubuntu VPS
-- **CI/CD**: GitHub Actions (чек-гейт: ruff + mypy + 91 теста + `makemigrations --check` + `node --check`; автодеплой при пуше в main)
-- **Аудит контента** — `uv run manage.py audit_content`: сверяет теги проектов с навыками, чтобы у каждой технологии была кликабельная кнопка (выход 1 при ошибке)
+- **CI/CD**: GitHub Actions (чек-гейт: ruff + mypy + 91 теста + `makemigrations --check` + `audit_content` + `node --check`; автодеплой при пуше в main)
+- **Аудит контента** — `uv run manage.py audit_content`: сверяет теги проектов с навыками, чтобы у каждой технологии была кликабельная кнопка (выход 1 при ошибке); гоняется в чек-гейте/CI
 - **Smoke-верификация** — `./tools/smoke.sh`: без браузера проверяет `/` и статику, затем JSON-контракты `/api/skills/` `/api/projects/` `/api/tags/` `/api/timeline/` `/api/contact/` `/api/github/`, страницы `/resume/` `/resume/pdf/` и SEO `/robots.txt` `/sitemap.xml`; код выхода 0 = всё ок
 
 ## Качество кода
@@ -43,7 +43,7 @@
 - Типизация `mypy` (django-stubs), линтинг `ruff`
 - **Аудит контента**: `uv run manage.py audit_content` — согласованность тегов проектов ↔ навыков (кликабельность секции Skills)
 - **Smoke-проверка**: `./tools/smoke.sh` (curl + python3, без зависимостей) — локально: `uv run manage.py runserver --insecure` + `./tools/smoke.sh`; против прода: `./tools/smoke.sh https://kislyakov.pro`
-- **CI-гейт** (GitHub Actions): ruff + mypy + тесты + `makemigrations --check` + `node --check` — каждый пуш в `main`
+- **CI-гейт** (GitHub Actions): ruff + mypy + тесты + `makemigrations --check` + `audit_content` + `node --check` — каждый пуш в `main`
 
 ## Сайт
 

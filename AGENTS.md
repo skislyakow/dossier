@@ -26,12 +26,12 @@
 - `pyproject.toml` + `uv.lock` — Python dependencies (uv; dev-зависимости в `[dependency-groups] dev`)
 
 ## Dev workflow
-Чек-гейт перед коммитом/пушем: `./tools/gate.sh` — fail-fast (`set -euo pipefail`), тот же набор, что CI: ruff → mypy → pytest → makemigrations --check → node --check по каждому `static/js/*.js`; exit 0 = зелёный. Ниже — те же проверки и остальные шаги по отдельности.
+Чек-гейт перед коммитом/пушем: `./tools/gate.sh` — fail-fast (`set -euo pipefail`), тот же набор, что CI: ruff → mypy → pytest → makemigrations --check → migrate + audit_content → node --check по каждому `static/js/*.js`; exit 0 = зелёный. Ниже — те же проверки и остальные шаги по отдельности.
 1. Install/update deps: `uv sync --frozen`
 2. Lint: `uv run ruff check .` (правила в `ruff.toml`; Ruff в dev-группе)
 3. Type check: `uv run mypy main/` (mypy + django-stubs в dev-группе; plugin `mypy_django_plugin`, настройки в `[tool.mypy]`/`[tool.django-stubs]` в pyproject.toml)
 4. Tests: `uv run pytest` (pytest + pytest-django; настройки в `[tool.pytest.ini_options]` в pyproject.toml; `testpaths = ["main/tests"]`). Структура тестов зеркалит модули: `main/tests/` = `test_views.py` (страницы + JSON-API), `test_badges.py` (badge_utils + BadgePickerWidget), `test_audit.py`, `test_admin.py` (admin_reorder), `test_design.py` (CSS/JS-контракты), `test_migrations.py`, `test_resume.py`. Новый тест идёт в файл по модулю, а не в монолит
-5. Audit контента: `uv run manage.py audit_content` — теги проектов ↔ навыки (кнопки Skills). E100 (тег без навыка) — выход 1; W101 (навык без совпадающего тега) — предупреждение. Против прода: выполнить на проде или через `manage.py` с живой БД
+5. Audit контента: `uv run manage.py audit_content` — теги проектов ↔ навыки (кнопки Skills). E100 (тег без навыка) — выход 1; W101 (навык без совпадающего тега) — предупреждение. **Входит в gate.sh и CI-гейт** — там гоняется на свежем `migrate` (сид из data-migrations, консистентность коммита); против реального контента — выполнить на проде (`manage.py audit_content` с живой БД)
 6. Smoke-верификация без браузера: `./tools/smoke.sh` (curl + python3 stdlib, без зависимостей). Проверяет `/`, статику, JSON-контракты `/api/skills/` `/api/projects/` `/api/tags/` `/api/timeline/` `/api/contact/` `/api/github/`, страницы `/resume/`, `/resume/pdf/` и SEO `/robots.txt` `/sitemap.xml`; код выхода 0 = всё ок. Локально — против запущенного `uv run manage.py runserver --insecure` (иначе статику не отдаёт: `DEBUG=False`), прод — `./tools/smoke.sh https://kislyakov.pro`
 7. Наблюдение за CI после пуша: `./tools/ci-watch.sh <short-sha>` (токен из git credential store, ограниченный поллинг + видимый прогресс; exit 0 success / 1 failure / 2 timeout)
 8. Run server: `uv run manage.py runserver` (статика только с `--insecure`)
@@ -49,7 +49,7 @@
 - Auto-deploy: GitHub Actions on push to `main`
 
 ## Auto-deploy
-On push to `main` GitHub Actions сначала гоняет чек-гейт (`uv run ruff check .` + `uv run mypy main/` + `uv run pytest` + `makemigrations --check` + `node --check` по каждому `static/js/*.js`) на Ubuntu; при его успехе — SSH into VPS and runs:
+On push to `main` GitHub Actions сначала гоняет чек-гейт (`uv run ruff check .` + `uv run mypy main/` + `uv run pytest` + `makemigrations --check` + `migrate` + `audit_content` + `node --check` по каждому `static/js/*.js`) на Ubuntu; при его успехе — SSH into VPS and runs:
 ```
 git pull → установка uv (если нет) → uv sync --frozen --no-dev → migrate → createcachetable → collectstatic → restart gunicorn
 ```

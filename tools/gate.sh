@@ -18,6 +18,10 @@ uv run pytest
 echo "== makemigrations --check =="
 uv run manage.py makemigrations --check --dry-run
 
+echo "== migrate + audit_content =="
+uv run manage.py migrate --noinput
+uv run manage.py audit_content
+
 echo "== node --check static/js/*.js =="
 for f in static/js/*.js; do
     node --check "$f"

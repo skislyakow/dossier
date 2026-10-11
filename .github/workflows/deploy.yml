@@ -20,6 +20,10 @@ jobs:
         run: uv run pytest
       - name: No pending migrations
         run: uv run manage.py makemigrations --check --dry-run
+      - name: Content audit (tags ↔ skills)
+        run: |
+          uv run manage.py migrate --noinput
+          uv run manage.py audit_content
       - name: JS syntax check
         run: for f in static/js/*.js; do node --check "$f"; done
 
