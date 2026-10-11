@@ -26,9 +26,10 @@
 3. Type check: `uv run mypy main/` (mypy + django-stubs в dev-группе; plugin `mypy_django_plugin`, настройки в `[tool.mypy]`/`[tool.django-stubs]` в pyproject.toml)
 4. Tests: `uv run pytest` (pytest + pytest-django; настройки в `[tool.pytest.ini_options]` в pyproject.toml)
 5. Audit контента: `uv run manage.py audit_content` — теги проектов ↔ навыки (кнопки Skills). E100 (тег без навыка) — выход 1; W101 (навык без совпадающего тега) — предупреждение. Против прода: выполнить на проде или через `manage.py` с живой БД
-6. Run server: `uv run manage.py runserver`
-7. Visit `http://127.0.0.1:8000/`
-8. Синхронизация доков: если изменено поведение сайта или команды запуска — обновить README и AGENTS.md в рамках того же изменения. README держать тонким (что это, бейджи, запуск, деплой, контакты); инвентаризация фич живёт в `## Project overview` ниже
+6. Smoke-верификация без браузера: `./tools/smoke.sh` (curl + python3 stdlib, без зависимостей). Проверяет `/`, статику, JSON-контракты `/api/skills/` `/api/projects/` `/api/timeline/` `/api/contact/` `/api/github/`; код выхода 0 = всё ок. Локально — против запущенного `uv run manage.py runserver --insecure` (иначе статику не отдаёт: `DEBUG=False`), прод — `./tools/smoke.sh https://kislyakov.pro`
+7. Run server: `uv run manage.py runserver` (статика только с `--insecure`)
+8. Visit `http://127.0.0.1:8000/`
+9. Синхронизация доков: если изменено поведение сайта или команды запуска — обновить README и AGENTS.md в рамках того же изменения. README держать тонким (что это, бейджи, запуск, деплой, контакты); инвентаризация фич живёт в `## Project overview` ниже
 
 ## Production
 - Domain: `kislyakov.pro` (reg.ru)
@@ -142,35 +143,7 @@ Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/d
 - [x] Тесты на основные view/home page (HomeViewTest + ApiTimeline/ApiContact/ApiSkills/ApiProjects/ApiGithub — закрыто в тикете 15)
 - [x] mypy в CI (mypy + django-stubs в dev-группе, `[tool.mypy]` + `[tool.django-stubs]`; чек-гейт в deploy.yml: step `mypy main/`; локально — `uv run mypy main/`; закрыто в тикете 15)
 
----
-
-## Идеи с sui.io (анализ)
-
-### 1. Hero-заголовок с градиентом под мышкой ✅
-### 2. Gradient blur фон hero ✅
-### 3. Arrow-swap на иконках ✅
-### 4. Stagger reveal карточек портфолио ✅
-
----
-
-## Идеи с roshan-sahu.com (анализ)
-
-### 1. Текущее время MSK в hero ✅
-### 2. Contact секция ✅
-### 3. Back to top ✅
-### 5. Теги карточек портфолио с ролями ✅
-
----
-
-## Идеи с studiomodular.be (анализ)
-
-### 1. Full-width layout ✅
-### 2. Hero на всю ширину ✅
-### 3. Крупная типографика ✅
-### 4. Карточки портфолио — placeholder-темы под роль ✅ (в редизайне заменены: monogram-плейсхолдер, без анимаций)
-
-### Что НЕ берём
-- Three.js / 3D сцены — нет сборщика
-- GSAP — библиотека, не вписывается в zero-dependency
-- Бургер-меню (на визитке важна видимость ссылок)
-- Видеобэкграунд (тяжёлый, нет контента)
+## Ограничения (наследие «Идеи с …», все пункты внедрены)
+- Стек не меняем: zero-dependency vanilla JS/CSS, без сборщика (нет Vite/webpack/React/Vue/HTMX), не тащим библиотеки (GSAP/Three.js) — декоративными фичами это не оправдано
+- Бургер-меню не делаем: на визитке важна видимость ссылок; видеобэкграунда нет (тяжёлый, нет контента)
+- Анимации — только с уважением `prefers-reduced-motion`; декоративные без контента не добавляем
