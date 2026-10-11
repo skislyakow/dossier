@@ -11,15 +11,16 @@ def tag_counts():
     return counts
 
 
+SKILL_SIZES = ('xl', 'lg', 'md', 'sm')
+_SIZE_BUCKETS = ((5, 'xl'), (3, 'lg'), (1, 'md'), (0, 'sm'))
+
+
 def skill_size(count):
     """Размер тега по частоте: 5+ → xl / 3–4 → lg / 1–2 → md / 0 → sm."""
-    if count >= 5:
-        return 'xl'
-    if count >= 3:
-        return 'lg'
-    if count >= 1:
-        return 'md'
-    return 'sm'
+    for threshold, size in _SIZE_BUCKETS:
+        if count >= threshold:
+            return size
+    return SKILL_SIZES[-1]
 
 
 def resolve_tag(skill):

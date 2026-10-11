@@ -95,6 +95,14 @@ class ResumeProfile(models.Model):
         return obj
 
 
+CONTACT_HREF_BUILDERS = {
+    'email': lambda v: f'mailto:{v or ""}',
+    'telegram': lambda v: f'https://t.me/{v.lstrip("@")}',
+    'github': lambda v: f'https://github.com/{v.lstrip("@")}',
+}
+CONTACT_EXTERNAL_TYPES = ('telegram', 'github')
+
+
 class ContactInfo(models.Model):
     TYPE_CHOICES = [
         ('email', 'Email'),
@@ -115,14 +123,8 @@ class ContactInfo(models.Model):
         return f'{self.get_contact_type_display()}: {self.label}'
 
     def href(self):
-        value = (self.value or '').lstrip('@')
-        if self.contact_type == 'email':
-            return f'mailto:{self.value or ""}'
-        if self.contact_type == 'telegram':
-            return f'https://t.me/{value}'
-        if self.contact_type == 'github':
-            return f'https://github.com/{value}'
-        return ''
+        builder = CONTACT_HREF_BUILDERS.get(self.contact_type)
+        return builder(self.value) if builder else ''
 
     def is_external(self):
-        return self.contact_type != 'email'
+        return self.contact_type in CONTACT_EXTERNAL_TYPES

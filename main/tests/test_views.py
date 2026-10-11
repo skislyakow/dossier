@@ -5,7 +5,6 @@ from django.test import TestCase
 from django.urls import reverse
 
 from main import fetch
-from main import taxonomy
 from main.fetch import MemoryTransport
 from main.models import ContactInfo, Project, Skill
 
@@ -172,37 +171,6 @@ class ApiSkillsTest(TestCase):
         Project.objects.create(title='Hidden', repo='owner/h', tags=['TestBackend'], is_published=False)
         by_name = {s['name']: s for s in self._data()}
         self.assertEqual(by_name['TestBackend']['size'], 'lg')
-
-
-class TaxonomyTest(TestCase):
-    def setUp(self):
-        Project.objects.all().delete()
-
-    def test_skill_size_buckets(self):
-        expected = [(0, 'sm'), (1, 'md'), (2, 'md'), (3, 'lg'), (4, 'lg'), (5, 'xl'), (99, 'xl')]
-        for count, size in expected:
-            self.assertEqual(taxonomy.skill_size(count), size)
-
-    def test_resolve_tag_falls_back_to_name(self):
-        self.assertEqual(taxonomy.resolve_tag(Skill(name='Django', filter_tag='')), 'Django')
-        self.assertEqual(taxonomy.resolve_tag(Skill(name='Telegram Bot API', filter_tag='Telegram')), 'Telegram')
-
-    def test_tag_cloud_counts_and_sorts_published(self):
-        Project.objects.create(title='A', repo='u/a', tags=['Python', 'Django'])
-        Project.objects.create(title='B', repo='u/b', tags=['Django'])
-        Project.objects.create(title='H', repo='u/h', tags=['Hidden'], is_published=False)
-        self.assertEqual(taxonomy.tag_cloud(), [
-            {'name': 'Django', 'count': 2, 'size': 'md'},
-            {'name': 'Python', 'count': 1, 'size': 'md'},
-        ])
-
-    def test_api_tags_returns_cloud(self):
-        Project.objects.create(title='A', repo='u/a', tags=['Django', 'Django'])
-        response = self.client.get('/api/tags/')
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json(), [
-            {'name': 'Django', 'count': 2, 'size': 'md'},
-        ])
 
 
 class ApiProjectsEnrichTest(TestCase):

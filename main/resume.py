@@ -23,7 +23,11 @@ def context():
     skills = {code: [] for code, _label in Skill.CATEGORY_CHOICES}
     for s in Skill.objects.all().order_by('sort_order'):
         skills[s.category].append(s.name)
-    skill_groups = [(label, names) for code, label in Skill.CATEGORY_CHOICES for names in [skills[code]] if names]
+    skill_groups = [
+        (label, skills[code])
+        for code, label in Skill.CATEGORY_CHOICES
+        if skills[code]
+    ]
     return {
         'profile': profile,
         'contacts': list(ContactInfo.objects.all()),

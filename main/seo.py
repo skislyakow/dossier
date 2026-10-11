@@ -6,13 +6,7 @@ from .models import ContactInfo, ResumeProfile, Skill
 
 
 def _same_as(contacts):
-    urls = []
-    for c in contacts:
-        if c.contact_type in ('github', 'telegram'):
-            href = c.href()
-            if href:
-                urls.append(href)
-    return urls
+    return [c.href() for c in contacts if c.is_external() and c.href()]
 
 
 def person_json_ld():
