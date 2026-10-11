@@ -217,6 +217,28 @@ body {
     }
 }
 
+.eng-strip {
+    display: flex;
+    justify-content: center;
+    padding: 0.7rem 1rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    text-align: center;
+    background: var(--page-bg);
+    border-bottom: 1px solid color-mix(in srgb, var(--text-primary) 10%, transparent);
+    user-select: none;
+}
+
+.eng-strip::before,
+.eng-strip::after {
+    content: '❋';
+    color: var(--accent);
+    margin: 0 0.8rem;
+}
+
 .content-body {
     background: var(--page-bg);
     padding: 4rem 0;

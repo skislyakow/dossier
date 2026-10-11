@@ -1,5 +1,7 @@
+import os
+
 from django.shortcuts import render
-from django.http import JsonResponse
+from django.http import JsonResponse, FileResponse, Http404
 from .models import Skill, Project, TimelineItem, ContactInfo
 from .taxonomy import resolve_tag, skill_size, tag_cloud, tag_counts
 from .badge_utils import enrich_project, fetch_github_stats
@@ -7,6 +9,23 @@ from .badge_utils import enrich_project, fetch_github_stats
 
 def home(request):
     return render(request, 'index.html')
+
+
+def resume(request):
+    from .resume import context
+    return render(request, 'resume.html', context())
+
+
+def resume_pdf(request):
+    from .resume import pdf_path
+    path = pdf_path()
+    if not os.path.exists(path):
+        raise Http404('Резюме ещё не сгенерировано: запустите uv run manage.py generate_resume')
+    return FileResponse(
+        open(path, 'rb'),
+        content_type='application/pdf',
+        filename='Sergey-Kislyakov-resume.pdf',
+    )
 
 
 def api_skills(request):

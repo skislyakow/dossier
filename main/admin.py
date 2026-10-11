@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.urls import path
 from django import forms
 from unfold.admin import ModelAdmin
-from .models import Skill, Project, TimelineItem, ContactInfo
+from .models import Skill, Project, TimelineItem, ContactInfo, ResumeProfile
 from .widgets import BadgePickerWidget
 from .admin_views import admin_reorder
 
@@ -56,7 +56,7 @@ class ProjectAdmin(SortableAdminMixin, ModelAdmin):
             'classes': ['collapse'],
         }),
         ('Meta', {
-            'fields': ['is_published'],
+            'fields': ['date_label', 'is_published'],
         }),
     ]
 
@@ -78,6 +78,10 @@ class TimelineItemAdmin(SortableAdminMixin, ModelAdmin):
         (None, {
             'fields': ['item_type', 'date_label', 'title'],
         }),
+        ('Резюме-даты', {
+            'fields': ['start_date', 'end_date'],
+            'classes': ['collapse'],
+        }),
         ('Details', {
             'fields': ['description', 'role', 'repo', 'url'],
         }),
@@ -85,6 +89,12 @@ class TimelineItemAdmin(SortableAdminMixin, ModelAdmin):
             'fields': ['date_range'],
         }),
     ]
+
+
+@admin.register(ResumeProfile)
+class ResumeProfileAdmin(ModelAdmin):
+    list_display = ['full_name', 'headline']
+    search_fields = ['full_name', 'headline']
 
 
 @admin.register(ContactInfo)

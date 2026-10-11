@@ -1,0 +1,68 @@
+<main class="resume" id="resume">
+    <header class="resume-header">
+        <div class="resume-name">{{ profile.full_name }}</div>
+        {% if profile.headline %}<div class="resume-headline">{{ profile.headline }}</div>{% endif %}
+        {% if profile.location %}<div class="resume-loc">{{ profile.location }}</div>{% endif %}
+        <div class="resume-contacts">
+            {% for c in contacts %}<span class="resume-contact">{{ c.label }}: {{ c.value }}</span>{% endfor %}
+        </div>
+    </header>
+
+    {% if profile.summary %}
+    <section class="resume-sec">
+        <h2 class="resume-sec-title">О себе</h2>
+        <p class="resume-summary">{{ profile.summary }}</p>
+    </section>
+    {% endif %}
+
+    {% if experience %}
+    <section class="resume-sec">
+        <h2 class="resume-sec-title">Опыт</h2>
+        {% for item in experience %}
+        <div class="resume-entry">
+            <div class="resume-entry-head">
+                <span class="resume-entry-title">{{ item.title }}</span>
+                {% if item.role %}<span class="resume-entry-role">{{ item.role }}</span>{% endif %}
+                <span class="resume-entry-date">{{ item.date_range|default:item.date_label }}</span>
+            </div>
+            {% if item.description %}<p class="resume-entry-desc">{{ item.description }}</p>{% endif %}
+        </div>
+        {% endfor %}
+    </section>
+    {% endif %}
+
+    {% if projects %}
+    <section class="resume-sec">
+        <h2 class="resume-sec-title">Проекты</h2>
+        {% for p in projects %}
+        <div class="resume-entry">
+            <div class="resume-entry-head">
+                <span class="resume-entry-title">{{ p.title }}</span>
+                {% if p.role %}<span class="resume-entry-role">{{ p.role }}</span>{% endif %}
+                {% if p.date_label %}<span class="resume-entry-date">{{ p.date_label }}</span>{% endif %}
+            </div>
+            {% if p.tagline %}<p class="resume-entry-desc">{{ p.tagline }}</p>{% endif %}
+            <ul class="resume-bullets">
+                {% for f in p.features %}<li>{{ f }}</li>{% endfor %}
+            </ul>
+        </div>
+        {% endfor %}
+    </section>
+    {% endif %}
+
+    {% if skill_groups %}
+    <section class="resume-sec">
+        <h2 class="resume-sec-title">Навыки</h2>
+        {% for label, names in skill_groups %}
+        <p class="resume-skill-line"><span class="resume-skill-cat">{{ label }}:</span> {{ names|join:", " }}</p>
+        {% endfor %}
+    </section>
+    {% endif %}
+
+    {% if profile.education %}
+    <section class="resume-sec">
+        <h2 class="resume-sec-title">Образование</h2>
+        <p class="resume-entry-desc">{{ profile.education }}</p>
+    </section>
+    {% endif %}
+</main>

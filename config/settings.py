@@ -209,3 +209,8 @@ USE_TZ = True
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = '/var/www/dossier/static'
+
+
+# Авто-резюме: перегенерация PDF при изменении контента (сигналы).
+# В тестах отключается автоматически (PYTEST_CURRENT_TEST или RESUME_AUTOGEN=0).
+RESUME_AUTOGEN = True

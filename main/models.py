@@ -34,6 +34,7 @@ class Project(models.Model):
     links = models.JSONField('Ссылки', default=dict, blank=True, help_text='{"pypi": "https://...", "www": "https://..."}')
     badges_config = models.JSONField('Бейджи', default=list, blank=True, help_text='[{"label": "pypi", "source": "pypi_version"}]')
     screenshot = models.URLField('Скриншот', blank=True, help_text='URL изображения для карточки проекта')
+    date_label = models.CharField('Период (резюме)', max_length=100, blank=True, help_text='например: 2024–2025')
     sort_order = models.PositiveSmallIntegerField('Порядок', default=0)
     is_published = models.BooleanField('Опубликован', default=True)
 
@@ -55,6 +56,8 @@ class TimelineItem(models.Model):
     ]
     item_type = models.CharField('Тип', max_length=10, choices=TYPE_CHOICES)
     date_label = models.CharField('Дата', max_length=100, help_text='например: Апрель 2026, сейчас')
+    start_date = models.DateField('Дата начала', null=True, blank=True, help_text='Для хронологии резюме (опционально)')
+    end_date = models.DateField('Дата конца', null=True, blank=True, help_text='Для хронологии резюме (опционально)')
     title = models.CharField('Название', max_length=200)
     description = models.TextField('Описание', blank=True)
     repo = models.CharField('Репозиторий', max_length=200, blank=True, help_text='GitHub репозиторий (для проектов)')
@@ -70,6 +73,26 @@ class TimelineItem(models.Model):
 
     def __str__(self):
         return f'{self.get_item_type_display()}: {self.title}'
+
+
+class ResumeProfile(models.Model):
+    full_name = models.CharField('Имя', max_length=200, default='Сергей Кисляков')
+    headline = models.CharField('Целевая роль', max_length=200, blank=True)
+    summary = models.TextField('Резюме-описание', blank=True)
+    location = models.CharField('Локация', max_length=200, blank=True)
+    education = models.TextField('Образование', blank=True)
+
+    class Meta:
+        verbose_name = 'Профиль резюме'
+        verbose_name_plural = 'Профиль резюме'
+
+    def __str__(self):
+        return self.full_name
+
+    @classmethod
+    def load(cls):
+        obj, _ = cls.objects.get_or_create(id=1)
+        return obj
 
 
 class ContactInfo(models.Model):

@@ -1,0 +1,22 @@
+{% load static %}<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Резюме — {{ profile.full_name }}</title>
+    <meta name="description" content="{{ profile.headline }} — резюме, сгенерированное из контента сайта">
+    <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
+    <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
+    <link rel="stylesheet" href="{% static 'css/resume.css' %}">
+</head>
+<body class="resume-page">
+    <nav class="resume-nav" aria-label="Навигация резюме">
+        <a class="resume-nav-back" href="/">← kislyakov.pro</a>
+        <a class="resume-nav-dl" href="{% url 'resume_pdf' %}">Скачать PDF</a>
+    </nav>
+
+    {% include 'resume/_body.html' %}
+
+    <div class="resume-foot" aria-hidden="true">kislyakov.pro · резюме генерируется из контента сайта</div>
+</body>
+</html>

@@ -13,6 +13,7 @@
 - `main/views.py` — views + JSON API (`api_skills`/`api_projects`/`api_tags`/…)
 - `main/taxonomy.py` — **единый владелец таксономии**: `skill_size()` (5+→xl / 3–4→lg / 1–2→md / 0→sm), `resolve_tag()` (`filter_tag || name`), `tag_cloud()`/`tag_counts()` (частоты тегов опубликованных проектов). Используется в `api_skills`, `api_tags` и `audit_content` — пороги и резолв меняются в одном месте, JS размеры не считает. Подробности — `docs/adr/0001-taxonomy-owned-by-server.md`
 - `main/badge_utils.py` — серверный резолв бейджей и данных GitHub+PyPI (звёзды, форки, лицензия, язык, размер, даты, PyPI-версия/python/лицензия, PyPistats). Реестр `BADGE_SOURCES` (`source → {label, icon, group, resolve}`) — единственный источник правды: из него строится каталог пикера бейджей в `widgets.py`, резолверы `resolve_badge`/`resolve_badges` и coverage-тест `BadgeSourceRegistryTest`. Подробности — `docs/adr/0002-badge-registry.md`. Ходит в сеть через stdlib `urllib` (без зависимостей), кэширует в БД (`DatabaseCache`, `TIMEOUT` 6ч; при сбое внешнего API — короткий кэш 5мин, чтобы не долбить). Опц. `GITHUB_TOKEN` из env поднимает лимит 60→5000/ч. Браузер внешние API **не** дёргает — только `/api/projects/` (обогащённые `repo/langs/stars/badges`) и `/api/github/` (GitHub-stats toggle: профиль владельца + топ-5 языков, `fetch_github_stats()`), которые сами ходят в сеть и кэшируют.
+- `main/resume.py` — авто-резюме: `context()` (ResumeProfile/ContactInfo/TimelineItem/Project/Skill → словарь для шаблона `resume/_body.html`), `build_pdf()` (WeasyPrint `HTML(string=...).write_pdf()` с этим же `static/css/resume.css`), `write_pdf()`, `pdf_path()` (`STATIC_ROOT/resume/resume.pdf`, если записываем, иначе `static/resume/resume.pdf`). Страницы `GET /resume/` (HTML) и `GET /resume/pdf/` (`FileResponse`); перегенерация — сигналы в `main/signals.py` (гейт `settings.RESUME_AUTOGEN`; в тестах отключён) + команда `generate_resume` в деплое перед `collectstatic`. Решение — `docs/adr/0003-resume-generated-from-cms.md`.
 - `templates/` — HTML templates
 - `static/css/` — Styles
 - `static/js/` — Scripts (`util.js` — общие `esc()` (XSS-экранирование) и `prefersReducedMotion()`; github.js, portfolio.js, timeline.js + инлайн-скрипты index.html грузят его первым и переиспользуют)
@@ -29,7 +30,7 @@
 3. Type check: `uv run mypy main/` (mypy + django-stubs в dev-группе; plugin `mypy_django_plugin`, настройки в `[tool.mypy]`/`[tool.django-stubs]` в pyproject.toml)
 4. Tests: `uv run pytest` (pytest + pytest-django; настройки в `[tool.pytest.ini_options]` в pyproject.toml)
 5. Audit контента: `uv run manage.py audit_content` — теги проектов ↔ навыки (кнопки Skills). E100 (тег без навыка) — выход 1; W101 (навык без совпадающего тега) — предупреждение. Против прода: выполнить на проде или через `manage.py` с живой БД
-6. Smoke-верификация без браузера: `./tools/smoke.sh` (curl + python3 stdlib, без зависимостей). Проверяет `/`, статику, JSON-контракты `/api/skills/` `/api/projects/` `/api/tags/` `/api/timeline/` `/api/contact/` `/api/github/`; код выхода 0 = всё ок. Локально — против запущенного `uv run manage.py runserver --insecure` (иначе статику не отдаёт: `DEBUG=False`), прод — `./tools/smoke.sh https://kislyakov.pro`
+6. Smoke-верификация без браузера: `./tools/smoke.sh` (curl + python3 stdlib, без зависимостей). Проверяет `/`, статику, JSON-контракты `/api/skills/` `/api/projects/` `/api/tags/` `/api/timeline/` `/api/contact/` `/api/github/`, страницы `/resume/` и `/resume/pdf/`; код выхода 0 = всё ок. Локально — против запущенного `uv run manage.py runserver --insecure` (иначе статику не отдаёт: `DEBUG=False`), прод — `./tools/smoke.sh https://kislyakov.pro`
 7. Наблюдение за CI после пуша: `./tools/ci-watch.sh <short-sha>` (токен из git credential store, ограниченный поллинг + видимый прогресс; exit 0 success / 1 failure / 2 timeout)
 8. Run server: `uv run manage.py runserver` (статика только с `--insecure`)
 9. Visit `http://127.0.0.1:8000/`
@@ -68,6 +69,8 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - Усиленная карточка проекта: таглайн + буллеты + бейджи + ссылки на светлой карточке (`--bg-card` поверхность, текст `--text-card*`); превью — `grid-template-columns: minmax(0,2fr) minmax(0,1fr)` (инфо/медиа), на ≤768px колонка медиа скрыта и сетка схлопывается в `1fr`, чтобы инфо занимало всю карточку; стаггер-reveal по `--i` при появлении/переключении — **eager-синхронный** (`revealNow`, без IntersectionObserver; названия пунктов списка вообще без `.reveal`), magnetic-hover на `--mag-x/--mag-y` (≤6px, `pointer: fine`, off при `prefers-reduced-motion`); все значения из API вставляются через `esc()`
 - Placeholder медиа карточки (нет скриншота) — статичная монограмма проекта на лаймовом градиенте с сеткой (без анимаций, без призраков); на мобильном (≤768px, когда превью сворачивается в одну колонку) `.portfolio-preview-media` скрыта — всё серое пространство карточки занято инфо
 - Dynamic badges from GitHub API, PyPI, PyPistats
+- Резюме: `GET /resume/` — A4-страница из контента CMS (ResumeProfile/Опыт/Проекты/Навыки/Контакты), `GET /resume/pdf/` — PDF (WeasyPrint), перегенерируется сигналами при правке контента и командой `generate_resume` в деплое; кнопка «Резюме» в hero и «Скачать PDF» на странице
+- Инженерная строка `.eng-strip` между marquee и контентом: mono uppercase, монохром + лаймовые ❋ (page chrome, `aria-hidden`)
 - Light/dark theme toggle (dark default; light — `data-theme="light"` + localStorage)
 - Contact: секция тремя крупными каналами (email / Telegram / GitHub) — сетка карточек `--bg-card` (иконка + тип моно + значение), метка `{ контакты: N }` (общий компонент `.sec-label` с Опытом); данные из ContactInfo через `/api/contact/`, рендер в index.html с экранированием `esc()`; href по типу (mailto / t.me / github.com)
 - Back to top button
@@ -91,6 +94,7 @@ Personal portfolio / visiting card site for Sergey Kislyakov (Python Fullstack D
 - **Project** — title, repo, pypi, role, tagline, features (JSON), tags (JSON, список строк), links (JSON), badges_config (JSON), screenshot (URL), sort_order, is_published
 - **TimelineItem** — item_type (prior/job/project/present), date_label, title, description, repo, url, role, date_range, sort_order
 - **ContactInfo** — contact_type (email/telegram/github), label, value, sort_order
+- **ResumeProfile** — full_name, headline, summary, location, education (singleton `id=1`, `load()`; стартовый контент сидится миграцией `0023_seed_resume_profile`)
 
 ## Adding a project to portfolio
 Admin: Main → Projects → Add. Fill:

@@ -15,7 +15,7 @@
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white&labelColor=2088FF)
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=flat-square&logo=ubuntu&logoColor=white&labelColor=E95420)
 
-![Tests](https://img.shields.io/badge/49_tests_passed-2ea44f?style=flat-square&logo=checkmarx&logoColor=white&labelColor=2ea44f)
+![Tests](https://img.shields.io/badge/63_tests_passed-2ea44f?style=flat-square&logo=checkmarx&logoColor=white&labelColor=2ea44f)
 ![Ruff](https://img.shields.io/badge/Ruff-D7FF64?style=flat-square&logo=ruff&logoColor=black&labelColor=D7FF64)
 ![mypy](https://img.shields.io/badge/mypy-18BACB?style=flat-square&logoColor=white&labelColor=18BACB)
 ![audit_content](https://img.shields.io/badge/audit_content-ok-2ea44f?style=flat-square&logoColor=white&labelColor=2ea44f)
@@ -26,18 +26,19 @@
 - **Опыт** — секция-хронология: до-2026 запись → работа → проекты → настоящее время, вертикальная лента с датами; справа — рельс-навигатор (в hero — с датами, дальше — компактная полоса с подписями по наведению), клик по точке ведёт к строке секции
 - **Навыки по категориям** — секция Skills — сетка, сгруппированная по зонам экспертизы (Backend / Web / DevOps / Bots & Integrations / Tools), пустые категории не показываются
 - **Контакты** — секция тремя крупными каналами (email / Telegram / GitHub): карточки из ContactInfo с меткой `{ контакты: N }`, ссылки кликабельны (mailto / t.me / github.com)
+- **Резюме** — `GET /resume/` отдаёт A4-страницу, сгенерированную из контента CMS (профиль, опыт, проекты, навыки, контакты), кнопка «Скачать PDF» → `/resume/pdf/`; PDF (WeasyPrint) перегенерируется сигналами при правке контента и командой `generate_resume` при деплое
 - **Светлая/тёмная тема** — GitHub-style light + dark, переключатель в hero, сохраняется в localStorage
 - **Marquee-строка технологий** — бесшовная бегущая строка между hero и контентом (анимация отключается при `prefers-reduced-motion`)
 - **Соцсети с hover-лейблами** — иконка съезжает влево, появляется название (квадратные рамки, акцент на hover)
 - **Django admin (unfold)** — управление контентом: навыки, проекты, опыт, контакты; drag-and-drop сортировка записей
 - **Production-стек**: Django + Gunicorn + Nginx на Ubuntu VPS
-- **CI/CD**: GitHub Actions (чек-гейт: ruff + mypy + 49 тестов + `makemigrations --check` + `node --check`; автодеплой при пуше в main)
+- **CI/CD**: GitHub Actions (чек-гейт: ruff + mypy + 63 теста + `makemigrations --check` + `node --check`; автодеплой при пуше в main)
 - **Аудит контента** — `uv run manage.py audit_content`: сверяет теги проектов с навыками, чтобы у каждой технологии была кликабельная кнопка (выход 1 при ошибке)
-- **Smoke-верификация** — `./tools/smoke.sh`: без браузера проверяет `/` и статику, затем JSON-контракты `/api/skills/` `/api/projects/` `/api/tags/` `/api/timeline/` `/api/contact/` `/api/github/`; код выхода 0 = всё ок
+- **Smoke-верификация** — `./tools/smoke.sh`: без браузера проверяет `/` и статику, затем JSON-контракты `/api/skills/` `/api/projects/` `/api/tags/` `/api/timeline/` `/api/contact/` `/api/github/` и страницы `/resume/` `/resume/pdf/`; код выхода 0 = всё ок
 
 ## Качество кода
 
-- **49 автотестов** (Django `TestCase` через `pytest`) — `uv run pytest`
+- **63 автотеста** (Django `TestCase` через `pytest`) — `uv run pytest`
 - Типизация `mypy` (django-stubs), линтинг `ruff`
 - **Аудит контента**: `uv run manage.py audit_content` — согласованность тегов проектов ↔ навыков (кликабельность секции Skills)
 - **Smoke-проверка**: `./tools/smoke.sh` (curl + python3, без зависимостей) — локально: `uv run manage.py runserver --insecure` + `./tools/smoke.sh`; против прода: `./tools/smoke.sh https://kislyakov.pro`
@@ -63,7 +64,7 @@ uv run manage.py runserver
 При пуше в ветку `main` GitHub Actions автоматически деплоит сайт на VPS:
 
 ```
-git pull → uv sync --frozen --no-dev → migrate → createcachetable → collectstatic → restart gunicorn
+git pull → uv sync --frozen --no-dev → migrate → createcachetable → apt pango (WeasyPrint) → generate_resume → collectstatic → restart gunicorn
 ```
 
 VPS: Ubuntu 24.04 | Nginx → Gunicorn (127.0.0.1:8000) | systemd | HTTPS (Let's Encrypt)

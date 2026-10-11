@@ -35,3 +35,11 @@ _Avoid_: вес, популярность, бакет
 **Опыт**:
 Хронология карьеры по датам — работы, проекты, текущий статус.
 _Avoid_: таймлайн, timeline
+
+**Резюме**:
+Страница `/resume/` и PDF-файл, генерируемые сервером из контента CMS (ResumeProfile, TimelineItem, Project, Skill, ContactInfo) через WeasyPrint. Единый источник разметки и стилей — `templates/resume/_body.html` и `static/css/resume.css`; PDF — производный артефакт (`static/resume/resume.pdf`, в git не входит).
+_Avoid_: CV, резухе, файл резюме
+
+**Авто-резюме**:
+Механизм перегенерации PDF-резюме при изменении контента: сигналы `post_save`/`post_delete` на 5 моделях (гейт `settings.RESUME_AUTOGEN`, в тестах выключен) плюс `manage.py generate_resume` в деплое перед `collectstatic`. Решение — `docs/adr/0003-resume-generated-from-cms.md`.
+_Avoid_: авто-CV, resume-pipeline

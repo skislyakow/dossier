@@ -1,0 +1,174 @@
+/* Резюме (A4): screen-страница + печатный лист. Один и тот же CSS идёт на сайт
+   (/resume/) и в PDF (generate_resume рендерит _body.html с этим же файлом). */
+
+:root {
+    --accent: #CDFF50;
+    --accent-on-card: color-mix(in srgb, var(--accent) 50%, black);
+    --ink: #1a1a1a;
+    --ink-muted: #52525b;
+    --ink-soft: #71717a;
+    --line: #d4d4d8;
+}
+
+* { box-sizing: border-box; }
+
+body.resume-page,
+body.resume-print {
+    margin: 0;
+    font-family: 'Inter', -apple-system, 'Segoe UI', Roboto, 'DejaVu Sans', sans-serif;
+    color: var(--ink);
+    background: #f4f4f5;
+}
+
+/* --- nav (экран только) --- */
+.resume-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    max-width: 210mm;
+    margin: 1rem auto 0;
+    padding: 0 1rem;
+}
+
+.resume-nav a {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--ink-muted);
+    text-decoration: none;
+    border: 2px solid var(--line);
+    padding: 0.5em 0.9em;
+    border-radius: 8px;
+}
+
+.resume-nav a:hover { border-color: var(--accent-on-card); color: var(--ink); }
+
+/* --- лист --- */
+.resume {
+    max-width: 210mm;
+    margin: 1rem auto;
+    background: #fff;
+    padding: 15mm 16mm;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    border-radius: 4px;
+}
+
+.resume-foot {
+    max-width: 210mm;
+    margin: 0 auto 2rem;
+    padding: 0 1rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+}
+
+/* --- шапка --- */
+.resume-name {
+    font-size: 26pt;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.resume-headline {
+    margin-top: 0.35rem;
+    font-size: 13pt;
+    font-weight: 600;
+}
+
+.resume-loc {
+    margin-top: 0.2rem;
+    font-size: 10pt;
+    color: var(--ink-muted);
+}
+
+.resume-contacts {
+    margin-top: 0.6rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 1.1rem;
+    font-size: 9pt;
+    color: var(--ink-muted);
+}
+
+/* --- секции --- */
+.resume-sec { margin-top: 1.4rem; }
+
+.resume-sec-title {
+    font-size: 10.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    padding-bottom: 0.25rem;
+    border-bottom: 2px solid var(--line);
+    margin: 0 0 0.8rem;
+}
+
+.resume-summary,
+.resume-entry-desc {
+    font-size: 10pt;
+    line-height: 1.5;
+    margin: 0;
+    white-space: pre-line;
+}
+
+/* --- записи --- */
+.resume-entry { margin-bottom: 0.9rem; }
+
+.resume-entry-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+}
+
+.resume-entry-title { font-size: 11pt; font-weight: 600; }
+
+.resume-entry-role { font-size: 10pt; font-style: italic; color: var(--ink-muted); }
+
+.resume-entry-date {
+    margin-left: auto;
+    font-size: 9pt;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+}
+
+.resume-bullets {
+    margin: 0.35rem 0 0;
+    padding-left: 1.1rem;
+}
+
+.resume-bullets li {
+    font-size: 9.5pt;
+    line-height: 1.45;
+    margin-bottom: 0.2rem;
+}
+
+/* --- навыки --- */
+.resume-skill-line {
+    font-size: 10pt;
+    line-height: 1.5;
+    margin: 0 0 0.25rem;
+}
+
+.resume-skill-cat { font-weight: 600; }
+
+/* --- печать файла и A4 --- */
+@page {
+    size: A4;
+    margin: 0;
+}
+
+@media print {
+    body.resume-page { background: #fff; }
+    .resume-nav, .resume-foot { display: none !important; }
+    .resume {
+        margin: 0;
+        box-shadow: none;
+        border-radius: 0;
+        max-width: none;
+        padding: 14mm 15mm;
+    }
+    .resume-page { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}

@@ -6,3 +6,6 @@ fix_*.py
 staticfiles/
 db.sqlite3
 .agents/
+
+# генерируется на деплое (generate_resume) — в git не входит
+static/resume/

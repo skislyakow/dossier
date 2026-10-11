@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from main.views import home, api_skills, api_projects, api_timeline, api_contact, api_github, api_tags
+from main.views import home, api_skills, api_projects, api_timeline, api_contact, api_github, api_tags, resume, resume_pdf
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -26,5 +26,7 @@ urlpatterns = [
     path('api/timeline/', api_timeline, name='api_timeline'),
     path('api/contact/', api_contact, name='api_contact'),
     path('api/github/', api_github, name='api_github'),
+    path('resume/pdf/', resume_pdf, name='resume_pdf'),
+    path('resume/', resume, name='resume'),
     path('', home, name='home'),
 ]

@@ -37,6 +37,18 @@ if [ "${HINT:-}" = yes ]; then
     say "      подсказка: локально DEBUG=False — статику раздаёт только 'uv run manage.py runserver --insecure'"
 fi
 
+# --- Резюме ---
+RESUME="$(get 'resume/')" || { fail "GET /resume/"; RESUME=""; }
+if [ -n "$RESUME" ]; then
+    if printf '%s' "$RESUME" | grep -q 'resume-name'; then pass "/resume/ содержит блок резюме"; else fail "/resume/ без блока"; fi
+    if printf '%s' "$RESUME" | grep -q 'Скачать PDF'; then pass "/resume/ содержит кнопку PDF"; else fail "/resume/ без кнопки PDF"; fi
+fi
+if curl -fsS --max-time 15 -o /dev/null "$BASE/resume/pdf/" 2>/dev/null; then
+    pass "/resume/pdf/ отдаёт PDF"
+else
+    fail "/resume/pdf/ (на проде нужен сгенерированный файл)"
+fi
+
 # --- JSON-контракты API ---
 SKILLS="$(get 'api/skills/')" || { fail "GET /api/skills/"; SKILLS=""; }
 PROJECTS="$(get 'api/projects/')" || { fail "GET /api/projects/"; PROJECTS=""; }
