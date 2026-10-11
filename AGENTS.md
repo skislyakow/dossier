@@ -12,7 +12,7 @@
 - `main/` — Main app (views, models, admin, widgets, management/commands)
 - `main/views.py` — views + JSON API (`api_skills`/`api_projects`/`api_tags`/…)
 - `main/taxonomy.py` — **единый владелец таксономии**: `skill_size()` (5+→xl / 3–4→lg / 1–2→md / 0→sm), `resolve_tag()` (`filter_tag || name`), `tag_cloud()`/`tag_counts()` (частоты тегов опубликованных проектов). Используется в `api_skills`, `api_tags` и `audit_content` — пороги и резолв меняются в одном месте, JS размеры не считает. Подробности — `docs/adr/0001-taxonomy-owned-by-server.md`
-- `main/badge_utils.py` — серверный резолв бейджей и данных GitHub+PyPI (звёзды, форки, лицензия, язык, размер, даты, PyPI-версия/python/лицензия, PyPistats). Ходит в сеть через stdlib `urllib` (без зависимостей), кэширует в БД (`DatabaseCache`, `TIMEOUT` 6ч; при сбое внешнего API — короткий кэш 5мин, чтобы не долбить). Опц. `GITHUB_TOKEN` из env поднимает лимит 60→5000/ч. Браузер внешние API **не** дёргает — только `/api/projects/` (обогащённые `repo/langs/stars/badges`) и `/api/github/` (GitHub-stats toggle: профиль владельца + топ-5 языков, `fetch_github_stats()`), которые сами ходят в сеть и кэшируют.
+- `main/badge_utils.py` — серверный резолв бейджей и данных GitHub+PyPI (звёзды, форки, лицензия, язык, размер, даты, PyPI-версия/python/лицензия, PyPistats). Реестр `BADGE_SOURCES` (`source → {label, icon, group, resolve}`) — единственный источник правды: из него строится каталог пикера бейджей в `widgets.py`, резолверы `resolve_badge`/`resolve_badges` и coverage-тест `BadgeSourceRegistryTest`. Ходит в сеть через stdlib `urllib` (без зависимостей), кэширует в БД (`DatabaseCache`, `TIMEOUT` 6ч; при сбое внешнего API — короткий кэш 5мин, чтобы не долбить). Опц. `GITHUB_TOKEN` из env поднимает лимит 60→5000/ч. Браузер внешние API **не** дёргает — только `/api/projects/` (обогащённые `repo/langs/stars/badges`) и `/api/github/` (GitHub-stats toggle: профиль владельца + топ-5 языков, `fetch_github_stats()`), которые сами ходят в сеть и кэшируют.
 - `templates/` — HTML templates
 - `static/css/` — Styles
 - `static/js/` — Scripts (`util.js` — общие `esc()` (XSS-экранирование) и `prefersReducedMotion()`; github.js, portfolio.js, timeline.js + инлайн-скрипты index.html грузят его первым и переиспользуют)
@@ -107,12 +107,17 @@ Drag-and-drop the `drag_indicator` handle in the list view to reorder. Changes s
 Чтобы новый проект/навык попал на прод при пуше — оформляйте массовое добавление через **data-migration** (паттерн `0008_add_quiz_bot_data.py`): `RunPython` + `get_or_create` по `repo`/`name`, со сдвигом `sort_order` таймлайн-записей в `backwards`. Секция Skills, облако навыков и placeholder-карточки портфолио (`portfolio.js`) читают `/api/skills/` (включая `category` и `tag`) динамически — добавление `Skill` само обновляет эти места, правка JS не нужна. Облако тегов в портфолио рендерится из `GET /api/tags/` (`main/taxonomy.tag_cloud`).
 
 ### Dynamic badge sources
+Единый источник правды — реестр `BADGE_SOURCES` в `main/badge_utils.py` (`source → {label, icon, group, resolve}`); каталог пикера в админке (`widgets.py`) строится из него, рассинхрон невозможен, покрывается `BadgeSourceRegistryTest`. Новый источник бейджа = одна запись в реестре (лейбл, иконка, резолвер).
+
 | Source | Data | Requires |
 |---|---|---|
 | `github_stars` | stargazers_count | repo |
 | `github_forks` | forks_count | repo |
+| `github_issues` | open_issues_count | repo |
 | `github_license` | spdx_id | repo |
 | `github_lang` | primary language | repo |
+| `github_size` | repo size (KB/MB) | repo |
+| `github_created` | created date | repo |
 | `github_updated` | last push date | repo |
 | `pypi_version` | latest version | `pypi` field |
 | `pypi_python` | requires_python | `pypi` field |

@@ -1,26 +1,7 @@
 import json
 from django import forms
 from django.utils.safestring import mark_safe
-
-
-GITHUB_BADGES = [
-    {"label": "stars", "source": "github_stars", "icon": "star"},
-    {"label": "forks", "source": "github_forks", "icon": "call_split"},
-    {"label": "issues", "source": "github_issues", "icon": "track_changes"},
-    {"label": "license", "source": "github_license", "icon": "balance"},
-    {"label": "language", "source": "github_lang", "icon": "code"},
-    {"label": "size", "source": "github_size", "icon": "hard_drive"},
-    {"label": "created", "source": "github_created", "icon": "calendar_today"},
-    {"label": "updated", "source": "github_updated", "icon": "update"},
-]
-
-PYPI_BADGES = [
-    {"label": "pypi", "source": "pypi_version", "icon": "package_2"},
-    {"label": "python", "source": "pypi_python", "icon": "terminal"},
-    {"label": "license", "source": "pypi_license", "icon": "balance"},
-    {"label": "downloads/m", "source": "pypistats_month", "icon": "download"},
-    {"label": "downloads total", "source": "pypistats_total", "icon": "download_done"},
-]
+from .badge_utils import catalog as badge_catalog
 
 
 class BadgePickerWidget(forms.Widget):
@@ -38,7 +19,7 @@ class BadgePickerWidget(forms.Widget):
                 value = []
 
         widget_id = attrs.get('id', f'id-{name}')
-        catalog_json = json.dumps({'github': GITHUB_BADGES, 'pypi': PYPI_BADGES})
+        catalog_json = json.dumps(badge_catalog())
 
         return mark_safe(
             '<div class="badge-picker" '
