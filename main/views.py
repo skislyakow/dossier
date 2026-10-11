@@ -7,7 +7,7 @@ from .models import Skill, Project, TimelineItem, ContactInfo
 from .taxonomy import resolve_tag, skill_size, tag_cloud, tag_counts
 from .badge_utils import enrich_project
 from .fetch import fetch_github_stats
-from .resume import context, pdf_path
+from . import resume as resume_module
 from .seo import person_json_ld
 
 
@@ -42,11 +42,11 @@ def sitemap_xml(request):
 
 
 def resume(request):
-    return render(request, 'resume.html', context())
+    return render(request, 'resume.html', resume_module.context())
 
 
 def resume_pdf(request):
-    path = pdf_path()
+    path = resume_module.pdf_path()
     if not os.path.exists(path):
         raise Http404('Резюме ещё не сгенерировано: запустите uv run manage.py generate_resume')
     return FileResponse(

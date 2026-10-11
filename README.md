@@ -43,6 +43,7 @@
 - Типизация `mypy` (django-stubs), линтинг `ruff`
 - **Аудит контента**: `uv run manage.py audit_content` — согласованность тегов проектов ↔ навыков (кликабельность секции Skills)
 - **Smoke-проверка**: `./tools/smoke.sh` (curl + python3, без зависимостей) — локально: `uv run manage.py runserver --insecure` + `./tools/smoke.sh`; против прода: `./tools/smoke.sh https://kislyakov.pro`
+- **Визуальный регресс**: `./tools/visual-probe.sh` (google-chrome headless) — overflow на 1440/1024/768/640, контракты адаптива (рельс ≤1024, медиа ≤768), `prefers-reduced-motion`; 14 проверок
 - **CI-гейт** (GitHub Actions): ruff + mypy + тесты + `makemigrations --check` + `audit_content` + `node --check` — каждый пуш в `main`
 
 ## Сайт
