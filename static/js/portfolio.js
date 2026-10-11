@@ -43,6 +43,12 @@ let activeTag = '';
 let pendingTag = null;
 let portfolioMeta = new Map();
 
+const portfolioPanel = disclosurePanel(portfolioBtn, portfolioSection, () => {
+  activeRole = '';
+  activeTag = '';
+  syncSkillButtons();
+});
+
 function buildPreviewHtml(project) {
   const langEntries = Object.entries(project.langs || {});
   const totalBytes = Object.values(project.langs || {}).reduce((a, b) => a + b, 0);
@@ -159,8 +165,7 @@ function activateProjectTag(tag) {
 
 async function openPortfolio() {
   portfolioSection.innerHTML = '<div class="loader"></div>';
-  portfolioSection.classList.remove('hidden');
-  portfolioSection.classList.add('show');
+  portfolioPanel.set(true);
 
   try {
     const projects = await fetch('/api/projects/').then((r) => r.json());
@@ -269,12 +274,8 @@ async function openPortfolio() {
 portfolioBtn.addEventListener('click', (e) => {
   e.preventDefault();
 
-  if (portfolioSection.classList.contains('show')) {
-    portfolioSection.classList.remove('show');
-    portfolioSection.classList.add('hidden');
-    activeRole = '';
-    activeTag = '';
-    syncSkillButtons();
+  if (portfolioPanel.isOpen()) {
+    portfolioPanel.close();
     return;
   }
 
@@ -283,7 +284,7 @@ portfolioBtn.addEventListener('click', (e) => {
 
 window.__applyPortfolioTag = function (tag) {
   pendingTag = tag || '';
-  if (portfolioSection.classList.contains('show')) {
+  if (portfolioPanel.isOpen()) {
     if (portfolioSection.querySelector('.portfolio-list-item')) {
       pendingTag = null;
       activateProjectTag(tag);

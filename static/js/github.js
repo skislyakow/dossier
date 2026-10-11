@@ -1,18 +1,17 @@
 const link = document.querySelector('.github-link');
 const statsContainer = document.getElementById('stats');
+const statsPanel = disclosurePanel(link, statsContainer);
 
 link.addEventListener('click', async (e) => {
     e.preventDefault();
-    
-    if (statsContainer.classList.contains('show')) {
-        statsContainer.classList.remove('show');
-        statsContainer.classList.add('hidden');
+
+    if (statsPanel.isOpen()) {
+        statsPanel.set(false);
         return;
     }
 
     statsContainer.innerHTML = '<div class="loader"></div>';
-    statsContainer.classList.remove('hidden');
-    statsContainer.classList.add('show');
+    statsPanel.set(true);
 
     try {
         const res = await fetch('/api/github/');

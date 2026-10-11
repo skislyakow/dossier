@@ -186,6 +186,21 @@ class DesignSystemTest(TestCase):
         self.assertIn('aria-label="GitHub"', self.html)
         self.assertIn('aria-label="Telegram"', self.html)
 
+    def test_panels_are_disclosure_widgets(self):
+        util = self.UTIL_JS_PATH.read_text(encoding='utf-8')
+        self.assertIn('function disclosurePanel(', util)
+        self.assertIn("setAttribute('aria-expanded'", util)
+        self.assertIn("setAttribute('aria-controls'", util)
+        self.assertIn("e.key !== 'Escape'", util)
+        self.assertIn('trigger.focus({ preventScroll: true })', util)
+        self.assertIn('aria-controls="stats"', self.html)
+        self.assertIn('aria-controls="portfolio"', self.html)
+        self.assertIn('aria-controls="contact"', self.html)
+        self.assertEqual(self.html.count('aria-expanded="false"'), 3)
+        for path in (self.GITHUB_JS_PATH, self.PORTFOLIO_JS_PATH):
+            self.assertIn('disclosurePanel(', path.read_text(encoding='utf-8'))
+        self.assertNotIn("classList.toggle('hidden')", self.html)
+
     def test_skills_section_grouped_by_category(self):
         js = self.SKILLS_JS_PATH.read_text(encoding='utf-8')
         self.assertIn('id="skills"', self.html)
