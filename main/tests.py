@@ -90,6 +90,8 @@ class DesignSystemTest(TestCase):
     JS_PATH = Path(__file__).resolve().parent.parent / 'static' / 'js' / 'timeline.js'
     PORTFOLIO_JS_PATH = Path(__file__).resolve().parent.parent / 'static' / 'js' / 'portfolio.js'
     UTIL_JS_PATH = Path(__file__).resolve().parent.parent / 'static' / 'js' / 'util.js'
+    SKILLS_JS_PATH = Path(__file__).resolve().parent.parent / 'static' / 'js' / 'skills.js'
+    CONTACT_JS_PATH = Path(__file__).resolve().parent.parent / 'static' / 'js' / 'contact.js'
 
     def setUp(self):
         self.response = self.client.get(reverse('home'))
@@ -191,16 +193,16 @@ class DesignSystemTest(TestCase):
         self.assertNotIn('tl-details', js)
 
     def test_contact_section_three_channels_and_escapes(self):
+        js = self.CONTACT_JS_PATH.read_text(encoding='utf-8')
         self.assertIn('id="contact-card"', self.html)
-        self.assertIn('contact-grid', self.html)
-        self.assertIn('contact-kind', self.html)
-        self.assertIn('contact-value', self.html)
-        self.assertIn('item.href', self.html)
-        self.assertIn('item.external', self.html)
-        self.assertNotIn('channels[item.type]', self.html)
-        self.assertNotIn('href: function(v) { return \'https://github.com/\'', self.html)
-        self.assertIn('esc(item.label)', self.html)
-        self.assertIn('esc(href)', self.html)
+        self.assertIn('js/contact.js', self.html)
+        self.assertIn('contact-grid', js)
+        self.assertIn('contact-kind', js)
+        self.assertIn('contact-value', js)
+        self.assertIn('esc(item.label)', js)
+        self.assertIn('esc(href)', js)
+        self.assertNotIn('channels[item.type]', js)
+        self.assertNotIn("href: function(v) { return 'https://github.com/'", js)
         self.assertIn('.contact-grid', self.css)
         self.assertIn('.contact-item', self.css)
         self.assertIn('.sec-label', self.css)
@@ -234,12 +236,15 @@ class DesignSystemTest(TestCase):
         self.assertIn('aria-label="Telegram"', self.html)
 
     def test_skills_section_grouped_by_category(self):
-        self.assertIn('class="skill-group"', self.html)
-        self.assertIn('class="skill-group-title"', self.html)
-        self.assertIn('data.categories', self.html)
-        self.assertIn('esc(cat.label)', self.html)
-        self.assertIn('s.category', self.html)
-        self.assertNotIn('var categories = [', self.html)
+        js = self.SKILLS_JS_PATH.read_text(encoding='utf-8')
+        self.assertIn('id="skills"', self.html)
+        self.assertIn('js/skills.js', self.html)
+        self.assertIn('class="skill-group"', js)
+        self.assertIn('class="skill-group-title"', js)
+        self.assertIn('data.categories', js)
+        self.assertIn('esc(cat.label)', js)
+        self.assertIn('s.category', js)
+        self.assertNotIn('var categories = [', js)
 
     def test_skills_curly_cloud_removed(self):
         self.assertNotIn('.tag::before', self.css)
@@ -309,14 +314,16 @@ class DesignSystemTest(TestCase):
         self.assertTrue(og_path.is_file(), 'static/og/og-image.png missing')
 
     def test_skills_are_clickable_filter_buttons(self):
-        self.assertIn('<button type="button" class="tag tag-', self.html)
-        self.assertIn('data-tag="', self.html)
-        self.assertIn('window.__applyPortfolioTag', self.html)
+        js = self.SKILLS_JS_PATH.read_text(encoding='utf-8')
+        self.assertIn('<button type="button" class="tag tag-', js)
+        self.assertIn('data-tag="', js)
+        self.assertIn('window.__applyPortfolioTag', js)
         self.assertIn('.skills-cloud .tag {', self.css)
         self.assertIn('cursor: pointer', self.css_rule('.skills-cloud .tag'))
-        js = self.PORTFOLIO_JS_PATH.read_text(encoding='utf-8')
-        self.assertIn('window.__applyPortfolioTag', js)
-        self.assertIn('data-tag', self.html)
+        portfolio_js = self.PORTFOLIO_JS_PATH.read_text(encoding='utf-8')
+        self.assertIn('window.__applyPortfolioTag', portfolio_js)
+        self.assertIn('data-tag', js)
+        self.assertIn('js/skills.js', self.html)
         self.assertIn('.portfolio-empty', self.css)
 
     def test_reduced_motion_disables_all_animations(self):

@@ -26,7 +26,7 @@ if [ -n "${HTML:-}" ]; then
 fi
 
 # --- Статика ---
-for asset in static/css/style.css static/css/fonts.css static/js/util.js static/js/portfolio.js static/js/github.js static/js/timeline.js static/favicon.svg static/og/og-image.png; do
+for asset in static/css/style.css static/css/fonts.css static/js/util.js static/js/portfolio.js static/js/github.js static/js/timeline.js static/js/skills.js static/js/contact.js static/favicon.svg static/og/og-image.png; do
     if curl -fsS --max-time 15 -o /dev/null "$BASE/$asset" 2>/dev/null; then pass "$asset 200"; else fail "$asset"; fi
 done
 case "$BASE" in
