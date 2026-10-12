@@ -2,7 +2,7 @@
 
 **What to build:** Убрать 6 инлайн-IIFE из `templates/index.html` в модуль `static/js/page-chrome.js` (theme, acid-gradient ×2, reveal, back-to-top), contact-toggle — в `contact.js` (владелец секции), вторую реализацию reveal (`revealNow` в portfolio.js) заменить вызовом общей. Отчёт: `%TEMP%/opencode/architecture-review-2026-10-12.html` (карточка 2).
 
-**Status:** ready-for-agent
+**Status:** ready-for-human
 
 Решения grilling (2026-10-12, все рекомендации приняты):
 - Q1: новый `static/js/page-chrome.js` (IIFE как соседи), грузится последним после contact.js; util.js = абстрактные хелперы, chrome = DOM-поведение страницы.
@@ -29,7 +29,7 @@
 - [x] index.html: 0 инлайн-IIFE кроме head getSkills; page-chrome.js после contact.js
 - [x] Тесты: обновить 3 + новый контракт; 100% зелёные
 - [x] AGENTS.md + README синхронизированы
-- [ ] `./tools/gate.sh` зелёный; push; CI success; prod-проверка (тема, градиент, reveal, back-to-top, contact)
+- [x] `./tools/gate.sh` зелёный; push; CI success; prod-проверка (тема, градиент, reveal, back-to-top, contact)
 
 ## Comments
 
@@ -41,3 +41,9 @@
   - F1: правка статуса filter-state-тикета (`done`) заехала этим же коммитом — bookkeeping, docs-only.
   - Стандарты: в `index.html` остался ровно один инлайн-`<script>` (head `getSkills` — кандидат 3); `#back-to-top` до тегов скриптов; порядок contact < page-chrome.
 - Отчёты: `reviews/01-standards.md`, `reviews/01-spec.md`.
+
+### 2026-10-12 — деплой + prod
+- Push `d2ffa16..9ae97d2` (реализация + отчёты); **CI run 249 = success**.
+- Prod: `/static/js/page-chrome.js` 200 + `window.pageChrome`; в `/` ровно один инлайн `<script>` (getSkills); `page-chrome.js` после `contact.js`; `prefers-reduced-motion` в html отсутствует; `#back-to-top` до тегов скриптов; `contact.js` вайрит `#contact-btn`; в `portfolio.js` нет локального `revealNow`.
+- Попутно найден и починен устаревший контракт `tools/smoke.sh`: чек «`/` содержит data-theme» жил на строках удаляемых инлайн-скриптов → заменён на «`/` подключает page-chrome.js» + контент-чек `data-theme` в page-chrome.js; в список статики добавлены `filter-state.js` и `page-chrome.js`. Против прода: **35/35 ок**.
+- Осталось: глаз-чек (тема/тумблер, hero+portfolio градиенты, scroll-reveal, back-to-top, контакт-панель).

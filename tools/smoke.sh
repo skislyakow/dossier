@@ -22,14 +22,18 @@ HTML="$(get '')" || { fail "GET / -> curl error (сервер запущен?"; 
 if [ -n "${HTML:-}" ]; then
     if printf '%s' "$HTML" | grep -q 'id="skills"'; then pass "/ содержит #skills"; else fail "/ без #skills"; fi
     if printf '%s' "$HTML" | grep -q 'id="portfolio"'; then pass "/ содержит #portfolio"; else fail "/ без #portfolio"; fi
-    if printf '%s' "$HTML" | grep -q 'data-theme'; then pass "/ содержит data-theme"; else fail "/ без data-theme"; fi
+    if printf '%s' "$HTML" | grep -q 'js/page-chrome.js'; then pass "/ подключает page-chrome.js"; else fail "/ без js/page-chrome.js"; fi
     if printf '%s' "$HTML" | grep -q 'application/ld+json'; then pass "/ содержит JSON-LD"; else fail "/ без JSON-LD"; fi
 fi
 
 # --- Статика ---
-for asset in static/css/style.css static/css/fonts.css static/js/util.js static/js/portfolio.js static/js/github.js static/js/timeline.js static/js/skills.js static/js/contact.js static/favicon.svg static/og/og-image.png; do
+for asset in static/css/style.css static/css/fonts.css static/js/util.js static/js/filter-state.js static/js/portfolio.js static/js/github.js static/js/timeline.js static/js/skills.js static/js/contact.js static/js/page-chrome.js static/favicon.svg static/og/og-image.png; do
     if curl -fsS --max-time 15 -o /dev/null "$BASE/$asset" 2>/dev/null; then pass "$asset 200"; else fail "$asset"; fi
 done
+CHROME="$(get 'static/js/page-chrome.js')" || CHROME=""
+if [ -n "$CHROME" ]; then
+    if printf '%s' "$CHROME" | grep -q 'data-theme'; then pass "page-chrome.js содержит data-theme"; else fail "page-chrome.js без data-theme"; fi
+fi
 case "$BASE" in
     *127.0.0.1*|*localhost*)
         case "$BASE" in *insecure*) ;; *) HINT=yes ;; esac ;;
