@@ -71,6 +71,8 @@ git pull → uv sync --frozen --no-dev → migrate → createcachetable → apt 
 
 VPS: Ubuntu 24.04 | Nginx → Gunicorn (127.0.0.1:8000) | systemd | HTTPS (Let's Encrypt)
 
+Конфиги инфры — в `deploy/` (`dossier.service`, `nginx.conf`). Поднять/восстановить VPS с нуля — `tools/provision-vps.sh` (пошаговый wizard: DNS → SSH → GitHub secrets → пакеты → systemd → nginx → certbot → первый деплой).
+
 ## Контакты
 
 - GitHub: [skislyakow](https://github.com/skislyakow)

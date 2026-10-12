@@ -1,5 +1,6 @@
 .venv
 *pyc
+.env
 vps_*.py
 check_*.py
 fix_*.py

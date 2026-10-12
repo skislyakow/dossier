@@ -1,0 +1,16 @@
+[Unit]
+Description=Dossier Django App
+After=network.target
+
+[Service]
+# Секреты (DJANGO_SECRET_KEY, опц. GITHUB_TOKEN) — в отдельном файле, чтобы не коммитить их.
+# Создаётся wizard'ом: /etc/dossier/dossier.env (chmod 600). «-» = файл опционален.
+EnvironmentFile=-/etc/dossier/dossier.env
+Type=simple
+User=root
+WorkingDirectory=/root/dossier
+ExecStart=/root/dossier/.venv/bin/gunicorn config.wsgi:application --bind 127.0.0.1:8000 --workers 3
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

@@ -23,6 +23,8 @@
 - `static/css/fonts.css` — **самохост** текстовых шрифтов (Inter 400/600/700 + Fira Code 400/700, подмножества latin + cyrillic, скачаны с Google Fonts css2 как woff2 в `static/fonts/`). В `<head>` внешний Google Fonts `<link>` убран — подключается только локальный `fonts.css` (без внешних запросов, `font-display: swap`). При добавлении нового веса/семейства — докачать woff2 и дописать `@font-face` в `fonts.css`.
 - `static/favicon.svg`
 - `static/og/og-image.png` — превью при шаринге (1200×630, `og:image`/`twitter:image`, `summary_large_image`); перегенерировать из шаблона при правке дизайна
+- `deploy/` — конфиги прод-инфры в репо: `dossier.service` (systemd-юнит; секреты через `EnvironmentFile=-/etc/dossier/dossier.env`) и `nginx.conf` (pre-TLS vhost `kislyakov.pro` → gunicorn; TLS/redirect инжектит certbot). Восстановление VPS — `tools/provision-vps.sh` (wizard, см. `## Production`)
+- `docs/research/` — заметки с первичных источников (деплой/платформа; каждая со ссылкой). Скилл `research` — для новых тем
 - `pyproject.toml` + `uv.lock` — Python dependencies (uv; dev-зависимости в `[dependency-groups] dev`)
 
 ## Dev workflow
@@ -39,14 +41,14 @@
 9. Visit `http://127.0.0.1:8000/`
 10. Синхронизация доков: если изменено поведение сайта или команды запуска — обновить README и AGENTS.md в рамках того же изменения. README держать тонким (что это, бейджи, запуск, деплой, контакты); инвентаризация фич живёт в `## Project overview` ниже
 
+Дисциплина: тяжёлый баг — скилл `diagnosing-bugs` (сначала tight feedback loop, потом гипотезы); кодовая фича — скилл `tdd` (согласовать seams, red→green), словарь deep-module — `codebase-design`. Первичные факты по деплою/платформе — `docs/research/`.
+
 ## Production
-- Domain: `kislyakov.pro` (reg.ru)
-- VPS: `132.243.121.192` (Ubuntu 24.04)
-- Nginx reverse proxy → gunicorn (127.0.0.1:8000)
-- HTTPS via Let's Encrypt (certbot, auto-renewal)
-- HTTP → HTTPS redirect, www → root redirect
-- systemd service: `dossier.service`
+- Domain: `kislyakov.pro` (reg.ru); VPS: `132.243.121.192` (Ubuntu 24.04, **общий** — на нём ещё 4 сайта)
+- Nginx `deploy/nginx.conf` (pre-TLS vhost → gunicorn 127.0.0.1:8000) → `/etc/nginx/sites-available/dossier`; TLS + HTTP→HTTPS (www→root) инжектит certbot (Let's Encrypt, auto-renewal)
+- systemd `deploy/dossier.service` → `/etc/systemd/system/dossier.service` (секреты — `/etc/dossier/dossier.env`, `EnvironmentFile=`)
 - Static files: `/var/www/dossier/static/`
+- Восстановление VPS с нуля: `tools/provision-vps.sh` (wizard: VPS+IP → DNS → SSH → GitHub secrets → пакеты → код+секреты → systemd → nginx → certbot → первый деплой). Запускается вручную, ставит **только** Dossier-vhost/юнит, прочие сайты не трогает
 - Auto-deploy: GitHub Actions on push to `main`
 
 ## Auto-deploy
@@ -148,6 +150,10 @@ Five canonical roles as-is (`needs-triage`, `needs-info`, `ready-for-agent`, `re
 ### Domain docs
 
 Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/domain.md`.
+
+### Research notes
+
+Первичные факты по деплою/платформе — `docs/research/` (каждая заметка со ссылкой на первоисточник). Новые темы — скилл `research`.
 
 ## To-do
 
