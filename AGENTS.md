@@ -54,9 +54,9 @@
 ## Auto-deploy
 On push to `main` GitHub Actions сначала гоняет чек-гейт (`uv run ruff check .` + `uv run mypy main/` + `uv run pytest` + `makemigrations --check` + `migrate` + `audit_content` + `node --check` по каждому `static/js/*.js`) на Ubuntu; при его успехе — SSH into VPS and runs (`script_stop: true` + `set -euo pipefail` — упавшая команда валит джобу):
 ```
-git fetch + git checkout -f -B main origin/main + git clean -fd → установка uv (если нет) → uv sync --frozen --no-dev → migrate → createcachetable → generate_resume → collectstatic → restart gunicorn
+git fetch + git checkout -f -B main origin/main + git clean -fd → установка uv (если нет) → uv sync --frozen --no-dev → migrate → createcachetable → generate_resume → collectstatic → install deploy/dossier.service + daemon-reload → restart gunicorn → пост-рестарт health-check (curl 127.0.0.1:8000 в цикле, при провале — journalctl в лог CI и exit 1)
 ```
-Чек-аут детерминированный (`reset` на `origin/main`, а не `git pull`) — устойчив к грязному/разъехавшемуся дереву на VPS. После деплоя джоба `verify` гоняет `tools/smoke.sh https://kislyakov.pro` и сверяет `static/**` байт-в-байт с репо — тихий не-задеплой падает в CI.
+Чек-аут детерминированный (`reset` на `origin/main`, а не `git pull`) — устойчив к грязному/разъехавшемуся дереву на VPS. Юнит `dossier.service` ставится из репо при каждом деплое (дрейф конфига прод↔репо исключён). После деплоя джоба `verify` гоняет `tools/smoke.sh https://kislyakov.pro` и сверяет `static/**` байт-в-байт с репо — тихий не-задеплой падает в CI. `RestartSec=10` в юните — транзиентный сбой шага старта (наблюдался `208/STDIN` на shared-хосте) переживается сам, без «Start request repeated too quickly».
 Required GitHub secrets: `VPS_HOST`, `VPS_SSH_KEY`
 
 ## Project overview

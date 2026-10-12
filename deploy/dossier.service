@@ -11,6 +11,10 @@ User=root
 WorkingDirectory=/root/dossier
 ExecStart=/root/dossier/.venv/bin/gunicorn config.wsgi:application --bind 127.0.0.1:8000 --workers 3
 Restart=always
+# Пауза между рестартами: без неё серия мгновенных падений упирается в
+# "Start request repeated too quickly" и systemd бросает юнит навсегда
+# (наблюдалось на shared-хостинге, 208/STDIN). С паузой транзиент переживается сам.
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target

@@ -52,7 +52,18 @@ jobs:
             RESUME_AUTOGEN=1 uv run manage.py generate_resume
             uv run manage.py collectstatic --noinput
             chown -R www-data:www-data /var/www/dossier/static
+            install -m 644 deploy/dossier.service /etc/systemd/system/dossier.service
+            systemctl daemon-reload
             systemctl restart dossier
+            for i in $(seq 1 10); do
+              curl -fsS -o /dev/null http://127.0.0.1:8000/ && break
+              sleep 2
+            done
+            curl -fsS -o /dev/null http://127.0.0.1:8000/ || {
+              echo '::error::gunicorn не поднялся после рестарта'
+              journalctl -u dossier -n 50 --no-pager
+              exit 1
+            }
 
   verify:
     needs: deploy
