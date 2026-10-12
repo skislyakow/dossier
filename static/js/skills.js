@@ -1,7 +1,7 @@
 // Секция Skills: рендер сгруппированной сетки из /api/skills/.
 // Названия и порядок категорий приходят с сервера (categories), клиент
 // группирует по коду и рендерит серверную метку (esc()). Клик по навыку —
-// фильтр портфолио через window.__applyPortfolioTag.
+// эмит в filterState; подсветка своих кнопок — по subscribe, своим DOM.
 (() => {
   const container = document.getElementById('skills');
   if (!container) return;
@@ -21,11 +21,20 @@
       html += '</div></div>';
     });
     container.innerHTML = html;
+    syncButtons(window.filterState.get());
   }).catch(function () {});
+
+  function syncButtons(state) {
+    container.querySelectorAll('.tag[data-tag]').forEach((btn) => {
+      btn.classList.toggle('active', Boolean(state.tag) && btn.dataset.tag === state.tag);
+    });
+  }
+
+  window.filterState.subscribe(syncButtons);
 
   container.addEventListener('click', function (e) {
     const btn = e.target.closest('.tag[data-tag]');
-    if (!btn || typeof window.__applyPortfolioTag !== 'function') return;
-    window.__applyPortfolioTag(btn.getAttribute('data-tag'));
+    if (!btn) return;
+    window.filterState.setTag(btn.getAttribute('data-tag'));
   });
 })();

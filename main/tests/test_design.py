@@ -40,6 +40,7 @@ class DesignSystemTest(TestCase):
     JS_PATH = JS_DIR / 'timeline.js'
     PORTFOLIO_JS_PATH = JS_DIR / 'portfolio.js'
     UTIL_JS_PATH = JS_DIR / 'util.js'
+    FILTER_STATE_JS_PATH = JS_DIR / 'filter-state.js'
     SKILLS_JS_PATH = JS_DIR / 'skills.js'
     CONTACT_JS_PATH = JS_DIR / 'contact.js'
     GITHUB_JS_PATH = JS_DIR / 'github.js'
@@ -282,14 +283,35 @@ class DesignSystemTest(TestCase):
         js = self.SKILLS_JS_PATH.read_text(encoding='utf-8')
         self.assertIn('<button type="button" class="tag tag-', js)
         self.assertIn('data-tag="', js)
-        self.assertIn('window.__applyPortfolioTag', js)
+        self.assertIn('window.filterState.setTag', js)
+        self.assertIn('window.filterState.subscribe', js)
         self.assertIn('.skills-cloud .tag {', self.css)
         self.assertIn('cursor: pointer', self.css_rule('.skills-cloud .tag'))
         portfolio_js = self.PORTFOLIO_JS_PATH.read_text(encoding='utf-8')
-        self.assertIn('window.__applyPortfolioTag', portfolio_js)
-        self.assertIn('data-tag', js)
+        self.assertIn('window.filterState', portfolio_js)
+        self.assertNotIn('__applyPortfolioTag', js + portfolio_js)
         self.assertIn('js/skills.js', self.html)
         self.assertIn('.portfolio-empty', self.css)
+
+    def test_filter_state_module_seam(self):
+        fs = self.FILTER_STATE_JS_PATH.read_text(encoding='utf-8')
+        for fragment in ('window.filterState =', 'get,', 'setTag', 'setRole', 'clear', 'subscribe'):
+            self.assertIn(fragment, fs)
+        portfolio_js = self.PORTFOLIO_JS_PATH.read_text(encoding='utf-8')
+        skills_js = self.SKILLS_JS_PATH.read_text(encoding='utf-8')
+        for src in (portfolio_js, skills_js):
+            self.assertNotIn('__applyPortfolioTag', src)
+            self.assertNotIn('syncSkillButtons', src)
+            self.assertNotIn('#skills', src)
+        self.assertIn('js/filter-state.js', self.html)
+        self.assertLess(
+            self.html.index('js/filter-state.js'),
+            self.html.index('js/portfolio.js'),
+        )
+        self.assertLess(
+            self.html.index('js/filter-state.js'),
+            self.html.index('js/skills.js'),
+        )
 
     def test_reduced_motion_disables_all_animations(self):
         css = ' '.join(self.css.split())

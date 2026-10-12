@@ -38,15 +38,10 @@ function renderProjectMedia(project) {
 const portfolioBtn = document.getElementById('portfolio-btn');
 const portfolioSection = document.getElementById('portfolio');
 
-let activeRole = '';
-let activeTag = '';
-let pendingTag = null;
 let portfolioMeta = new Map();
 
 const portfolioPanel = disclosurePanel(portfolioBtn, portfolioSection, () => {
-  activeRole = '';
-  activeTag = '';
-  syncSkillButtons();
+  window.filterState.clear();
 });
 
 function buildPreviewHtml(project) {
@@ -119,12 +114,13 @@ function bindMagnetic(card) {
 }
 
 function applyFilters() {
+  const { tag, role } = window.filterState.get();
   const items = portfolioSection.querySelectorAll('.portfolio-list-item');
   let visible = 0;
   let firstVisible = null;
   items.forEach((item) => {
     const m = portfolioMeta.get(item.dataset.repo) || { role: '', tags: [] };
-    const show = (!activeRole || m.role === activeRole) && (!activeTag || m.tags.includes(activeTag));
+    const show = (!role || m.role === role) && (!tag || m.tags.includes(tag));
     item.style.display = show ? '' : 'none';
     if (show && !firstVisible) firstVisible = item;
     if (show) visible += 1;
@@ -136,10 +132,10 @@ function applyFilters() {
   const empty = portfolioSection.querySelector('.portfolio-empty');
   if (empty) {
     if (visible === 0) {
-      empty.textContent = activeTag
-        ? `По тегу «${activeTag}» проектов не найдено`
-        : activeRole
-          ? `Проектов с ролью «${activeRole}» не найдено`
+      empty.textContent = tag
+        ? `По тегу «${tag}» проектов не найдено`
+        : role
+          ? `Проектов с ролью «${role}» не найдено`
           : '';
       empty.style.display = '';
     } else {
@@ -148,24 +144,21 @@ function applyFilters() {
   }
 }
 
-function syncSkillButtons() {
-  document.querySelectorAll('#skills .tag[data-tag]').forEach((btn) => {
-    btn.classList.toggle('active', Boolean(activeTag) && btn.dataset.tag === activeTag);
+function syncChips() {
+  const { tag, role } = window.filterState.get();
+  portfolioSection.querySelectorAll('.portfolio-cat').forEach((b) => {
+    b.classList.toggle('active', (b.dataset.role || '') === role);
   });
-}
-
-function activateProjectTag(tag) {
-  activeTag = tag || '';
   portfolioSection.querySelectorAll('.ptag').forEach((b) => {
-    b.classList.toggle('active', (b.dataset.tag || '') === activeTag);
+    b.classList.toggle('active', (b.dataset.tag || '') === tag);
   });
-  applyFilters();
-  syncSkillButtons();
 }
 
-async function openPortfolio() {
+async function openPortfolio(opts) {
+  const restore = Boolean(opts && opts.restore);
   portfolioSection.innerHTML = '<div class="loader"></div>';
   portfolioPanel.set(true);
+  if (!restore) window.filterState.clear();
 
   try {
     const projects = await fetch('/api/projects/').then((r) => r.json());
@@ -235,33 +228,22 @@ async function openPortfolio() {
 
     portfolioSection.querySelector('.portfolio-cats').addEventListener('click', (e) => {
       const btn = e.target.closest('.portfolio-cat');
-      if (!btn || btn.classList.contains('active')) return;
-      portfolioSection.querySelectorAll('.portfolio-cat').forEach((b) => b.classList.remove('active'));
-      btn.classList.add('active');
-      activeRole = btn.dataset.role;
-      applyFilters();
+      if (!btn) return;
+      window.filterState.setRole(btn.dataset.role || '');
     });
 
     const ptagsEl = portfolioSection.querySelector('.portfolio-ptags');
     if (ptagsEl) {
       ptagsEl.addEventListener('click', (e) => {
         const btn = e.target.closest('.ptag');
-        if (!btn || btn.classList.contains('active')) return;
-        ptagsEl.querySelectorAll('.ptag').forEach((b) => b.classList.remove('active'));
-        btn.classList.add('active');
-        activateProjectTag(btn.dataset.tag || '');
+        if (!btn) return;
+        window.filterState.setTag(btn.dataset.tag || '');
       });
     }
 
-    activeRole = '';
-    activeTag = '';
     revealNow(portfolioSection);
-    if (pendingTag) {
-      activateProjectTag(pendingTag);
-      pendingTag = null;
-    } else {
-      syncSkillButtons();
-    }
+    syncChips();
+    applyFilters();
 
     setTimeout(() => portfolioSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
   } catch (err) {
@@ -282,14 +264,12 @@ portfolioBtn.addEventListener('click', (e) => {
   openPortfolio();
 });
 
-window.__applyPortfolioTag = function (tag) {
-  pendingTag = tag || '';
-  if (portfolioPanel.isOpen()) {
-    if (portfolioSection.querySelector('.portfolio-list-item')) {
-      pendingTag = null;
-      activateProjectTag(tag);
-    }
-  } else {
-    openPortfolio();
+window.filterState.subscribe((state) => {
+  if (!portfolioPanel.isOpen()) {
+    if (state.tag) openPortfolio({ restore: true });
+    return;
   }
-};
+  if (!portfolioSection.querySelector('.portfolio-list-item')) return;
+  syncChips();
+  applyFilters();
+});
