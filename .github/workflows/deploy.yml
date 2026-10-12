@@ -51,7 +51,7 @@ jobs:
             uv run manage.py createcachetable
             apt-get update
             DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-                libpango-1.0-0 libpangoft2-0 libharfbuzz-subset0 \
+                libpango-1.0-0 libpangoft2-1.0-0 libharfbuzz-subset0 \
                 fonts-dejavu-core fonts-dejavu-extra
             RESUME_AUTOGEN=1 uv run manage.py generate_resume
             uv run manage.py collectstatic --noinput
