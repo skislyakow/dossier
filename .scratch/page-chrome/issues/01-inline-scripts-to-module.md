@@ -23,12 +23,21 @@
 - `prefers-reduced-motion` в html больше нет (guards через `prefersReducedMotion()` из util.js).
 
 ## AC
-- [ ] `page-chrome.js`: theme/gradients/reveal/back-to-top, глобал `window.pageChrome`
-- [ ] contact.js: клик по `#contact-btn` открывает/закрывает панель + scrollIntoView
-- [ ] portfolio.js: без локального `revealNow`; вызовы через `pageChrome.reveal.now`
-- [ ] index.html: 0 инлайн-IIFE кроме head getSkills; page-chrome.js после contact.js
-- [ ] Тесты: обновить 3 + новый контракт; 100% зелёные
-- [ ] AGENTS.md + README синхронизированы
+- [x] `page-chrome.js`: theme/gradients/reveal/back-to-top, глобал `window.pageChrome`
+- [x] contact.js: клик по `#contact-btn` открывает/закрывает панель + scrollIntoView
+- [x] portfolio.js: без локального `revealNow`; вызовы через `pageChrome.reveal.now`
+- [x] index.html: 0 инлайн-IIFE кроме head getSkills; page-chrome.js после contact.js
+- [x] Тесты: обновить 3 + новый контракт; 100% зелёные
+- [x] AGENTS.md + README синхронизированы
 - [ ] `./tools/gate.sh` зелёный; push; CI success; prod-проверка (тема, градиент, reveal, back-to-top, contact)
 
 ## Comments
+
+### 2026-10-12 — реализация + code-review
+- Гейт по шагам: ruff ✓, mypy ✓, pytest **99 passed** ✓, makemigrations ✓, node --check ✓. Коммит `9eec86c` (фикс-поинт `d2ffa16`).
+- Ревью (standards+spec): hard-нарушений нет, ship. Заметки:
+  - F2 (spec): «один `classList.add('is-visible')`» в Q3 буквально = 3 сайта, но все внутри одного владельца (`page-chrome.js`; до диффа тоже было 3) — интент «один модуль-владелец» выполнен.
+  - F3: новый `revealNow` добавил `if (!root) return;` (старый бросал на null) — safer, поведение для пользователя не меняется.
+  - F1: правка статуса filter-state-тикета (`done`) заехала этим же коммитом — bookkeeping, docs-only.
+  - Стандарты: в `index.html` остался ровно один инлайн-`<script>` (head `getSkills` — кандидат 3); `#back-to-top` до тегов скриптов; порядок contact < page-chrome.
+- Отчёты: `reviews/01-standards.md`, `reviews/01-spec.md`.
