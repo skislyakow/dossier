@@ -4,7 +4,7 @@
 
 **Blocked by:** None.
 
-**Status:** ready-for-agent
+**Status:** done
 
 ## Scope
 - Сначала **только чтение по ssh**: снять `/etc/systemd/system/dossier.service`, nginx-конфиг, проверить наличие `GITHUB_TOKEN` на проде.
@@ -18,7 +18,7 @@
 - [x] Стадии покрывают: VPS+IP, DNS reg.ru, `VPS_SSH_KEY`, GitHub secrets (`VPS_HOST`/`VPS_SSH_KEY`), remote bootstrap, systemd+nginx, certbot, `GITHUB_TOKEN`, первый деплой+smoke
 - [x] Каждый `set_secret` совпадает с `secrets.*` в `.github/workflows/deploy.yml` (`VPS_HOST`, `VPS_SSH_KEY`)
 - [x] README + AGENTS синхронизированы
-- [ ] `./tools/gate.sh` зелёный; push; CI success; прод-смок
+- [x] `./tools/gate.sh` зелёный; push; CI success; прод-смок
 
 ## Comments
 
@@ -29,3 +29,7 @@
 - `nginx.conf` — pre-TLS: TLS-блоки и редиректы инжектит certbot (`certbot --nginx -d kislyakov.pro -d www.kislyakov.pro --redirect`), чтобы конфиг был воспроизводим на чистой машине (иначе nginx не стартует без `/etc/letsencrypt/...`).
 - Legacy-локации `/api/ask/` и `/vkauth/` из прод-конфига закомментированы: у `/api/ask/` нет роута в `config/urls.py`, на `:8888` нет слушателя. Помечены «verify before re-enabling».
 - `.env` добавлен в `.gitignore` (wizard пишет локальный `.env` с `VPS_HOST`/`SSH_KEY_PATH`).
+
+### 2026-10-12 — проверено, закрыто
+- Коммит `583a3a4`: gate зелёный (99 тестов), `bash -n tools/provision-vps.sh` чист, `set_secret` ↔ `secrets.*` совпадают, локальный смоук 35/35.
+- CI `583a3a4` = success; прод `tools/smoke.sh https://kislyakov.pro` 35/35. Тикет → `done`.

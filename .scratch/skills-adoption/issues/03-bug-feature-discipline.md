@@ -4,14 +4,17 @@
 
 **Blocked by:** None.
 
-**Status:** ready-for-agent
+**Status:** done
 
 ## Scope
 - AGENTS `## Dev workflow`: тяжёлый баг → цикл `diagnosing-bugs` (сначала tight feedback loop, потом гипотезы); кодовая фича → `tdd` (согласовать seams, red→green), словарь — `codebase-design`.
 - Код не трогаем — только доки.
 
 ## AC
-- [ ] Указатели добавлены в AGENTS, формулировки короткие и триггерные
-- [ ] `./tools/gate.sh` зелёный; push; CI success
+- [x] Указатели добавлены в AGENTS, формулировки короткие и триггерные
+- [x] `./tools/gate.sh` зелёный; push; CI success
 
 ## Comments
+
+### 2026-10-12 — реализация
+- Коммит `583a3a4`: строка-указатель в `AGENTS.md ## Dev workflow`, код не менялся. CI success. Тикет → `done`.
