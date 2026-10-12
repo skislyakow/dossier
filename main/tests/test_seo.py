@@ -19,7 +19,7 @@ class PersonJsonLdTest(TestCase):
         ContactInfo.objects.create(contact_type='github', label='GitHub', value='skislyakow')
         ContactInfo.objects.create(contact_type='telegram', label='Telegram', value='@skislyakov')
         ContactInfo.objects.create(contact_type='email', label='Email', value='a@b.c')
-        Skill.objects.create(name='Django', category='backend')
+        Skill.objects.update_or_create(name='Django', defaults={'category': 'backend'})
 
     def test_person_shape(self):
         data = json.loads(seo.person_json_ld())
