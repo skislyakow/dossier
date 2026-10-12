@@ -15,7 +15,7 @@
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white&labelColor=2088FF)
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=flat-square&logo=ubuntu&logoColor=white&labelColor=E95420)
 
-![Tests](https://img.shields.io/badge/97_tests_passed-2ea44f?style=flat-square&logo=checkmarx&logoColor=white&labelColor=2ea44f)
+![Tests](https://img.shields.io/badge/98_tests_passed-2ea44f?style=flat-square&logo=checkmarx&logoColor=white&labelColor=2ea44f)
 ![Ruff](https://img.shields.io/badge/Ruff-D7FF64?style=flat-square&logo=ruff&logoColor=black&labelColor=D7FF64)
 ![mypy](https://img.shields.io/badge/mypy-18BACB?style=flat-square&logoColor=white&labelColor=18BACB)
 ![audit_content](https://img.shields.io/badge/audit_content-ok-2ea44f?style=flat-square&logoColor=white&labelColor=2ea44f)
@@ -33,13 +33,13 @@
 - **Соцсети с hover-лейблами** — иконка съезжает влево, появляется название (квадратные рамки, акцент на hover)
 - **Django admin (unfold)** — управление контентом: навыки, проекты, опыт, контакты; drag-and-drop сортировка записей
 - **Production-стек**: Django + Gunicorn + Nginx на Ubuntu VPS
-- **CI/CD**: GitHub Actions (чек-гейт: ruff + mypy + 97 теста + `makemigrations --check` + `audit_content` + `node --check`; автодеплой при пуше в main)
+- **CI/CD**: GitHub Actions (чек-гейт: ruff + mypy + 98 тестов + `makemigrations --check` + `audit_content` + `node --check`; автодеплой при пуше в main)
 - **Аудит контента** — `uv run manage.py audit_content`: сверяет теги проектов с навыками, чтобы у каждой технологии была кликабельная кнопка (выход 1 при ошибке); гоняется в чек-гейте/CI
 - **Smoke-верификация** — `./tools/smoke.sh`: без браузера проверяет `/` и статику, затем JSON-контракты `/api/skills/` `/api/projects/` `/api/tags/` `/api/timeline/` `/api/contact/` `/api/github/`, страницы `/resume/` `/resume/pdf/` и SEO `/robots.txt` `/sitemap.xml`; код выхода 0 = всё ок
 
 ## Качество кода
 
-- **97 автотеста** (Django `TestCase` через `pytest`) — `uv run pytest`
+- **98 автотестов** (Django `TestCase` через `pytest`) — `uv run pytest`
 - Типизация `mypy` (django-stubs), линтинг `ruff`
 - **Аудит контента**: `uv run manage.py audit_content` — согласованность тегов проектов ↔ навыков (кликабельность секции Skills)
 - **Smoke-проверка**: `./tools/smoke.sh` (curl + python3, без зависимостей) — локально: `uv run manage.py runserver --insecure` + `./tools/smoke.sh`; против прода: `./tools/smoke.sh https://kislyakov.pro`

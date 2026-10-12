@@ -144,7 +144,7 @@ function applyFilters() {
   }
 }
 
-function syncChips() {
+function syncActiveChips() {
   const { tag, role } = window.filterState.get();
   portfolioSection.querySelectorAll('.portfolio-cat').forEach((b) => {
     b.classList.toggle('active', (b.dataset.role || '') === role);
@@ -242,7 +242,7 @@ async function openPortfolio(opts) {
     }
 
     revealNow(portfolioSection);
-    syncChips();
+    syncActiveChips();
     applyFilters();
 
     setTimeout(() => portfolioSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
@@ -270,6 +270,6 @@ window.filterState.subscribe((state) => {
     return;
   }
   if (!portfolioSection.querySelector('.portfolio-list-item')) return;
-  syncChips();
+  syncActiveChips();
   applyFilters();
 });

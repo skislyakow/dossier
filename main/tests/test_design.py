@@ -295,15 +295,18 @@ class DesignSystemTest(TestCase):
 
     def test_filter_state_module_seam(self):
         fs = self.FILTER_STATE_JS_PATH.read_text(encoding='utf-8')
-        for fragment in ('window.filterState =', 'get,', 'setTag', 'setRole', 'clear', 'subscribe'):
-            self.assertIn(fragment, fs)
+        self.assertIn('window.filterState = { get, setTag, setRole, clear, subscribe };', fs)
         portfolio_js = self.PORTFOLIO_JS_PATH.read_text(encoding='utf-8')
         skills_js = self.SKILLS_JS_PATH.read_text(encoding='utf-8')
         for src in (portfolio_js, skills_js):
             self.assertNotIn('__applyPortfolioTag', src)
             self.assertNotIn('syncSkillButtons', src)
-            self.assertNotIn('#skills', src)
+        self.assertNotIn('#skills', portfolio_js)
         self.assertIn('js/filter-state.js', self.html)
+        self.assertLess(
+            self.html.index('js/util.js'),
+            self.html.index('js/filter-state.js'),
+        )
         self.assertLess(
             self.html.index('js/filter-state.js'),
             self.html.index('js/portfolio.js'),

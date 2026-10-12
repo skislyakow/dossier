@@ -3,43 +3,42 @@
 // каждый модуль подсвечивает свою разметку через subscribe. Панели —
 // не забота модуля: сценарий «открыть с фильтром/сбросом» решает portfolio.
 (() => {
-  let tag = '';
-  let role = '';
+  const state = { tag: '', role: '' };
   const listeners = new Set();
 
   function get() {
-    return { tag, role };
+    return { tag: state.tag, role: state.role };
   }
 
   function emit() {
-    const state = get();
-    listeners.forEach((fn) => fn(state));
+    const snapshot = get();
+    listeners.forEach((fn) => fn(snapshot));
+  }
+
+  function set(key, next) {
+    const value = next || '';
+    if (value === state[key]) return;
+    state[key] = value;
+    emit();
   }
 
   function setTag(next) {
-    const value = next || '';
-    if (value === tag) return;
-    tag = value;
-    emit();
+    set('tag', next);
   }
 
   function setRole(next) {
-    const value = next || '';
-    if (value === role) return;
-    role = value;
-    emit();
+    set('role', next);
   }
 
   function clear() {
-    if (!tag && !role) return;
-    tag = '';
-    role = '';
+    if (!state.tag && !state.role) return;
+    state.tag = '';
+    state.role = '';
     emit();
   }
 
   function subscribe(fn) {
     listeners.add(fn);
-    return () => listeners.delete(fn);
   }
 
   window.filterState = { get, setTag, setRole, clear, subscribe };
