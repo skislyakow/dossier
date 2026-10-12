@@ -27,6 +27,10 @@ class HomeViewTest(TestCase):
 
     def test_hero_title_is_static(self):
         self.assertIn('Python Fullstack Developer', self.html)
+        self.assertIn(
+            'Python-разработчик: Django, FastAPI, Telegram-боты, парсинг и автоматизация',
+            self.html,
+        )
 
     def test_hero_decor_removed(self):
         for fragment in (
