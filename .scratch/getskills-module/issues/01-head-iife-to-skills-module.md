@@ -11,10 +11,15 @@
 - AGENTS.md — буллет static/js: «инлайн-скриптов в index.html нет» + skills.js владеет fetch.
 
 ## AC
-- [ ] `index.html`: 0 инлайн-`<script>` (только `type="application/ld+json"` + `src=`)
-- [ ] `skills.js`: локальный `getSkills()` с кэшем; `window.getSkills`/`window.__skillsPromise` отсутствуют
-- [ ] Тесты: обновлённый контракт зелёный (99)
-- [ ] AGENTS.md синхронизирован
-- [ ] `./tools/gate.sh` зелёный; push; CI success; прод-смок 35/35
+- [x] `index.html`: 0 инлайн-`<script>` (только `type="application/ld+json"` + `src=`)
+- [x] `skills.js`: локальный `getSkills()` с кэшем; `window.getSkills`/`window.__skillsPromise` отсутствуют
+- [x] Тесты: обновлённый контракт зелёный (99)
+- [x] AGENTS.md синхронизирован
+- [ ] `./tools/gate.sh` зелёный; push; CI success; прод-смок 35/35 — **прод НЕ применился**: тихий сбой деплоя (см. ниже)
 
 ## Comments
+
+### 2026-10-12 — реализация
+- Коммит `81e33bc`. Гейт зелёный (99 тестов), CI `81e33bc` = success, локально смоук 35/35 + визуальный регресс 14/14.
+- **Обнаружен тихий сбой авто-деплоя**: джоба `deploy` рапортует success, но прод отдаёт старый `skills.js` (`Last-Modified` = время деплоя `321018d`), инлайн `window.getSkills` в `/` остался. Причина: `appleboy/ssh-action` без `script_stop`/`set -e` — упавшая команда (вероятно `git pull`) не валит джобу. Прод-статик байт-в-байт с репо совпадает везде, кроме `skills.js`.
+- Фикс — в коммите с харднингом `deploy.yml` (`script_stop` + `set -euo pipefail` + `git checkout -f -B main origin/main` + джоба `verify`: smoke + байт-сверка `static/**`).

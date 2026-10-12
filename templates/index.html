@@ -22,16 +22,6 @@
     <link rel="icon" type="image/svg+xml" href="{% static 'favicon.svg' %}">
     <link rel="stylesheet" href="{% static 'css/fonts.css' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <script>
-        window.getSkills = function () {
-            if (!window.__skillsPromise) {
-                window.__skillsPromise = fetch('/api/skills/')
-                    .then(function (r) { return r.json(); })
-                    .catch(function () { return { skills: [], categories: [] }; });
-            }
-            return window.__skillsPromise;
-        };
-    </script>
 </head>
 <body>
     <div class="hero">

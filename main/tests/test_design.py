@@ -293,11 +293,15 @@ class DesignSystemTest(TestCase):
         self.assertIn('data-tag="', js)
         self.assertIn('window.filterState.setTag', js)
         self.assertIn('window.filterState.subscribe', js)
+        self.assertIn("fetch('/api/skills/')", js)
         self.assertIn('.skills-cloud .tag {', self.css)
         self.assertIn('cursor: pointer', self.css_rule('.skills-cloud .tag'))
         portfolio_js = self.PORTFOLIO_JS_PATH.read_text(encoding='utf-8')
         self.assertIn('window.filterState', portfolio_js)
         self.assertNotIn('__applyPortfolioTag', js + portfolio_js)
+        self.assertNotIn('window.getSkills', js)
+        self.assertNotIn('__skillsPromise', js)
+        self.assertNotIn('getSkills', self.html)
         self.assertIn('js/skills.js', self.html)
         self.assertIn('.portfolio-empty', self.css)
 
@@ -335,7 +339,7 @@ class DesignSystemTest(TestCase):
             "getElementById('back-to-top')",
         ):
             self.assertIn(fragment, chrome)
-        self.assertEqual(self.html.count('<script>'), 1)
+        self.assertEqual(self.html.count('<script>'), 0)
         self.assertIn('js/page-chrome.js', self.html)
         self.assertLess(
             self.html.index('js/contact.js'),

@@ -6,7 +6,15 @@
   const container = document.getElementById('skills');
   if (!container) return;
 
-  window.getSkills().then(function (data) {
+  let skillsPromise;
+  const getSkills = () => {
+    skillsPromise = skillsPromise || fetch('/api/skills/')
+      .then((r) => r.json())
+      .catch(() => ({ skills: [], categories: [] }));
+    return skillsPromise;
+  };
+
+  getSkills().then(function (data) {
     const skills = data.skills || [];
     const categories = data.categories || [];
     let html = '';
