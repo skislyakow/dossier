@@ -2,7 +2,7 @@
 
 **What to build:** Закрыть seam leak «Тег фильтра навыка» между skills.js и portfolio.js: единый модуль `static/js/filter-state.js` владеет filter-state (тег + роль), все источники эмитят через него, подсветка кнопок — у владельцев своей разметки. Отчёт: `%TEMP%/opencode/architecture-review-2026-10-12.html` (карточка 1).
 
-**Status:** ready-for-human
+**Status:** done
 
 Решения grilling (2026-10-12, все рекомендации приняты):
 - Q1: модуль владеет **и тегом, и ролью** — единый state.
@@ -30,3 +30,6 @@
 - Push `fe5ace2..1e4192e`; **CI run 247 = success** (гейт+деплой).
 - Prod-верификация: `/static/js/filter-state.js` 200 с точным интерфейсом; порядок скриптов в `/` util<fs<portfolio ✓; `__applyPortfolioTag`/`syncSkillButtons`/`#skills` (portfolio) отсутствуют в отданном JS ✓; `tools/smoke.sh https://kislyakov.pro` — **32/32 ок**.
 - Осталось: визуальная проверка пользователем (клик по навыку на закрытой панели открывает Projects с фильтром + подсветка кнопок; закрытие сбрасывает; ручное открытие без фильтра).
+
+### 2026-10-12 — закрыт
+Глаз-чек пройден пользователем. Тикет → `done`.

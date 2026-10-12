@@ -1,7 +1,23 @@
-// Секция Контакты: рендер карточек из /api/contact/.
-// Сервер отдаёт готовые href/external/type_label (ContactInfo.href()),
-// клиент строит только иконки и разметку (esc()).
+// Секция Контакты: вайринг панели (#contact-btn) и рендер карточек из
+// /api/contact/. Сервер отдаёт готовые href/external/type_label
+// (ContactInfo.href()), клиент строит только иконки и разметку (esc()).
 (() => {
+  const contactBtn = document.getElementById('contact-btn');
+  const contactSection = document.getElementById('contact');
+  if (contactBtn && contactSection) {
+    const panel = disclosurePanel(contactBtn, contactSection);
+    contactBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      const open = !panel.isOpen();
+      panel.set(open);
+      if (open) {
+        setTimeout(function () {
+          contactSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 150);
+      }
+    });
+  }
+
   const container = document.getElementById('contact-card');
   if (!container) return;
 

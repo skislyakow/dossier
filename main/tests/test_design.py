@@ -41,6 +41,7 @@ class DesignSystemTest(TestCase):
     PORTFOLIO_JS_PATH = JS_DIR / 'portfolio.js'
     UTIL_JS_PATH = JS_DIR / 'util.js'
     FILTER_STATE_JS_PATH = JS_DIR / 'filter-state.js'
+    PAGE_CHROME_JS_PATH = JS_DIR / 'page-chrome.js'
     SKILLS_JS_PATH = JS_DIR / 'skills.js'
     CONTACT_JS_PATH = JS_DIR / 'contact.js'
     GITHUB_JS_PATH = JS_DIR / 'github.js'
@@ -74,11 +75,15 @@ class DesignSystemTest(TestCase):
         self.assertIn('<html lang="ru">', self.html)
 
     def test_scroll_reveal_observer(self):
-        self.assertIn('IntersectionObserver', self.html)
+        chrome = self.PAGE_CHROME_JS_PATH.read_text(encoding='utf-8')
+        self.assertIn('IntersectionObserver', chrome)
+        self.assertIn('revealObserveAll', chrome)
 
     def test_reduced_motion_guards(self):
         self.assertIn('prefers-reduced-motion', self.css)
-        self.assertIn('prefers-reduced-motion', self.html)
+        chrome = self.PAGE_CHROME_JS_PATH.read_text(encoding='utf-8')
+        self.assertIn('prefersReducedMotion()', chrome)
+        self.assertNotIn('prefers-reduced-motion', self.html)
 
     def test_timeline_rail_vertical(self):
         self.assertIn('position: fixed', self.css_rule('.hero-timeline {'))
@@ -254,9 +259,12 @@ class DesignSystemTest(TestCase):
 
     def test_portfolio_eager_reveal_without_observer(self):
         js = self.PORTFOLIO_JS_PATH.read_text(encoding='utf-8')
-        self.assertIn('function revealNow(', js)
-        self.assertNotIn('function revealIn(', js)
+        self.assertIn('window.pageChrome.reveal.now', js)
+        self.assertNotIn('function revealNow(', js)
         self.assertNotIn('IntersectionObserver', js)
+        chrome = self.PAGE_CHROME_JS_PATH.read_text(encoding='utf-8')
+        self.assertIn('function revealNow(', chrome)
+        self.assertIn('IntersectionObserver', chrome)
 
     def test_mobile_hides_preview_media(self):
         css = ' '.join(self.css.split())
@@ -315,6 +323,31 @@ class DesignSystemTest(TestCase):
             self.html.index('js/filter-state.js'),
             self.html.index('js/skills.js'),
         )
+
+    def test_page_chrome_module(self):
+        chrome = self.PAGE_CHROME_JS_PATH.read_text(encoding='utf-8')
+        for fragment in (
+            'window.pageChrome =',
+            'function revealNow(',
+            'revealObserveAll',
+            'bindGradient',
+            "getElementById('theme-toggle')",
+            "getElementById('back-to-top')",
+        ):
+            self.assertIn(fragment, chrome)
+        self.assertEqual(self.html.count('<script>'), 1)
+        self.assertIn('js/page-chrome.js', self.html)
+        self.assertLess(
+            self.html.index('js/contact.js'),
+            self.html.index('js/page-chrome.js'),
+        )
+        for path in self.JS_DIR.glob('*.js'):
+            if path == self.UTIL_JS_PATH:
+                continue
+            self.assertNotIn('prefers-reduced-motion', path.read_text(encoding='utf-8'))
+        contact = self.CONTACT_JS_PATH.read_text(encoding='utf-8')
+        self.assertIn("getElementById('contact-btn')", contact)
+        self.assertIn('disclosurePanel(', contact)
 
     def test_reduced_motion_disables_all_animations(self):
         css = ' '.join(self.css.split())

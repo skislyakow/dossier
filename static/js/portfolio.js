@@ -19,10 +19,6 @@ function monogram(title) {
   return letters.toUpperCase();
 }
 
-function revealNow(root) {
-  root.querySelectorAll('.reveal:not(.is-visible)').forEach((el) => el.classList.add('is-visible'));
-}
-
 function renderProjectMedia(project) {
   if (project.screenshot) {
     return `<img src="${esc(project.screenshot)}" alt="${esc(project.title)}" class="portfolio-card-img" loading="lazy">`;
@@ -222,7 +218,7 @@ async function openPortfolio(opts) {
         preview.innerHTML = previewCache.get(item.dataset.repo);
         preview.classList.add('fade-in');
         bindMagnetic(preview.querySelector('.portfolio-preview-body'));
-        revealNow(preview);
+        window.pageChrome.reveal.now(preview);
       });
     });
 
@@ -241,7 +237,7 @@ async function openPortfolio(opts) {
       });
     }
 
-    revealNow(portfolioSection);
+    window.pageChrome.reveal.now(portfolioSection);
     syncActiveChips();
     applyFilters();
 
