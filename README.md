@@ -2,6 +2,8 @@
 
 Персональный сайт-визитка Сергея Кислякова — Python Fullstack Developer.
 
+![Скриншот сайта](docs/screenshot.png)
+
 ## Технологии
 
 ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white&labelColor=3776AB)
