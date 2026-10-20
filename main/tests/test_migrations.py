@@ -28,3 +28,14 @@ class MigrationSkillFilterTagSeedTest(TestCase):
     def test_fishshop_skills_categories(self):
         self.assertEqual(Skill.objects.get(name='python-telegram-bot').category, 'bots')
         self.assertEqual(Skill.objects.get(name='Strapi').category, 'backend')
+
+    def test_admin_skills_categories(self):
+        # 0028: навыки, заведённые на проде через admin, — категории зеркалят прод
+        for name, category in {
+            'Docker': 'devops',
+            'Git': 'devops',
+            'Ubuntu': 'devops',
+            'REST API': 'backend',
+            'asyncio': 'backend',
+        }.items():
+            self.assertEqual(Skill.objects.get(name=name).category, category)
