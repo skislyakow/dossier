@@ -8,7 +8,7 @@ class MigrationSkillFilterTagSeedTest(TestCase):
         'skislyakow/opencode-py': ['Python', 'httpx', 'Pydantic', 'PyPI', 'opencode-py'],
         'skislyakow/ferma': ['Python', 'FastAPI', 'SQLite', 'VK API', 'requests'],
         'skislyakow/devman-bot': ['Python', 'Telegram', 'requests', 'python-dotenv'],
-        'skislyakow/dossier': ['Python', 'Django', 'Nginx', 'Gunicorn', 'GitHub Actions', 'HTML', 'CSS', 'JavaScript', 'pytest', 'mypy'],
+        'skislyakow/dossier': ['Python', 'Django', 'Nginx', 'Gunicorn', 'GitHub Actions', 'HTML', 'CSS', 'JavaScript', 'pytest', 'mypy', 'Ubuntu', 'systemd', 'opencode-py'],
         'skislyakow/online_library': ['Python', 'Jinja2', 'Bootstrap', 'GitHub Pages'],
         'skislyakow/FishShop': ['Python', 'Telegram', 'python-telegram-bot', 'requests', 'Redis', 'Strapi'],
     }
