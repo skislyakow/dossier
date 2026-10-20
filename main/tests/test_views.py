@@ -165,7 +165,9 @@ class ApiSkillsTest(TestCase):
     def test_api_skills_computes_size_from_project_tags(self):
         skills = self._data()
         by_name = {s['name']: s for s in skills}
-        self.assertEqual(by_name['TestBots']['size'], 'lg')
+        # Telegram-тег сейчас у 5 проектов (включая FishShop) → xl; бакет lg
+        # покрыт test_api_skills_ignores_unpublished_projects (4 своих проекта).
+        self.assertEqual(by_name['TestBots']['size'], 'xl')
         self.assertEqual(by_name['TestBackend']['size'], 'sm')
         self.assertEqual(by_name['TestWeb']['size'], 'sm')
 

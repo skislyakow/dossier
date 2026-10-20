@@ -10,6 +10,7 @@ class MigrationSkillFilterTagSeedTest(TestCase):
         'skislyakow/devman-bot': ['Python', 'Telegram', 'requests', 'python-dotenv'],
         'skislyakow/dossier': ['Python', 'Django', 'Nginx', 'Gunicorn', 'GitHub Actions', 'HTML', 'CSS', 'JavaScript', 'pytest', 'mypy'],
         'skislyakow/online_library': ['Python', 'Jinja2', 'Bootstrap', 'GitHub Pages'],
+        'skislyakow/FishShop': ['Python', 'Telegram', 'python-telegram-bot', 'requests', 'Redis', 'Strapi'],
     }
     SKILL_FILTER_TAGS = {
         'Telegram Bot API': 'Telegram',
@@ -23,3 +24,7 @@ class MigrationSkillFilterTagSeedTest(TestCase):
             self.assertEqual(Skill.objects.get(name=name).filter_tag, filter_tag)
         for repo, tags in self.TAGS_BY_REPO.items():
             self.assertEqual(Project.objects.get(repo=repo).tags, tags)
+
+    def test_fishshop_skills_categories(self):
+        self.assertEqual(Skill.objects.get(name='python-telegram-bot').category, 'bots')
+        self.assertEqual(Skill.objects.get(name='Strapi').category, 'backend')
