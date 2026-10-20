@@ -2,6 +2,8 @@
 
 Персональный сайт-визитка Сергея Кислякова — Python Fullstack Developer.
 
+🌐 [kislyakov.pro](https://kislyakov.pro/) · 📄 [Резюме (HTML)](https://kislyakov.pro/resume/) · [Резюме PDF](https://kislyakov.pro/resume/pdf/) · ✉️ [Контакты](#контакты)
+
 ![Скриншот сайта](docs/screenshot.png)
 
 ## Технологии
@@ -17,7 +19,7 @@
 ![GitHub Actions](https://img.shields.io/badge/GitHub_Actions-2088FF?style=flat-square&logo=githubactions&logoColor=white&labelColor=2088FF)
 ![Ubuntu](https://img.shields.io/badge/Ubuntu-E95420?style=flat-square&logo=ubuntu&logoColor=white&labelColor=E95420)
 
-![Tests](https://img.shields.io/badge/101_tests_passed-2ea44f?style=flat-square&logo=checkmarx&logoColor=white&labelColor=2ea44f)
+![CI](https://github.com/skislyakow/dossier/actions/workflows/deploy.yml/badge.svg)
 ![Ruff](https://img.shields.io/badge/Ruff-D7FF64?style=flat-square&logo=ruff&logoColor=black&labelColor=D7FF64)
 ![mypy](https://img.shields.io/badge/mypy-18BACB?style=flat-square&logoColor=white&labelColor=18BACB)
 ![audit_content](https://img.shields.io/badge/audit_content-ok-2ea44f?style=flat-square&logoColor=white&labelColor=2ea44f)
@@ -28,7 +30,7 @@
 - **Опыт** — секция-хронология: до-2026 запись → работа → проекты → настоящее время, вертикальная лента с датами; справа — рельс-навигатор (в hero — с датами, дальше — компактная полоса с подписями по наведению), клик по точке ведёт к строке секции
 - **Навыки по категориям** — секция Skills — сетка, сгруппированная по зонам экспертизы (Backend / Web / DevOps / Bots & Integrations / Tools), пустые категории не показываются
 - **Контакты** — секция тремя крупными каналами (email / Telegram / GitHub): карточки из ContactInfo с меткой `{ контакты: N }`, ссылки кликабельны (mailto / t.me / github.com)
-- **Резюме** — `GET /resume/` отдаёт A4-страницу, сгенерированную из контента CMS (профиль, опыт, проекты, навыки, контакты), кнопка «Скачать PDF» → `/resume/pdf/`; PDF (WeasyPrint) перегенерируется сигналами при правке контента и командой `generate_resume` при деплое
+- **Резюме** — [`GET /resume/`](https://kislyakov.pro/resume/) отдаёт A4-страницу, сгенерированную из контента CMS (профиль, опыт, проекты, навыки, контакты), кнопка «Скачать PDF» → [`/resume/pdf/`](https://kislyakov.pro/resume/pdf/); PDF (WeasyPrint) перегенерируется сигналами при правке контента и командой `generate_resume` при деплое
 - **Светлая/тёмная тема** — GitHub-style light + dark, переключатель в hero, сохраняется в localStorage
 - **Marquee-строка технологий** — бесшовная бегущая строка между hero и контентом (анимация отключается при `prefers-reduced-motion`)
 - **SEO** — `GET /robots.txt` (закрывает `/admin/` и `/api/`, указывает sitemap) и `GET /sitemap.xml` (канонические `/` и `/resume/` из `SITE_URL`); на главной — schema.org `Person` (JSON-LD) из контента CMS
@@ -48,9 +50,11 @@
 - **Визуальный регресс**: `./tools/visual-probe.sh` (google-chrome headless) — overflow на 1440/1024/768/640, контракты адаптива (рельс ≤1024, медиа ≤768), `prefers-reduced-motion`; 14 проверок
 - **CI-гейт** (GitHub Actions): ruff + mypy + тесты + `makemigrations --check` + `audit_content` + `node --check` — каждый пуш в `main`
 
-## Сайт
+## Инженерная практика
 
-:earth_americas: [kislyakov.pro](https://kislyakov.pro/)
+- **[`AGENTS.md`](AGENTS.md)** — дев-процесс проекта: чек-гейт перед коммитом (ruff → mypy → pytest → миграции → `audit_content` → `node --check`), дисциплина багов/фич, структура кода
+- **[`docs/adr/`](docs/adr/)** — архитектурные решения (таксономия, реестр бейджей, fetch-адаптер, резюме из CMS); словарь домена — [`GLOSSARY.md`](GLOSSARY.md)
+- **Контент — через миграции**: стартовые проекты/навыки сеются data-миграциями (`main/migrations/`), правки наполнения — через Django admin
 
 ## Запуск
 
