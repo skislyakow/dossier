@@ -11,6 +11,7 @@ class MigrationSkillFilterTagSeedTest(TestCase):
         'skislyakow/dossier': ['Python', 'Django', 'Nginx', 'Gunicorn', 'GitHub Actions', 'HTML', 'CSS', 'JavaScript', 'pytest', 'mypy', 'Ubuntu', 'systemd', 'opencode-py'],
         'skislyakow/online_library': ['Python', 'Jinja2', 'Bootstrap', 'GitHub Pages'],
         'skislyakow/FishShop': ['Python', 'Telegram', 'python-telegram-bot', 'requests', 'Redis', 'Strapi'],
+        'skislyakow/SelfStorage': ['Python', 'Django', 'SQLite', 'Bootstrap', 'HTML', 'CSS', 'JavaScript', 'Nginx', 'Gunicorn', 'GitHub Actions', 'systemd', 'mypy', 'ЮKassa'],
     }
     SKILL_FILTER_TAGS = {
         'Telegram Bot API': 'Telegram',
@@ -39,3 +40,7 @@ class MigrationSkillFilterTagSeedTest(TestCase):
             'asyncio': 'backend',
         }.items():
             self.assertEqual(Skill.objects.get(name=name).category, category)
+
+    def test_selfstorage_skill_category(self):
+        # 0030: платёжная интеграция — навык под тег карточки SelfStorage
+        self.assertEqual(Skill.objects.get(name='ЮKassa').category, 'backend')
