@@ -164,6 +164,9 @@ Single-context: `GLOSSARY.md` + `docs/adr/` at the repo root. See `docs/agents/d
 
 ## To-do
 
+### Наблюдаемость / мониторинг
+- [ ] Мониторинг доступности + авто-восстановление nginx — **запланировано, не реализовано**: отдельный проект `uptime-monitor` (внешний probe на GitHub Actions cron каждые 5 мин + on-host агент `nginx-guard` с авто-рестартом nginx при валидном `nginx -t`), алерты в Telegram. План: `.scratch/uptime-monitor/spec.md`, тикеты `01–08` в `.scratch/uptime-monitor/issues/`. Причина: инцидент 5–8 ноября 2026 — битый `header-dump-test.conf` + рестарт от `unattended-upgrade` уронили nginx, все 5 сайтов хоста лежали 3 дня без оповещения
+
 ### SEO / видимость
 - [x] `og:image` / `twitter:image` (1200×630, `static/og/og-image.png`, `summary_large_image`) — превью при шаринге (сгенерировано Chrome headless из шаблона; при правке дизайна перегенерировать и обновить `<meta og:image>` в `<head>`)
 
