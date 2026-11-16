@@ -12,6 +12,7 @@ class MigrationSkillFilterTagSeedTest(TestCase):
         'skislyakow/online_library': ['Python', 'Jinja2', 'Bootstrap', 'GitHub Pages'],
         'skislyakow/FishShop': ['Python', 'Telegram', 'python-telegram-bot', 'requests', 'Redis', 'Strapi'],
         'skislyakow/SelfStorage': ['Python', 'Django', 'SQLite', 'Bootstrap', 'HTML', 'CSS', 'JavaScript', 'Nginx', 'Gunicorn', 'GitHub Actions', 'systemd', 'mypy', 'ЮKassa'],
+        'skislyakow/BakeCake': ['Python', 'Django', 'Django REST Framework', 'Vue 3', 'VeeValidate', 'SQLite', 'Bootstrap', 'HTML', 'CSS', 'JavaScript', 'Nginx', 'Gunicorn', 'GitHub Actions', 'systemd', 'ЮKassa', 'pytest', 'pyright'],
     }
     SKILL_FILTER_TAGS = {
         'Telegram Bot API': 'Telegram',
@@ -44,3 +45,13 @@ class MigrationSkillFilterTagSeedTest(TestCase):
     def test_selfstorage_skill_category(self):
         # 0030: платёжная интеграция — навык под тег карточки SelfStorage
         self.assertEqual(Skill.objects.get(name='ЮKassa').category, 'backend')
+
+    def test_bakecake_skill_categories(self):
+        # 0031: навыки под новые теги карточки BakeCake
+        for name, category in {
+            'Django REST Framework': 'backend',
+            'Vue 3': 'web',
+            'VeeValidate': 'web',
+            'pyright': 'tools',
+        }.items():
+            self.assertEqual(Skill.objects.get(name=name).category, category)
