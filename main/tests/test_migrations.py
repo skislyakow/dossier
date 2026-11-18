@@ -13,6 +13,7 @@ class MigrationSkillFilterTagSeedTest(TestCase):
         'skislyakow/FishShop': ['Python', 'Telegram', 'python-telegram-bot', 'requests', 'Redis', 'Strapi'],
         'skislyakow/SelfStorage': ['Python', 'Django', 'SQLite', 'Bootstrap', 'HTML', 'CSS', 'JavaScript', 'Nginx', 'Gunicorn', 'GitHub Actions', 'systemd', 'mypy', 'ЮKassa'],
         'skislyakow/BakeCake': ['Python', 'Django', 'Django REST Framework', 'Vue 3', 'VeeValidate', 'SQLite', 'Bootstrap', 'HTML', 'CSS', 'JavaScript', 'Nginx', 'Gunicorn', 'GitHub Actions', 'systemd', 'ЮKassa', 'pytest', 'pyright'],
+        'skislyakow/fastai-api': ['Python', 'FastAPI', 'Pydantic', 'DeepSeek', 'LangChain', 'MinIO', 'Gotenberg', 'REST API', 'uv'],
     }
     SKILL_FILTER_TAGS = {
         'Telegram Bot API': 'Telegram',
@@ -53,5 +54,17 @@ class MigrationSkillFilterTagSeedTest(TestCase):
             'Vue 3': 'web',
             'VeeValidate': 'web',
             'pyright': 'tools',
+        }.items():
+            self.assertEqual(Skill.objects.get(name=name).category, category)
+
+    def test_fastai_api_skills_categories(self):
+        # 0032: навыки под теги FastAI API — внешний AI-API в Bots & Integrations
+        # (как Dialogflow), инфра-сервисы в devops, пакетный менеджер в tools
+        for name, category in {
+            'DeepSeek': 'bots',
+            'LangChain': 'backend',
+            'MinIO': 'devops',
+            'Gotenberg': 'devops',
+            'uv': 'tools',
         }.items():
             self.assertEqual(Skill.objects.get(name=name).category, category)
