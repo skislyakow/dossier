@@ -15,6 +15,7 @@ class MigrationSkillFilterTagSeedTest(TestCase):
         'skislyakow/BakeCake': ['Python', 'Django', 'Django REST Framework', 'Vue 3', 'VeeValidate', 'SQLite', 'Bootstrap', 'HTML', 'CSS', 'JavaScript', 'Nginx', 'Gunicorn', 'GitHub Actions', 'systemd', 'ЮKassa', 'pytest', 'pyright'],
         'skislyakow/fastai-api': ['Python', 'FastAPI', 'Pydantic', 'DeepSeek', 'LangChain', 'MinIO', 'Gotenberg', 'REST API', 'uv'],
         'skislyakow/star-burger': ['Python', 'Django', 'Django REST Framework', 'PostgreSQL', 'React', 'JavaScript', 'Bootstrap', 'Nginx', 'Gunicorn', 'GitHub Actions', 'systemd', 'mypy', 'pytest', 'uv'],
+        'skislyakow/yandex-afisha': ['Python', 'Django', 'SQLite', 'Bootstrap', 'Leaflet', 'Vue 2', 'REST API'],
     }
     SKILL_FILTER_TAGS = {
         'Telegram Bot API': 'Telegram',
@@ -76,5 +77,13 @@ class MigrationSkillFilterTagSeedTest(TestCase):
         for name, category in {
             'PostgreSQL': 'backend',
             'React': 'web',
+        }.items():
+            self.assertEqual(Skill.objects.get(name=name).category, category)
+
+    def test_yandex_afisha_skills_categories(self):
+        # 0034: навыки под теги Yandex Afisha — карта и фронтенд-библиотека в web
+        for name, category in {
+            'Leaflet': 'web',
+            'Vue 2': 'web',
         }.items():
             self.assertEqual(Skill.objects.get(name=name).category, category)
