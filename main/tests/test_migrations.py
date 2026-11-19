@@ -14,6 +14,7 @@ class MigrationSkillFilterTagSeedTest(TestCase):
         'skislyakow/SelfStorage': ['Python', 'Django', 'SQLite', 'Bootstrap', 'HTML', 'CSS', 'JavaScript', 'Nginx', 'Gunicorn', 'GitHub Actions', 'systemd', 'mypy', 'ЮKassa'],
         'skislyakow/BakeCake': ['Python', 'Django', 'Django REST Framework', 'Vue 3', 'VeeValidate', 'SQLite', 'Bootstrap', 'HTML', 'CSS', 'JavaScript', 'Nginx', 'Gunicorn', 'GitHub Actions', 'systemd', 'ЮKassa', 'pytest', 'pyright'],
         'skislyakow/fastai-api': ['Python', 'FastAPI', 'Pydantic', 'DeepSeek', 'LangChain', 'MinIO', 'Gotenberg', 'REST API', 'uv'],
+        'skislyakow/star-burger': ['Python', 'Django', 'Django REST Framework', 'PostgreSQL', 'React', 'JavaScript', 'Bootstrap', 'Nginx', 'Gunicorn', 'GitHub Actions', 'systemd', 'mypy', 'pytest', 'uv'],
     }
     SKILL_FILTER_TAGS = {
         'Telegram Bot API': 'Telegram',
@@ -66,5 +67,14 @@ class MigrationSkillFilterTagSeedTest(TestCase):
             'MinIO': 'devops',
             'Gotenberg': 'devops',
             'uv': 'tools',
+        }.items():
+            self.assertEqual(Skill.objects.get(name=name).category, category)
+
+    def test_star_burger_skills_categories(self):
+        # 0033: навыки под теги Star Burger — БД в backend (как SQLite),
+        # фронтенд-библиотека в web (как JavaScript)
+        for name, category in {
+            'PostgreSQL': 'backend',
+            'React': 'web',
         }.items():
             self.assertEqual(Skill.objects.get(name=name).category, category)
