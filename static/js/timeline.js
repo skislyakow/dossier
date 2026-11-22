@@ -6,19 +6,19 @@ function initTimeline() {
 
   fetch('/api/timeline/').then(function (r) { return r.json(); }).then(function (data) {
     const PRIOR = data.prior;
-    const JOB = data.job;
+    const JOBS = data.jobs || [];
     const PRESENT = data.present;
     const TIMELINE = data.timeline || [];
 
-    // Слоты рельса сверху вниз: prior → job → проекты → present
+    // Рельс компактный: prior (проф. деятельность) → проекты → present.
+    // Все места работы живут только в секции «Опыт».
     const slots = [];
-    if (PRIOR) slots.push({ id: "prior", kind: "prior", data: PRIOR });
-    if (JOB) slots.push({ id: "job", kind: "job", data: JOB });
+    if (PRIOR) slots.push({ id: "career", kind: "prior", data: PRIOR });
     TIMELINE.forEach(function (item, i) {
       slots.push({ id: "project-" + i, kind: "project", data: item });
     });
     if (PRESENT) slots.push({ id: "present", kind: "present", data: PRESENT });
-    if (!slots.length) return;
+    if (!slots.length && !JOBS.length) return;
 
     const total = slots.length;
     let active = null;
@@ -28,22 +28,34 @@ function initTimeline() {
     }
 
     function labelFor(slot) {
-      if (slot.kind === "job") return (JOB.dateRange || "").split(" — ")[0] || JOB.title;
       if (slot.kind === "present") return "сейчас";
+      if (slot.kind === "prior") return String(slot.data.date || "").slice(0, 4) || "вехи";
       return slot.data.date;
+    }
+
+    function bullets(text) {
+      const lines = String(text || "").split("\n").map(function (line) {
+        return line.trim();
+      }).filter(Boolean);
+      if (lines.length > 1) {
+        return '<ul class="exp-bullets">' + lines.map(function (line) {
+          return '<li>' + esc(line) + '</li>';
+        }).join('') + '</ul>';
+      }
+      return lines.length ? '<p class="exp-desc">' + esc(lines[0]) + '</p>' : '';
     }
 
     // Строка секции «Опыт»: дата (моно) + заголовок + роль/описание/ссылка
     function itemHtml(slot) {
       const d = slot.data;
-      const date = slot.kind === "job" ? (d.dateRange || "")
+      const date = slot.kind === "job" ? (d.dateRange || d.date || "")
         : slot.kind === "present" ? "сейчас"
         : (d.date || "");
       const role = slot.kind === "job" && d.role
         ? '<div class="exp-role">' + esc(d.role) + '</div>'
         : "";
       const descText = slot.kind === "job" && !d.desc ? "Описание пока не добавлено" : (d.desc || "");
-      const desc = descText ? '<p class="exp-desc">' + esc(descText) + '</p>' : "";
+      const desc = bullets(descText);
       let link = "";
       if (slot.kind === "job" && d.url) {
         const host = String(d.url).replace(/^https?:\/\//, "").replace(/\/$/, "");
@@ -58,12 +70,18 @@ function initTimeline() {
         '</div>';
     }
 
+    const jobsHtml = JOBS.map(function (job, i) {
+      return itemHtml({ id: "job-" + i, kind: "job", data: job });
+    }).join('');
+    const slotsHtml = slots.map(itemHtml).join('');
+
     experienceEl.innerHTML =
       '<div class="sec-label">' +
       '<span class="sec-brace">{ </span><span class="sec-name">опыт</span>' +
-      '<span class="sec-count">: ' + total + '</span><span class="sec-brace"> }</span>' +
+      '<span class="sec-count">: ' + (JOBS.length + slots.length) + '</span><span class="sec-brace"> }</span>' +
       '</div>' +
-      '<div class="exp-list">' + slots.map(itemHtml).join("") + '</div>';
+      (jobsHtml ? '<div class="exp-group-title">Работа</div><div class="exp-list">' + jobsHtml + '</div>' : '') +
+      (slotsHtml ? '<div class="exp-group-title">Проекты и вехи</div><div class="exp-list">' + slotsHtml + '</div>' : '');
 
     slots.forEach(function (slot) {
       slot.itemEl = document.getElementById("exp-" + slot.id);
@@ -76,7 +94,6 @@ function initTimeline() {
     slots.forEach(function (slot, i) {
       const pct = pctOf(i);
       const suffix = slot.kind === "prior" ? "-prior"
-        : slot.kind === "job" ? "-job"
         : slot.kind === "present" ? "-present"
         : "";
 
@@ -117,8 +134,10 @@ function initTimeline() {
       progressEl.style.height = current.pct + "%";
     }
 
-    select(slots[slots.length - 1].id);
-    document.getElementById("hero-timeline").classList.add("show");
+    if (slots.length) {
+      select(slots[slots.length - 1].id);
+      document.getElementById("hero-timeline").classList.add("show");
+    }
   });
 }
 

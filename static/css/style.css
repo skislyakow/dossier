@@ -1536,6 +1536,15 @@ body:has(#portfolio.show) #experience {
     color: var(--text-secondary);
 }
 
+.exp-group-title {
+    margin: 1.5rem 0 0.75rem;
+    font-family: 'Fira Code', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
 .exp-list {
     position: relative;
     display: flex;
@@ -1543,6 +1552,18 @@ body:has(#portfolio.show) #experience {
     gap: 1rem;
     padding-left: 1.5rem;
     border-left: 2px solid var(--border);
+}
+
+.exp-bullets {
+    margin: 0 0 0.4rem;
+    padding-left: 1.2rem;
+    font-size: 0.95rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.exp-bullets li {
+    margin-bottom: 0.2rem;
 }
 
 .exp-item {

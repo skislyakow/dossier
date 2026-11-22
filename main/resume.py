@@ -15,8 +15,10 @@ def _resume_sort_key(item):
 
 def context():
     profile = ResumeProfile.load()
+    # prior — сводная точка компактного рельса, в резюме она дублировала бы
+    # реальные места работы; проекты попадают в отдельную секцию.
     experience = sorted(
-        [i for i in TimelineItem.objects.all() if i.item_type != 'project'],
+        [i for i in TimelineItem.objects.all() if i.item_type not in ('project', 'prior')],
         key=_resume_sort_key,
     )
     projects = list(Project.objects.filter(is_published=True).order_by('sort_order'))

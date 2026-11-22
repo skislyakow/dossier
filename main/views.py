@@ -1,4 +1,5 @@
 import os
+from datetime import date
 
 from django.conf import settings
 from django.shortcuts import render
@@ -99,9 +100,8 @@ def api_projects(request):
 
 
 def api_timeline(request):
-    items = TimelineItem.objects.all()
+    items = list(TimelineItem.objects.all())
     prior = None
-    job = None
     present = None
     timeline = []
 
@@ -112,31 +112,33 @@ def api_timeline(request):
             'desc': item.description,
         }
         if item.item_type == 'prior':
-            prior = {
-                'date': item.date_label,
-                'title': item.title,
-                'desc': item.description,
-            }
-        elif item.item_type == 'job':
-            job = {
-                'title': item.title,
-                'role': item.role,
-                'dateRange': item.date_range,
-                'url': item.url,
-                'desc': item.description,
-            }
+            prior = obj
         elif item.item_type == 'present':
-            present = {
-                'title': item.title,
-                'desc': item.description,
-            }
-        else:
+            present = obj
+        elif item.item_type != 'job':
             obj['repo'] = item.repo
             timeline.append(obj)
 
+    # Все места работы — в секции «Опыт» (обратная хронология); в рельсе
+    # остаётся только сводная prior-точка, чтобы не раздувать компактный вид.
+    job_items = sorted(
+        (i for i in items if i.item_type == 'job'),
+        key=lambda i: (i.start_date or date.min, i.sort_order),
+        reverse=True,
+    )
+    jobs = [{
+        'date': i.date_label,
+        'dateRange': i.date_range or i.date_label,
+        'title': i.title,
+        'role': i.role,
+        'url': i.url,
+        'desc': i.description,
+    } for i in job_items]
+
     return JsonResponse({
         'prior': prior,
-        'job': job,
+        'job': jobs[0] if jobs else None,  # обратная совместимость контракта
+        'jobs': jobs,
         'present': present,
         'timeline': timeline,
     })

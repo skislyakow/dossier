@@ -87,3 +87,24 @@ class MigrationSkillFilterTagSeedTest(TestCase):
             'Vue 2': 'web',
         }.items():
             self.assertEqual(Skill.objects.get(name=name).category, category)
+
+    def test_resume_experience_synced(self):
+        # 0035: полная история из резюме + сводная точка для компактного рельса
+        from main.models import TimelineItem
+
+        titles = set(TimelineItem.objects.filter(item_type='job').values_list('title', flat=True))
+        self.assertEqual(len(titles), 8)
+        self.assertTrue({
+            'ЭФКО Цифровые решения', 'Devman', 'DimaTech Ltd', 'DobroCorp',
+            'Частная практика / Проектная разработка',
+            'АО «ФЦНИВТ «СНПО «Элерон»',
+            'ИП Кисляков Сергей Викторович', 'ТЦ Тихая Сосна',
+        }.issubset(titles))
+        self.assertEqual(
+            TimelineItem.objects.get(title='Профессиональная деятельность').date_label,
+            '2007 — настоящее время',
+        )
+        for name, category in {
+            'SQLAlchemy': 'backend', 'Alembic': 'backend', 'Linux': 'devops',
+        }.items():
+            self.assertEqual(Skill.objects.get(name=name).category, category)

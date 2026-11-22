@@ -89,11 +89,26 @@ class ApiTimelineTest(TestCase):
         response = self.client.get('/api/timeline/')
         self.assertEqual(response.status_code, 200)
         data = response.json()
-        for key in ('prior', 'job', 'present', 'timeline'):
+        for key in ('prior', 'job', 'jobs', 'present', 'timeline'):
             self.assertTrue(data[key], f'empty: {key}')
         self.assertGreaterEqual(len(data['timeline']), 3)
         for key in ('date', 'title', 'desc'):
             self.assertIn(key, data['prior'])
+
+    def test_jobs_are_full_history_newest_first(self):
+        data = self.client.get('/api/timeline/').json()
+        jobs = data['jobs']
+        self.assertEqual(len(jobs), 8)
+        self.assertEqual(jobs[0]['title'], 'ЭФКО Цифровые решения')
+        self.assertEqual(jobs[-1]['title'], 'ТЦ Тихая Сосна')
+        for key in ('date', 'dateRange', 'title', 'role', 'url', 'desc'):
+            self.assertIn(key, jobs[0])
+        self.assertIn('ЮKassa', jobs[1]['desc'])
+        self.assertIn('\n', jobs[1]['desc'])
+        # Обратная совместимость: старый ключ — та же последняя работа
+        self.assertEqual(data['job']['title'], jobs[0]['title'])
+        # Рельс: сводка вместо отдельной точки работы
+        self.assertEqual(data['prior']['title'], 'Профессиональная деятельность')
 
 
 class ApiContactTest(TestCase):

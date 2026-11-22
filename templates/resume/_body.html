@@ -1,3 +1,4 @@
+{% load resume_tags %}
 <main class="resume" id="resume">
     <header class="resume-header">
         <div class="resume-name">{{ profile.full_name }}</div>
@@ -25,7 +26,13 @@
                 {% if item.role %}<span class="resume-entry-role">{{ item.role }}</span>{% endif %}
                 <span class="resume-entry-date">{{ item.date_range|default:item.date_label }}</span>
             </div>
-            {% if item.description %}<p class="resume-entry-desc">{{ item.description }}</p>{% endif %}
+            {% with lines=item.description|resume_lines %}
+            {% if lines %}
+            <ul class="resume-bullets">
+                {% for line in lines %}<li>{{ line }}</li>{% endfor %}
+            </ul>
+            {% endif %}
+            {% endwith %}
         </div>
         {% endfor %}
     </section>

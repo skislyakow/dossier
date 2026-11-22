@@ -66,7 +66,7 @@ class DesignSystemTest(TestCase):
         self.assertNotIn('228, 181, 146', self.css)
 
     def test_hero_signature_markup(self):
-        self.assertIn('Python-разработчик: автоматизация, Telegram-боты и веб на Django', self.html)
+        self.assertIn('Python-разработчик: Django, FastAPI, Telegram-боты, парсинг и автоматизация', self.html)
         self.assertIn('class="hero-name reveal"', self.html)
         self.assertIn('class="hero-positioning reveal"', self.html)
 
@@ -143,6 +143,11 @@ class DesignSystemTest(TestCase):
         self.assertIn('esc(', js)
         self.assertNotIn('tlEsc', js)
         self.assertIn('exp-list', js)
+        self.assertIn('data.jobs', js)
+        self.assertIn('exp-group-title', js)
+        self.assertIn('exp-bullets', js)
+        self.assertIn('.exp-group-title', self.css)
+        self.assertIn('.exp-bullets', self.css)
         self.assertIn('prefersReducedMotion()', js)
         for raw in ('+ d.title +', '+ d.desc +', '+ d.repo +', '+ d.role +'):
             self.assertNotIn(raw, js)

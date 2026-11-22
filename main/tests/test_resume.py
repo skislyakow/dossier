@@ -16,6 +16,22 @@ class ResumePageTest(TestCase):
         self.assertContains(response, 'Навыки')
         self.assertContains(response, 'Скачать PDF')
 
+    def test_resume_has_real_jobs_and_bullets_without_rail_summary(self):
+        from main import resume
+
+        experience = resume.context()['experience']
+        titles = [i.title for i in experience]
+        job_titles = [i.title for i in experience if i.item_type == 'job']
+        self.assertIn('ЭФКО Цифровые решения', job_titles)
+        self.assertIn('Devman', job_titles)
+        self.assertEqual(job_titles[0], 'ЭФКО Цифровые решения')
+        self.assertEqual(job_titles[-1], 'ТЦ Тихая Сосна')
+        self.assertNotIn('Профессиональная деятельность', titles)
+
+        response = self.client.get('/resume/')
+        self.assertContains(response, '<ul class="resume-bullets">')
+        self.assertContains(response, '<li>CLI-утилиты на Python / Bash')
+
     def test_resume_pdf_download(self):
         from main import resume
 
