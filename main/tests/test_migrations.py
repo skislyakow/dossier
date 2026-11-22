@@ -100,10 +100,10 @@ class MigrationSkillFilterTagSeedTest(TestCase):
             'АО «ФЦНИВТ «СНПО «Элерон»',
             'ИП Кисляков Сергей Викторович', 'ТЦ Тихая Сосна',
         }.issubset(titles))
-        self.assertEqual(
-            TimelineItem.objects.get(title='Профессиональная деятельность').date_label,
-            '2007 — настоящее время',
-        )
+        prior = TimelineItem.objects.get(title='Профессиональная деятельность')
+        self.assertEqual(prior.date_label, '2007 — настоящее время')
+        self.assertIn('с 2020 года', prior.description)
+        self.assertNotIn('с 2025 года', prior.description)
         for name, category in {
             'SQLAlchemy': 'backend', 'Alembic': 'backend', 'Linux': 'devops',
         }.items():
